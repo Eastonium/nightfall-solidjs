@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="148" height="200" version="1.1" viewbox="0 0 148 200" xmlns="http://www.w3.org/2000/svg">
+	<defs>
+		<polygon id="base_square" points="-24,0 0,-12 24,0 0,12"/>
+		<g id="base">
+			<polygon points="-73,0 0,-37 73,0 0,37" fill="#46617E" stroke="none" transform="translate(0 8)"/>
+			<use href="#base_square" x="-49"/>
+			<use href="#base_square" x="-24.5" y="-12.25"/>
+			<use href="#base_square" y="-24.5"/>
+			<use href="#base_square" x="-24.5" y="12.25" />
+			<use href="#base_square"/>
+			<use href="#base_square" x="24.5"  y="-12.25"/>
+			<use href="#base_square" y="24.5"/>
+			<use href="#base_square" x="24.5"  y="12.25"/>
+			<use href="#base_square" x="49"/>
+		</g>
+		<radialGradient id="top_grad" gradientUnits="userSpaceOnUse" r="40" cx="-9" cy="18">
+			<stop offset="10%" stop-color="#C7E5F0"></stop>
+			<stop offset="100%" stop-color="#588BE6"></stop>
+		</radialGradient>
+		<linearGradient id="bottom_grad">
+			<stop offset="0%"  stop-color="#34619A"></stop>
+			<stop offset="8%" stop-color="#4C89D8"></stop>			
+			<stop offset="23%" stop-color="#315B8E"></stop>
+			<stop offset="31%" stop-color="#5B97E0"></stop>
+			<stop offset="39%" stop-color="#4C89D4"></stop>
+			<stop offset="48%" stop-color="#2C5387"></stop>
+			<stop offset="53%" stop-color="#4780C5"></stop> 
+			<stop offset="65%" stop-color="#2A5080"></stop> 			
+			<stop offset="72%" stop-color="#467CBF"></stop> 			
+			<stop offset="76%" stop-color="#315D92 "></stop> 			
+			<stop offset="81%" stop-color="#4172B3"></stop> 			
+			<stop offset="100%" stop-color="#1C3A5D"></stop> 
+		</linearGradient>
+		<linearGradient id="front_grad">
+			<stop offset="0%" stop-color="#335E99"></stop>
+			<stop offset="35%" stop-color="#619CE4"></stop>
+			<stop offset="100%" stop-color="#294E7B"></stop>
+		</linearGradient>
+		<linearGradient id="hole_grad">
+			<stop offset="0%" stop-color="#1C3A5D"></stop>
+			<stop offset="100%" stop-color="#4C89D8"></stop>
+		</linearGradient>
+		<path id="top" d="M11.9769 -0.4651
+			A3.3474 2.092125 0 0 0 17.5841 0.9450
+			A8 5 0 1 1 15.1668 5.6408
+			A3.3474 2.092125 0 0 0 9.2960 4.7428
+			A12 7.5 0 0 1 -0.8879 7.4794
+			A2.4061 1.5038125 0 0 0 -2.9005 9.9522
+			A8 5 0 1 1 -9.4855 8.1967
+			A2.4061 1.5038125 0 0 0 -8.0229 5.5773
+			A12 7.5 0 0 1 -10.5936 3.5231
+			A4.0945 2.5590625 0 0 0 -17.8617 3.5699
+			A8 5 0 1 1 -18.5643 -1.6575
+			A4.0945 2.5590625 0 0 0 -11.3855 -2.3692
+			A12 7.5 0 0 1 11.9769 -0.4651 Z"/>
+		<path id="bottom" d="M31 -35.375 v40
+			A8 5 0 0 1 15.1668 5.6408
+			A3.3474 2.092125 0 0 0 9.2960 4.7428
+			A12 7.5 0 0 1 -0.8879 7.4794
+			A2.4061 1.5038125 0 0 0 -2.9005 9.9522
+			L-10.5936 3.5231
+			A4.0945 2.5590625 0 0 0 -17.8617 3.5699
+			A8 5 0 0 1 -33 2.1
+			v-40 L0 -40 Z"/>
+		<path id="front" d="M-1 -26.9 v40
+			A8 5 0 1 1 -17 13.1 v-40 Z"/>
+		<g id="warez_zone">
+			<use href="#bottom" fill="url(#bottom_grad)"/>
+			<use href="#front" fill="url(#front_grad)"/>
+			<use href="#top" y="-40" fill="url(#top_grad)"/>
+			<g fill="url(#hole_grad)">
+				<ellipse cx="0" cy="-40" rx="3.5" ry="2.1875"/>
+				<ellipse cx="-25" cy="-38.6875" rx="2.33" ry="1.456"/>
+				<ellipse cx="-9" cy="-26.8125" rx="2.33" ry="1.456"/>
+				<ellipse cx="23" cy="-35.375" rx="2.33" ry="1.456"/>
+			</g>
+		</g>
+	</defs>
+	<rect width="100%" height="100%" fill="#6B839E"/>
+	<use href="#base" x="74" y="154" alt-fill="#788FA8" fill="#91BBE6"/>
+	<use href="#warez_zone" x="74" y="152"/>
+</svg>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="148" height="200" version="1.1" viewbox="0 0 148 200" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<defs>
+		<polygon id="base_square" points="-24,0 0,-12 24,0 0,12"/>
+		<g id="base">
+			<polygon points="-73,0 0,-37 73,0 0,37" fill="#46617E" stroke="none" transform="translate(0 8)"/>
+			<use xlink:href="#base_square" x="-49"/>
+			<use xlink:href="#base_square" x="-24.5" y="-12.25"/>
+			<use xlink:href="#base_square" y="-24.5"/>
+			<use xlink:href="#base_square" x="-24.5" y="12.25" />
+			<use xlink:href="#base_square"/>
+			<use xlink:href="#base_square" x="24.5"  y="-12.25"/>
+			<use xlink:href="#base_square" y="24.5"/>
+			<use xlink:href="#base_square" x="24.5"  y="12.25"/>
+			<use xlink:href="#base_square" x="49"/>
+		</g>
+		<radialGradient id="s" cx="42%" cy="40%" r="57%" fx="20%" fy="40%">
+			<stop offset="0%" stop-color="#BFF" />
+			<stop offset="10%" stop-color="#A9E5F7"/>
+			<stop offset="40%" stop-color="#7EBDF3"/>
+			<stop offset="70%" stop-color="#4C78AD"/>
+			<stop offset="100%" stop-color="#274870"/>
+		</radialGradient>
+		<linearGradient id="c">
+			<stop offset="0%" stop-color="#4672A5"/>
+			<stop offset="14%" stop-color="#7EBDF3"/>
+			<stop offset="22%" stop-color="#A9E5F7"/>
+			<stop offset="34%" stop-color="#7EBDF3"/>
+			<stop offset="65%" stop-color="#4672A5"/>
+			<stop offset="100%" stop-color="#274870"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#6B839E"/>
+	<use xlink:href="#base" x="74" y="154" alt-fill="#788FA8" fill="#91BBE6"/>
+	<clipPath id="bottom" transform="translate(74 154)">
+		<path d="M0 -32l-20.5 28a22 10.5 0 1 0 41 0"/>
+	</clipPath>
+	<foreignObject width="100%" height="100%" clip-path="url(#bottom)">
+		<div
+			xmlns="http://www.w3.org/1999/xhtml"
+			style="background: conic-gradient(at center 122px, #274870 144deg, #4C78AD 160deg, #649DD8 170deg, #7EBDF3 182deg, #A9E5F7 194deg, #BFF, #A9E5F7 204deg, #7EBDF3 211deg, #4E7AAF 216deg); width: 100%; height: 100%;"
+		/>
+	</foreignObject>
+	<g transform="translate(74 154)">
+		<path fill="url(#s)" d="M14 -30v-1a14 9.5 0 0 0-28 0v1a14 11 0 0 0 28 0" />
+		<path fill="url(#c)" d="M-5.5 -65V-38.5a5.5,2.5 0,0,0 11,0V-65" />
+		<path fill="url(#s)" d="M12 -67.5a12 8.5 0 0 0-24 0a12 9.5 0 0 0 24 0" />
+		<path fill="url(#c)" d="M-2.4 -90V-75a2.4,1 0,0,0 4.8,0V-90" />
+		<ellipse fill="url(#s)" cy="-90.6" rx="5.4" ry="3.5" />
+	</g>
+	<clipPath id="top" transform="translate(74 154)">
+		<path d="M-2.1 -93.3a2.1 0.7 0 0 0 4.2 0L0 -110z"/>
+	</clipPath>
+	<foreignObject width="100%" height="100%" clip-path="url(#top)">
+		<div
+			xmlns="http://www.w3.org/1999/xhtml"
+			style="background: conic-gradient(at center 44px, #274870 173deg, #4672A5 178deg, #7EBDF3 182.3deg, #A9E5F7 184deg, #7EBDF3 185deg, #4672A5 187deg); width: 100%; height: 100%;"
+		/>
+	</foreignObject>
+</svg>

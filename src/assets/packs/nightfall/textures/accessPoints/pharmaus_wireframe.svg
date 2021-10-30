@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="148" height="200" version="1.1" viewbox="0 0 148 200" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<defs>
+		<polygon id="base_square" points="-24,0 0,-12 24,0 0,12"/>
+		<g id="base">
+			<polygon points="-73,0 0,-37 73,0 0,37" fill="#46617E" stroke="none" transform="translate(0 8)"/>
+			<use xlink:href="#base_square" x="-49"/>
+			<use xlink:href="#base_square" x="-24.5" y="-12.25"/>
+			<use xlink:href="#base_square" y="-24.5"/>
+			<use xlink:href="#base_square" x="-24.5" y="12.25" />
+			<use xlink:href="#base_square"/>
+			<use xlink:href="#base_square" x="24.5"  y="-12.25"/>
+			<use xlink:href="#base_square" y="24.5"/>
+			<use xlink:href="#base_square" x="24.5"  y="12.25"/>
+			<use xlink:href="#base_square" x="49"/>
+		</g>
+		<g id="s">
+			<circle r="20"/>
+			<ellipse rx="17.88" ry="20"/>
+			<ellipse rx="20" ry="8.94"/>
+			<ellipse rx="17.32" ry="7.74" cy="-8.94"/>
+			<ellipse rx="17.32" ry="7.74" cy="8.94"/>
+			<ellipse rx="10" ry="4.47" cy="-15.49"/>
+			<ellipse rx="10" ry="4.47" cy="15.49"/>
+			<ellipse rx="4.71" ry="19.98" transform="rotate(7.4)"/>
+			<ellipse rx="4.71" ry="19.98" transform="rotate(-7.4)"/>
+			<ellipse rx="12.73" ry="19.95" transform="rotate(20.8)"/>
+			<ellipse rx="12.73" ry="19.95" transform="rotate(-20.8)"/>
+		</g>
+	</defs>
+	<rect width="100%" height="100%" fill="#6B839E"/>
+	<use xlink:href="#base" x="74" y="154" alt-fill="#788FA8" fill="#91BBE6"/>
+
+	<g transform="translate(74 154)" fill="none" stroke="#FFF">
+		<ellipse rx="22" ry="10.3" />
+		<path d="M-21.3,-2.6 0,-32 21.3,-2.6" />
+		<path stroke-miterlimit="0" d="
+			M20.2,-4.1 -20.2,4.1 0,-32
+			M-13.2,8.2 0,-32 13.2,-8.2z
+			M-2.7,10.2 0,-32 2.7,-10.2z
+			M8.6,9.5, 0,-32 -8.6,-9.5z
+			M17.5,6.2 0,-32 -17.5,-6.2z
+			M 21.8,1.3 0,-32 -21.8,-1.3z
+		" />
+		<use href="#s" transform="translate(0 -30) scale(0.71 0.54)" stroke-width="1.6" />
+		<path d="M5.5,-39.5v-20m-11 0v20m1.8 1v-20m2.6 -2.4v20m2.2 2.8v-20m2.6 -2.2v20" />
+		<use href="#s" transform="translate(0 -67.1) scale(0.6 0.45)" stroke-width="1.9" />
+		<path d="M2.4,-76v-12m-4.8 0v12m1.7 0v-12m1.5 0v12" />
+		<g transform="translate(0 -90.6) scale(0.27 0.18)" stroke-width="4.4">
+			<circle r="20"/>
+			<ellipse rx="20" ry="8.94"/>
+			<ellipse rx="15.9" ry="6.5" cy="-11"/>
+			<ellipse rx="15.9" ry="6.5" cy="11"/>
+			<ellipse rx="9" ry="19.98" transform="rotate(15)"/>
+			<ellipse rx="9" ry="19.98" transform="rotate(-15)"/>
+		</g>
+		<path stroke-miterlimit="9" d="M-2.1,-93.3 0,-110 2.1,-93.3 M0,-110v16"/>
+	</g>
+</svg>

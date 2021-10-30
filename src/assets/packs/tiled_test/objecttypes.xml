@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objecttypes>
+ <objecttype name="Slug" color="#aaff00">
+  <property name="Type" type="object" default="0"/>
+ </objecttype>
+</objecttypes>

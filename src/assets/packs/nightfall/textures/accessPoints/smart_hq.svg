@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="148" height="200" version="1.1" viewbox="0 0 148 200" xmlns="http://www.w3.org/2000/svg">
+	<defs>
+		<polygon id="base_square" points="-24,0 0,-12 24,0 0,12"/>
+		<g id="base">
+			<polygon points="-73,0 0,-37 73,0 0,37" fill="#46617E" stroke="none" transform="translate(0 8)"/>
+			<use href="#base_square" x="-49"/>
+			<use href="#base_square" x="-24.5" y="-12.25"/>
+			<use href="#base_square" y="-24.5"/>
+			<use href="#base_square" x="-24.5" y="12.25" />
+			<use href="#base_square"/>
+			<use href="#base_square" x="24.5"  y="-12.25"/>
+			<use href="#base_square" y="24.5"/>
+			<use href="#base_square" x="24.5"  y="12.25"/>
+			<use href="#base_square" x="49"/>
+		</g>
+		<radialGradient id="tl1" gradientUnits="userSpaceOnUse" r="44" cx="-8" cy="-58">
+			<stop offset="0%" stop-color="#D6F1FF"></stop>
+			<stop offset="100%" stop-color="#ACD6FF"></stop> 
+		</radialGradient>
+		<radialGradient id="tr1" gradientUnits="userSpaceOnUse" r="44" cx="-12" cy="-58">
+			<stop offset="0%" stop-color="#8EC3FD"></stop>
+			<stop offset="100%" stop-color="#67A9F2"></stop> 
+		</radialGradient>
+		<radialGradient id="sl1" gradientUnits="userSpaceOnUse" r="44" cx="-12" cy="-36">
+			<stop offset="10%" stop-color="#8EC3FD"></stop>
+			<stop offset="100%" stop-color="#4C8FD9"></stop> 
+		</radialGradient>
+		<radialGradient id="sr1" gradientUnits="userSpaceOnUse" r="44" cx="-12" cy="-30">
+			<stop offset="10%" stop-color="#4173AB"></stop>
+			<stop offset="100%" stop-color="#355A83"></stop> 
+		</radialGradient>
+
+		<radialGradient id="tr2" gradientUnits="userSpaceOnUse" r="44" cx="0" cy="-40">
+			<stop offset="0%" stop-color="#61A6F0"></stop>
+			<stop offset="100%" stop-color="#4A8AD1"></stop> 
+		</radialGradient>
+		<radialGradient id="sl2" gradientUnits="userSpaceOnUse" r="44" cx="0" cy="-40">
+			<stop offset="10%" stop-color="#BBE1FF"></stop>
+			<stop offset="100%" stop-color="#539CED"></stop> 
+		</radialGradient>
+		<radialGradient id="sr2" gradientUnits="userSpaceOnUse" r="44" cx="0" cy="-40">
+			<stop offset="10%" stop-color="#375E88"></stop>
+			<stop offset="100%" stop-color="#304D6E"></stop>
+		</radialGradient>
+
+		<radialGradient id="tl3" gradientUnits="userSpaceOnUse" r="44" cx="0" cy="-58">
+			<stop offset="0%" stop-color="#4F96E3"></stop>
+			<stop offset="100%" stop-color="#4782C4"></stop> 
+		</radialGradient>
+		<radialGradient id="tr3" gradientUnits="userSpaceOnUse" r="44" cx="12" cy="-36">
+			<stop offset="0%" stop-color="#3C699A"></stop>
+			<stop offset="100%" stop-color="#375E88"></stop> 
+		</radialGradient>
+		<radialGradient id="sl3" gradientUnits="userSpaceOnUse" r="44" cx="12" cy="-30">
+			<stop offset="10%" stop-color="#4783C5"></stop>
+			<stop offset="100%" stop-color="#3D6B9D"></stop>
+		</radialGradient>
+		<g id="ped">
+			<path fill="url(#sl1)" d="M0 2 l-12 -6 v-68 l12 6 z
+				M-35 2 l-4 -2 v-21 l4 2 z
+				m8.5 .25 l-4.5 -2.25 v-36 l4.5 2.25 z
+				m9.5 .25 l-5 -2.5 v-52 l5 2.5 z"/>
+			<path fill="#304D6E" d="M0 2 l12 -6 v-68 l-12 6 z"/>
+			<path fill="url(#sr1)" d="M-35 2 l4 -2 v-21 l-4 2 z
+				m8.5 .25 l4.5 -2.25 v-36 l-4.5 2.25 z
+				m9.5 .25 l5 -2.5 v-52 l-5 2.5 z"/>
+			<path fill="#C1E0FF" d="M0 -66 l-12 -6 l12 -6.6 z"/>
+			<path fill="#447AB6" d="M0 -66 l12 -6 l-12 -6.6 z"/>
+			<path fill="url(#tl1)" d="M-35 -19 l-4 -2 l4 -2.2 z
+				m8.5 -14.75 l-4.5 -2.25 l4.55 -2.475 z
+				m9.5 -15.75 l-5 -2.5 l5 -2.75 z"/>
+			<path fill="url(#tr1)" d="M-35 -19 l4 -2 l-4 -2.2 z
+				m8.5 -14.75 l4.5 -2.25 l-4.5 -2.475 z
+				m9.5 -15.75 l5 -2.5 l-5 -2.75 z"/>
+
+			<path fill="url(#sl2)" d="M0 20.25 l-4 -2 v-21 l4 2 z
+				m0 -4 l-4.5 -2.25 v-36 l4.5 2.25 z
+				m0 -4.5 l-5 -2.5 v-52 l5 2.5 z"/>
+			<path fill="url(#sr2)" d="M0 20.25 l4 -2 v-21 l-4 2 z
+				m0 -4 l4.5 -2.25 v-36 l-4.5 2.25 z
+				m0 -4.5 l5 -2.5 v-52 l-5 2.5 z"/>
+			<path fill="url(#tl1)" d="M0 -.75 l-4 -2 l4 -2.2 z
+				m0 -19 l-4.5 -2.25 l4.5 -2.475 z
+				m0 -20.5 l-5 -2.5 l5 -2.75 z"/>
+			<path fill="url(#tr2)" d="M0 -.75 l4 -2 l-4 -2.2 z
+				m0 -19 l4.5 -2.25 l-4.5 -2.475 z
+				m0 -20.5 l5 -2.5 l-5 -2.75 z"/>
+
+			<path fill="url(#sl3)" d="M35 2 l-4 -2 v-21 l4 2 z
+				m-8.5 .25 l-4.5 -2.25 v-36 l4.5 2.25 z
+				m-9.5 .25 l-5 -2.5 v-52 l5 2.5 z"/>
+			<path fill="#27374A" d="M35 2 l4 -2 v-21 l-4 2 z
+				m-8.5 .25 l4.5 -2.25 v-36 l-4.5 2.25 z
+				m-9.5 .25 l5 -2.5 v-52 l-5 2.5 z"/>
+			<path fill="url(#tl3)" d="M35 -19 l-4 -2 l4 -2.2 z
+				m-8.5 -14.75 l-4.5 -2.25 l4.5 -2.475 z
+				m-9.5 -15.75 l-5 -2.5 l5 -2.75 z"/>
+			<path fill="url(#tr3)" d="M35 -19 l4 -2 l-4 -2.2 z
+				m-8.5 -14.75 l4.5 -2.25 l-4.5 -2.475 z
+				m-9.5 -15.75 l5 -2.5 l-5 -2.75 z"/>
+		</g>
+	</defs>
+	<rect width="100%" height="100%" fill="#6B839E"/>
+	<use href="#base" x="74" y="154" alt-fill="#788FA8" fill="#91BBE6"/>
+	<use href="#ped" x="74" y="154"/><!-- 154+12=166 -->
+</svg>
