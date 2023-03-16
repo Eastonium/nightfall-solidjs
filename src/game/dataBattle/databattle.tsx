@@ -1,4 +1,12 @@
-import { createContext, createSignal, Show, splitProps, useContext } from "solid-js";
+import {
+	createContext,
+	createSignal,
+	Show,
+	splitProps,
+	useContext,
+} from "solid-js";
+import { createStore } from "solid-js/store";
+import type {  } from "solid-js/store";
 import { css, styled } from "solid-styled-components";
 
 import { Button } from "ui/atoms/button";
@@ -12,20 +20,27 @@ import { Chit } from "./chit";
 import { Program } from "./program";
 import type { Level } from "./level";
 
-const DataBattleContext = createContext<Level | undefined>();
+const DataBattleContext = createContext<ReturnType<typeof createStore<Level>> | undefined>();
 export const useDataBattle = () => {
 	const dataBattle = useContext(DataBattleContext);
-	if (!dataBattle) throw Error("useDataBattle must be used with a DataBattleContext provider");
+	if (!dataBattle)
+		throw Error(
+			"useDataBattle must be used with a DataBattleContext provider"
+		);
 	return dataBattle;
-}
+};
 
 interface DataBattleProps extends WindowProps {
-	level: Level
+	level: Level;
 }
 export const DataBattle = (props: DataBattleProps) => {
 	const [p, windowProps] = splitProps(props, ["level"]);
 
-	const [selectedChit, setSelectedChit] = createSignal<Chit | Program | null>(null);
+	const levelStore = createStore(p.level);
+
+	const [selectedChit, setSelectedChit] = createSignal<Chit | Program | null>(
+		null
+	);
 
 	return (
 		<Window
@@ -35,30 +50,36 @@ export const DataBattle = (props: DataBattleProps) => {
 			{...windowProps}
 		>
 			<LayoutContainer>
-				<DataBattleContext.Provider value={p.level}>
-				<Window title="spybot" sectioned>
-					<img src={spybotImage} alt="spybot" style={{ display: "block" }} />
-				</Window>
-				<Window
-					class={css({ gridRow: 2 })}
-					title="program.info"
-					sectioned
-					postFooter={
-						<Button color="red" fill bold>
-							Undo
-						</Button>
-					}
-				>
-					<Show when={selectedChit()}>{selectedChit => <ChitInfo chit={selectedChit} />}</Show>
-				</Window>
-				{/* <Button bold wrapperProps={{ class: beginButtonStyleClass }}>
+				<DataBattleContext.Provider value={levelStore}>
+					<Window title="spybot" sectioned>
+						<img
+							src={spybotImage}
+							alt="spybot"
+							style={{ display: "block" }}
+						/>
+					</Window>
+					<Window
+						class={css({ gridRow: 2 })}
+						title="program.info"
+						sectioned
+						postFooter={
+							<Button color="red" fill bold>
+								Undo
+							</Button>
+						}
+					>
+						<Show when={selectedChit()} keyed>
+							{(selectedChit) => <ChitInfo chit={selectedChit} />}
+						</Show>
+					</Window>
+					{/* <Button bold wrapperProps={{ class: beginButtonStyleClass }}>
 					Begin Databattle
 				</Button> */}
-				<Grid
-					class={gridStyleClass}
-					selectedChit={selectedChit}
-					setSelectedChit={setSelectedChit}
-				/>
+					<Grid
+						class={gridStyleClass}
+						selectedChit={selectedChit}
+						setSelectedChit={setSelectedChit}
+					/>
 				</DataBattleContext.Provider>
 			</LayoutContainer>
 		</Window>

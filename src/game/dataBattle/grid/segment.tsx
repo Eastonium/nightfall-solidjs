@@ -18,7 +18,7 @@ interface PositionProps {
 }
 
 interface SegmentProps extends PositionProps {
-	icon: unknown;
+	icon: string | null;
 	color: string;
 	connectRight?: boolean;
 	connectDown?: boolean;
@@ -70,7 +70,7 @@ export const Segment = (props: SegmentProps) => {
 			)}
 			<g clip-path={`url(#segment-clipPath-${"square"})`}>
 				<rect x={0} y={0} width={gridUnitSize} height={gridUnitSize} fill={p.color} />
-				<image attr:href={p.icon} x={iconOffset} y={iconOffset} />
+				<image href={p.icon ?? undefined} x={iconOffset} y={iconOffset} />
 			</g>
 		</g>
 	);

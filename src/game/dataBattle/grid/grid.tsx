@@ -1,52 +1,109 @@
-import { Accessor, For, Index, JSX, Setter, Show, splitProps, useContext } from "solid-js";
+import {
+	Accessor,
+	For,
+	Index,
+	JSX,
+	Setter,
+	Show,
+	splitProps,
+} from "solid-js";
 
 import { useDataBattle } from "../index";
 import { Position } from "./position";
-import { gridUnitSize, Segment, SegmentClipPath, CellSelectionIndicator, Tile } from "./segment";
+import {
+	gridUnitSize,
+	Segment,
+	SegmentClipPath,
+	CellSelectionIndicator,
+	Tile,
+} from "./segment";
 import { Chit as IChit } from "../chit";
-import { Program as IProgram } from "../program";
+import { isProgram, Program as IProgram } from "../program";
 
 interface GridProps extends JSX.HTMLAttributes<HTMLDivElement> {
 	selectedChit: Accessor<IChit | IProgram | null>;
 	setSelectedChit: Setter<IChit | IProgram>;
 }
 export const Grid = (props: GridProps) => {
-	const [p, gridProps] = splitProps(props, ["selectedChit", "setSelectedChit"]);
-	const { width, height, solid, chits, programs } = useDataBattle();
+	const [p, gridProps] = splitProps(props, [
+		"selectedChit",
+		"setSelectedChit",
+	]);
+	const [level, setLevel] = useDataBattle();
 
 	const selectedChitPosition = () => {
 		const selectedChit = p.selectedChit();
 		if (!selectedChit) return null;
-		return selectedChit instanceof IProgram ? selectedChit.slug[0] : selectedChit.pos;
+		return isProgram(selectedChit)
+			? selectedChit.slug[0]
+			: selectedChit.pos;
 	};
 
 	return (
 		<div {...gridProps}>
-			<svg width={width * gridUnitSize} height={height * gridUnitSize}>
-				<Index each={solid}>
-					{(isSolid, sectorIndex) =>
-						isSolid() && (
-							<Tile column={sectorIndex % width} row={Math.floor(sectorIndex / width)} />
-						)
-					}
-				</Index>
-				<For each={chits}>
-					{chit => <Chit chit={chit} setSelectedChit={p.setSelectedChit} />}
-				</For>
+			<svg
+				width={level.width * gridUnitSize}
+				height={level.height * gridUnitSize}
+				onDblClick={() => {
+					const selectedChit = p.selectedChit();
+					if (!selectedChit || !isProgram(selectedChit)) return;
+					setLevel(
+						"programs",
+						(program) => program.id === selectedChit.id,
+						"slug",
+						(slug) => [slug[0].clone(1, 0), ...slug]
+					);
+				}}
+			>
+				<g>
+					<Index each={level.solid}>
+						{(isSolid, sectorIndex) => (
+							<Show when={isSolid()} keyed>
+								<Tile
+									column={sectorIndex % level.width}
+									row={Math.floor(sectorIndex / level.width)}
+								/>
+							</Show>
+						)}
+					</Index>
+				</g>
+				<g>
+					<For each={level.chits}>
+						{(chit) => (
+							<Chit
+								chit={chit}
+								setSelectedChit={p.setSelectedChit}
+							/>
+						)}
+					</For>
+				</g>
 				<SegmentClipPath />
-				<For each={programs}>
-					{program => <Program program={program} setSelectedChit={p.setSelectedChit} />}
-				</For>
+				<g>
+					<For each={level.programs}>
+						{(program) => (
+							<Program
+								program={program}
+								setSelectedChit={p.setSelectedChit}
+							/>
+						)}
+					</For>
+				</g>
 
-				<Show when={selectedChitPosition()}>
-					{selectedChitPosition => (
-						<CellSelectionIndicator
-							// The key makes it create a new element each time the selected sector changes
-							// This way the the animation resets
-							// key={selectedChitPosition.sectorIndex}
-							column={selectedChitPosition.column}
-							row={selectedChitPosition.row}
-						/>
+				<Show when={p.selectedChit()} keyed>
+					{(chit) => (
+						<>
+							<CellSelectionIndicator
+								column={
+									(isProgram(chit) ? chit.slug[0] : chit.pos)
+										.column
+								}
+								row={
+									(isProgram(chit) ? chit.slug[0] : chit.pos)
+										.row
+								}
+							/>
+
+						</>
 					)}
 				</Show>
 			</svg>
@@ -65,7 +122,7 @@ const Chit = (p: ChitProps) => {
 		<image
 			x={column * gridUnitSize}
 			y={row * gridUnitSize}
-			attr:href={p.chit.icon}
+			href={p.chit.icon}
 			onClick={() => p.setSelectedChit(p.chit)}
 		/>
 	);
@@ -76,21 +133,31 @@ interface ProgramProps {
 	setSelectedChit: Setter<IProgram>;
 }
 const Program = (p: ProgramProps) => {
-	const sortedSlug = () => p.program.slug.sort(Position.compare);
+	const sortedSlug = () => [...p.program.slug].sort(Position.compare);
 	return (
 		<g onClick={() => p.setSelectedChit(p.program)}>
 			<For each={sortedSlug()}>
-				{(pos, i) => {
+				{(pos) => {
 					const { column, row } = pos;
-					const posRight = pos.clone().right();
-					const posDown = pos.clone().down();
+					const posRight = pos.clone(1, 0);
+					const posDown = pos.clone(0, 1);
 					return (
 						<Segment
 							{...{ column, row }}
 							color={p.program.color}
-							icon={i() === 0 ? p.program.icon : null}
-							connectRight={posRight && sortedSlug().find(posRight.equals) != null}
-							connectDown={posDown && sortedSlug().find(posDown.equals) != null}
+							icon={
+								pos === p.program.slug[0]
+									? p.program.icon
+									: null
+							}
+							connectRight={
+								posRight &&
+								sortedSlug().find(posRight.equals) != null
+							}
+							connectDown={
+								posDown &&
+								sortedSlug().find(posDown.equals) != null
+							}
 						/>
 					);
 				}}

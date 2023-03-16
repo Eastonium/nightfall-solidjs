@@ -3,57 +3,73 @@ import { createEffect, createSignal, For, on, Show } from "solid-js";
 import { Fonts } from "ui/fonts";
 import { Segment, gridUnitSize } from "./grid/segment";
 import { Chit } from "./chit";
-import { Command, Program } from "./program";
+import { Command, isProgram, Program } from "./program";
 import { css, styled } from "solid-styled-components";
 
 interface ChitInfoProps {
 	chit: Chit | Program;
 }
 export const ChitInfo = (p: ChitInfoProps) => {
-	const programCommands = p.chit instanceof Program ? p.chit.commands : null;
-	const [selectedCommand, setSelectedCommand] = createSignal<Command | null>(null);
+	const programCommands = isProgram(p.chit) ? p.chit.commands : null;
+	const [selectedCommand, setSelectedCommand] = createSignal<Command | null>(
+		null
+	);
 
 	createEffect(
 		on(
 			() => p.chit,
-			() => void setSelectedCommand(null),
-		),
+			() => void setSelectedCommand(null)
+		)
 	);
 
 	return (
 		<ChitInfoContainer>
 			<BasicInfoContainer>
-				{p.chit instanceof Program ? (
+				{isProgram(p.chit) ? (
 					<>
 						<svg class={iconStyleClass}>
-							<Segment column={0} row={0} icon={p.chit.icon} color={p.chit.color} />
+							<Segment
+								column={0}
+								row={0}
+								icon={p.chit.icon}
+								color={p.chit.color}
+							/>
 						</svg>
 						<span>Move: {p.chit.speed}</span>
 						<span>Max Size: {p.chit.maxSize}</span>
 						<span>Current Size: {p.chit.slug.length}</span>
 					</>
 				) : (
-					<img src={p.chit.icon} alt={p.chit.name} class={iconStyleClass} />
+					<img
+						src={p.chit.icon}
+						alt={p.chit.name}
+						class={iconStyleClass}
+					/>
 				)}
 			</BasicInfoContainer>
 			<span class={h1StyleClass}>{p.chit.name}</span>
 			<span class={pStyleClass}>{p.chit.desc}</span>
-			{p.chit instanceof Program && (
+			{isProgram(p.chit) && (
 				<>
 					<span class={h2StyleClass}>Commands</span>
 					<CommandContainer>
 						<For each={programCommands}>
-							{command => (
-								<button onClick={() => setSelectedCommand(command)}>{command.name}</button>
+							{(command) => (
+								<button
+									onClick={() => setSelectedCommand(command)}
+								>
+									{command.name}
+								</button>
 							)}
 						</For>
 					</CommandContainer>
-					<Show when={selectedCommand()}>
-						{selectedCommand => (
+					<Show when={selectedCommand()} keyed>
+						{(selectedCommand) => (
 							<span class={pStyleClass}>
 								{selectedCommand.name}:
 								<br />
-								{selectedCommand.desc || "<Command description not found>"}
+								{selectedCommand.desc ||
+									"<Command description not found>"}
 							</span>
 						)}
 					</Show>
@@ -71,7 +87,7 @@ const BasicInfoContainer = styled("div")`
 	flex-direction: column;
 	flex-wrap: wrap;
 	justify-content: center;
-	height: ${gridUnitSize}px;
+	height: ${gridUnitSize.toString()}px;
 	margin-bottom: 6px;
 `;
 const CommandContainer = styled("div")`
@@ -92,8 +108,8 @@ const CommandContainer = styled("div")`
 `;
 
 const iconStyleClass = css`
-	width: ${gridUnitSize}px;
-	height: ${gridUnitSize}px;
+	width: ${gridUnitSize.toString()}px;
+	height: ${gridUnitSize.toString()}px;
 	margin-right: 6px;
 `;
 const h1StyleClass = css`
