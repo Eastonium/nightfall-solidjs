@@ -53,7 +53,7 @@ const Test_Level_1: LevelDefinition = {
 				[3, 4],
 			],
 		},
-		{ id: "nightfall:dog_2", slug: [[2, 2]] },
+		{ id: "nightfall:dog_3", slug: [[2, 2]] },
 		{ id: "nightfall:dog_2", slug: [[0, 3]] },
 		{ id: "nightfall:dog_2", slug: [[1, 4]] },
 		{ id: "nightfall:dog_2", slug: [[2, 5]] },

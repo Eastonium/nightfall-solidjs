@@ -2,7 +2,7 @@ import { findChitConfig, findProgramConfig } from "game";
 import { createUniqueId } from "solid-js";
 import { Chit, ChitInstanceDefinition } from "./chit";
 import { Position } from "./grid/position";
-import { Program, ProgramInstanceDefinition } from "./program";
+import { Command, Program, ProgramInstanceDefinition } from "./program";
 
 export type LevelDefinition = {
 	orientation: "orthogonal"; // | "hexagonal";
@@ -61,6 +61,11 @@ export const processLevel = ({ styleKey, ...level }: LevelDefinition) => {
 			);
 			return program;
 		}),
-		// mapPrograms,
+		mapPrograms,
 	};
 };
+
+export type Selection =
+	| null
+	| { chit: Chit; command: null }
+	| { chit: Program; command: Command | null };

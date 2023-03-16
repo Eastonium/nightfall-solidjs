@@ -102,7 +102,9 @@ const selectionIndicatorStyles = css`
 	animation: 530ms infinite ${keyframes`to { stroke: transparent; }`};
 `;
 
-interface TileProps extends PositionProps {}
+interface TileProps extends PositionProps {
+	fill?: string;
+}
 export const Tile = (p: TileProps) => (
 	<rect
 		transform={`translate(${p.column * gridUnitSize} ${p.row * gridUnitSize})`}
@@ -110,7 +112,7 @@ export const Tile = (p: TileProps) => (
 		y={2}
 		width={gridUnitSize - 4}
 		height={gridUnitSize - 4}
-		fill="#0006"
+		fill={p.fill ?? "#0006"}
 	/>
 );
 

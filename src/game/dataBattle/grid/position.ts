@@ -27,9 +27,10 @@ export class Position {
 
 	get sectorIndex() {
 		if (
-			(this.gridWidth &&
-				(this.column < 0 || this.column >= this.gridWidth)) ||
-			(this.gridHeight && (this.row < 0 || this.row >= this.gridHeight))
+			this.column < 0 ||
+			this.column >= this.gridWidth ||
+			this.row < 0 ||
+			this.row >= this.gridHeight
 		) {
 			return NaN;
 		}
@@ -42,7 +43,7 @@ export class Position {
 		return this;
 	};
 
-	isValid = () => isNaN(this.sectorIndex);
+	isValid = () => !isNaN(this.sectorIndex);
 	equals = (position: Position) =>
 		this === position ||
 		(this.column === position.column && this.row === position.row);
@@ -65,3 +66,9 @@ export class Position {
 		);
 	}
 }
+
+const North = [0, -1] as const;
+const South = [0, 1] as const;
+const East = [1, 0] as const;
+const West = [-1, 0] as const;
+export const NSEW: (readonly [number, number])[] = [North, South, East, West];

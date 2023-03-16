@@ -1,15 +1,19 @@
 import {
-	Accessor,
+	batch,
 	For,
 	Index,
 	JSX,
-	Setter,
 	Show,
 	splitProps,
 } from "solid-js";
 
+import moveNorthIcon from "../../../assets/packs/nightfall/textures/grid/targets/move_north.png";
+import moveSouthIcon from "../../../assets/packs/nightfall/textures/grid/targets/move_south.png";
+import moveEastIcon from "../../../assets/packs/nightfall/textures/grid/targets/move_east.png";
+import moveWestIcon from "../../../assets/packs/nightfall/textures/grid/targets/move_west.png";
+
 import { useDataBattle } from "../index";
-import { Position } from "./position";
+import { NSEW, Position } from "./position";
 import {
 	gridUnitSize,
 	Segment,
@@ -20,23 +24,22 @@ import {
 import { Chit as IChit } from "../chit";
 import { isProgram, Program as IProgram } from "../program";
 
-interface GridProps extends JSX.HTMLAttributes<HTMLDivElement> {
-	selectedChit: Accessor<IChit | IProgram | null>;
-	setSelectedChit: Setter<IChit | IProgram>;
-}
+interface GridProps extends JSX.HTMLAttributes<HTMLDivElement> {}
 export const Grid = (props: GridProps) => {
-	const [p, gridProps] = splitProps(props, [
-		"selectedChit",
-		"setSelectedChit",
-	]);
+	const [p, gridProps] = splitProps(props, []);
 	const [level, setLevel] = useDataBattle();
 
 	const selectedChitPosition = () => {
-		const selectedChit = p.selectedChit();
+		const selectedChit = level.selection?.chit;
 		if (!selectedChit) return null;
 		return isProgram(selectedChit)
 			? selectedChit.slug[0]
 			: selectedChit.pos;
+	};
+	const selectedProgram = () => {
+		const selectedChit = level.selection?.chit;
+		if (!selectedChit) return null;
+		return isProgram(selectedChit) ? selectedChit : null;
 	};
 
 	return (
@@ -44,16 +47,6 @@ export const Grid = (props: GridProps) => {
 			<svg
 				width={level.width * gridUnitSize}
 				height={level.height * gridUnitSize}
-				onDblClick={() => {
-					const selectedChit = p.selectedChit();
-					if (!selectedChit || !isProgram(selectedChit)) return;
-					setLevel(
-						"programs",
-						(program) => program.id === selectedChit.id,
-						"slug",
-						(slug) => [slug[0].clone(1, 0), ...slug]
-					);
-				}}
 			>
 				<g>
 					<Index each={level.solid}>
@@ -69,41 +62,72 @@ export const Grid = (props: GridProps) => {
 				</g>
 				<g>
 					<For each={level.chits}>
-						{(chit) => (
-							<Chit
-								chit={chit}
-								setSelectedChit={p.setSelectedChit}
-							/>
-						)}
+						{(chit) => <Chit chit={chit} />}
 					</For>
 				</g>
 				<SegmentClipPath />
 				<g>
 					<For each={level.programs}>
-						{(program) => (
-							<Program
-								program={program}
-								setSelectedChit={p.setSelectedChit}
-							/>
-						)}
+						{(program) => <Program program={program} />}
 					</For>
 				</g>
 
-				<Show when={p.selectedChit()} keyed>
-					{(chit) => (
-						<>
-							<CellSelectionIndicator
-								column={
-									(isProgram(chit) ? chit.slug[0] : chit.pos)
-										.column
-								}
-								row={
-									(isProgram(chit) ? chit.slug[0] : chit.pos)
-										.row
-								}
-							/>
-
-						</>
+				<Show when={selectedChitPosition()} keyed>
+					{(position) => (
+						<CellSelectionIndicator
+							column={position.column}
+							row={position.row}
+						/>
+					)}
+				</Show>
+				<Show when={selectedProgram()} keyed>
+					{(program) => (
+						<For
+							each={NSEW.map((offset) =>
+								program.slug[0].clone(...offset)
+							)}
+						>
+							{(pos, nsewI) => {
+								return (
+									<Show
+										when={
+											pos.isValid() &&
+											level.solid[pos.sectorIndex] &&
+											!level.mapPrograms[pos.sectorIndex]
+										}
+									>
+										<image
+											x={pos.column * gridUnitSize}
+											y={pos.row * gridUnitSize}
+											href={
+												[
+													moveNorthIcon,
+													moveSouthIcon,
+													moveEastIcon,
+													moveWestIcon,
+												][nsewI()]
+											}
+											onClick={() => {
+												batch(() => {
+													setLevel(
+														"programs",
+														(p) =>
+															p.id === program.id,
+														"slug",
+														(slug) => [pos, ...slug]
+													);
+													setLevel(
+														"mapPrograms",
+														pos.sectorIndex,
+														program
+													);
+												});
+											}}
+										/>
+									</Show>
+								);
+							}}
+						</For>
 					)}
 				</Show>
 			</svg>
@@ -113,9 +137,9 @@ export const Grid = (props: GridProps) => {
 
 interface ChitProps {
 	chit: IChit;
-	setSelectedChit: Setter<IChit>;
 }
 const Chit = (p: ChitProps) => {
+	const [, setLevel] = useDataBattle();
 	const { column, row } = p.chit.pos;
 
 	return (
@@ -123,19 +147,26 @@ const Chit = (p: ChitProps) => {
 			x={column * gridUnitSize}
 			y={row * gridUnitSize}
 			href={p.chit.icon}
-			onClick={() => p.setSelectedChit(p.chit)}
+			onClick={() =>
+				setLevel("selection", { chit: p.chit, command: null })
+			}
 		/>
 	);
 };
 
 interface ProgramProps {
 	program: IProgram;
-	setSelectedChit: Setter<IProgram>;
 }
 const Program = (p: ProgramProps) => {
+	const [, setLevel] = useDataBattle();
 	const sortedSlug = () => [...p.program.slug].sort(Position.compare);
+
 	return (
-		<g onClick={() => p.setSelectedChit(p.program)}>
+		<g
+			onClick={() =>
+				setLevel("selection", { chit: p.program, command: null })
+			}
+		>
 			<For each={sortedSlug()}>
 				{(pos) => {
 					const { column, row } = pos;

@@ -1,69 +1,71 @@
-import { createEffect, createSignal, For, on, Show } from "solid-js";
+import { For, Show } from "solid-js";
 
 import { Fonts } from "ui/fonts";
 import { Segment, gridUnitSize } from "./grid/segment";
-import { Chit } from "./chit";
-import { Command, isProgram, Program } from "./program";
+import { isProgram } from "./program";
 import { css, styled } from "solid-styled-components";
+import { useDataBattle } from "./databattle";
+import { Selection } from "./level";
 
 interface ChitInfoProps {
-	chit: Chit | Program;
+	selection: NonNullable<Selection>;
 }
 export const ChitInfo = (p: ChitInfoProps) => {
-	const programCommands = isProgram(p.chit) ? p.chit.commands : null;
-	const [selectedCommand, setSelectedCommand] = createSignal<Command | null>(
-		null
-	);
+	const [, setLevel] = useDataBattle();
 
-	createEffect(
-		on(
-			() => p.chit,
-			() => void setSelectedCommand(null)
-		)
-	);
+	const programCommands = () =>
+		isProgram(p.selection.chit) ? p.selection.chit.commands : null;
 
 	return (
 		<ChitInfoContainer>
 			<BasicInfoContainer>
-				{isProgram(p.chit) ? (
+				{isProgram(p.selection.chit) ? (
 					<>
 						<svg class={iconStyleClass}>
 							<Segment
 								column={0}
 								row={0}
-								icon={p.chit.icon}
-								color={p.chit.color}
+								icon={p.selection.chit.icon}
+								color={p.selection.chit.color}
 							/>
 						</svg>
-						<span>Move: {p.chit.speed}</span>
-						<span>Max Size: {p.chit.maxSize}</span>
-						<span>Current Size: {p.chit.slug.length}</span>
+						<span>Move: {p.selection.chit.speed}</span>
+						<span>Max Size: {p.selection.chit.maxSize}</span>
+						<span>
+							Current Size: {p.selection.chit.slug.length}
+						</span>
 					</>
 				) : (
 					<img
-						src={p.chit.icon}
-						alt={p.chit.name}
+						src={p.selection.chit.icon}
+						alt={p.selection.chit.name}
 						class={iconStyleClass}
 					/>
 				)}
 			</BasicInfoContainer>
-			<span class={h1StyleClass}>{p.chit.name}</span>
-			<span class={pStyleClass}>{p.chit.desc}</span>
-			{isProgram(p.chit) && (
+			<span class={h1StyleClass}>{p.selection.chit.name}</span>
+			<span class={pStyleClass}>{p.selection.chit.desc}</span>
+			{isProgram(p.selection.chit) && (
 				<>
 					<span class={h2StyleClass}>Commands</span>
 					<CommandContainer>
-						<For each={programCommands}>
+						<For each={programCommands()}>
 							{(command) => (
 								<button
-									onClick={() => setSelectedCommand(command)}
+									onClick={() =>
+										setLevel(
+											"selection",
+											"command",
+											command
+										)
+									}
 								>
 									{command.name}
 								</button>
 							)}
 						</For>
 					</CommandContainer>
-					<Show when={selectedCommand()} keyed>
+					<Show when={p.selection.command} keyed>
 						{(selectedCommand) => (
 							<span class={pStyleClass}>
 								{selectedCommand.name}:

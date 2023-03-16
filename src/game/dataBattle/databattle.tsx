@@ -1,12 +1,5 @@
-import {
-	createContext,
-	createSignal,
-	Show,
-	splitProps,
-	useContext,
-} from "solid-js";
+import { createContext, Show, splitProps, useContext } from "solid-js";
 import { createStore } from "solid-js/store";
-import type {  } from "solid-js/store";
 import { css, styled } from "solid-styled-components";
 
 import { Button } from "ui/atoms/button";
@@ -14,13 +7,13 @@ import { Window, WindowProps } from "ui/atoms/window";
 
 import { ChitInfo } from "./chitInfo";
 import { Grid } from "./grid";
+import type { Level, Selection } from "./level";
 
 import spybotImage from "assets/packs/nightfall/textures/spybots/Snaptrax S45.png";
-import { Chit } from "./chit";
-import { Program } from "./program";
-import type { Level } from "./level";
 
-const DataBattleContext = createContext<ReturnType<typeof createStore<Level>> | undefined>();
+const DataBattleContext = createContext<
+	ReturnType<typeof createStore<Level & { selection: Selection }>> | undefined
+>();
 export const useDataBattle = () => {
 	const dataBattle = useContext(DataBattleContext);
 	if (!dataBattle)
@@ -36,10 +29,10 @@ interface DataBattleProps extends WindowProps {
 export const DataBattle = (props: DataBattleProps) => {
 	const [p, windowProps] = splitProps(props, ["level"]);
 
-	const levelStore = createStore(p.level);
-
-	const [selectedChit, setSelectedChit] = createSignal<Chit | Program | null>(
-		null
+	const levelStore = createStore(
+		Object.assign<Level, { selection: Selection }>(p.level, {
+			selection: null,
+		})
 	);
 
 	return (
@@ -68,18 +61,14 @@ export const DataBattle = (props: DataBattleProps) => {
 							</Button>
 						}
 					>
-						<Show when={selectedChit()} keyed>
-							{(selectedChit) => <ChitInfo chit={selectedChit} />}
+						<Show when={levelStore[0].selection} keyed>
+							{(selection) => <ChitInfo selection={selection} />}
 						</Show>
 					</Window>
 					{/* <Button bold wrapperProps={{ class: beginButtonStyleClass }}>
 					Begin Databattle
 				</Button> */}
-					<Grid
-						class={gridStyleClass}
-						selectedChit={selectedChit}
-						setSelectedChit={setSelectedChit}
-					/>
+					<Grid class={gridStyleClass} />
 				</DataBattleContext.Provider>
 			</LayoutContainer>
 		</Window>
