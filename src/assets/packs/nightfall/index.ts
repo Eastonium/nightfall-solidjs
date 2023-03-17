@@ -9,6 +9,8 @@ import { enemyPrograms } from "./programs/enemyPrograms";
 
 import testLevel1 from "./levels/test_1";
 
+import textures from "./textures";
+
 const packId = "nightfall";
 const packConfig: PackConfig = {
 	id: packId,
@@ -34,6 +36,7 @@ const packConfig: PackConfig = {
 	],
 	programs: [...allyPrograms, ...enemyPrograms],
 	levels: [testLevel1],
+	textures,
 };
 const nightfallPackConfig = { [packId]: packConfig };
 export default nightfallPackConfig;

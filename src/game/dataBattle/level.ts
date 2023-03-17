@@ -23,14 +23,12 @@ export const processLevel = ({ styleKey, ...level }: LevelDefinition) => {
 
 	return {
 		...level,
-		solid: level.solid
-			.replaceAll(/\s+/g, "") // Strip whitespace
-			.split("")
-			.map((char) => char === "⬜"),
-		style: level.style
-			.replaceAll(/\s+/g, "") // Strip whitespace
-			.split("")
-			.map((char) => styleKey[char]),
+		solid: [
+			...level.solid.replaceAll(/\s+/g, ""), // Strip whitespace
+		].map((char) => char === "⬜"), // Spread string into array to avoid breaking emojis
+		style: [
+			...level.style.replaceAll(/\s+/g, ""), // Strip whitespace
+		].map((char) => styleKey[char]), // Spread string into array to avoid breaking emojis
 		chits: level.chits.map(({ id, pos, ...mods }): Chit => {
 			const config = findChitConfig(id);
 			if (!config)

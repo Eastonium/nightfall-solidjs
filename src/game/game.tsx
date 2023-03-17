@@ -13,31 +13,40 @@ export type PackConfig = {
 	chits: ChitConfig[];
 	programs: ProgramConfig[];
 	levels: LevelDefinition[];
+	textures: { [textureId: string]: string };
 };
 
 const gameConfig: { [key: string]: PackConfig } = { ...nightfallPackConfig };
 // export const registerPack = (packId: string, packConfig: PackConfig) => {
 // 	gameConfig[packId] = packConfig;
 // };
-export const findChitConfig = (id: string) => {
+export const getChitConfig = (id: string) => {
 	const [packId, chitId] = id.split(":");
-	return gameConfig[packId]?.chits?.find(chit => chit.id === chitId);
+	return gameConfig[packId]?.chits?.find((chit) => chit.id === chitId);
 };
-export const findProgramConfig = (id: string) => {
+export const getProgramConfig = (id: string) => {
 	const [packId, programId] = id.split(":");
-	return gameConfig[packId]?.programs?.find(program => program.id === programId);
+	return gameConfig[packId]?.programs?.find(
+		(program) => program.id === programId
+	);
+};
+export const getTexture = (id: string) => {
+	const [packId, textureId] = id.split(":");
+	return gameConfig[packId]?.textures?.[textureId];
 };
 
 export const Game = () => {
 	// Some sort of thing here to track which levels are open
-	
+
 	return (
 		<>
 			<GlobalStyles />
 			<Map />
 			<WindowsContainer coverScreen>
 				<DataBattle
-					level={processLevel(nightfallPackConfig.nightfall.levels[0])}
+					level={processLevel(
+						nightfallPackConfig.nightfall.levels[0]
+					)}
 					x={30 + 10 * 1}
 					y={30 + 10 * 1}
 				/>

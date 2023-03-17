@@ -1,16 +1,4 @@
-import {
-	batch,
-	For,
-	Index,
-	JSX,
-	Show,
-	splitProps,
-} from "solid-js";
-
-import moveNorthIcon from "../../../assets/packs/nightfall/textures/grid/targets/move_north.png";
-import moveSouthIcon from "../../../assets/packs/nightfall/textures/grid/targets/move_south.png";
-import moveEastIcon from "../../../assets/packs/nightfall/textures/grid/targets/move_east.png";
-import moveWestIcon from "../../../assets/packs/nightfall/textures/grid/targets/move_west.png";
+import { batch, For, Index, JSX, Show, splitProps } from "solid-js";
 
 import { useDataBattle } from "../index";
 import { NSEW, Position } from "./position";
@@ -19,10 +7,10 @@ import {
 	Segment,
 	SegmentClipPath,
 	CellSelectionIndicator,
-	Tile,
 } from "./segment";
 import { Chit as IChit } from "../chit";
 import { isProgram, Program as IProgram } from "../program";
+import { getTexture } from "game/game";
 
 interface GridProps extends JSX.HTMLAttributes<HTMLDivElement> {}
 export const Grid = (props: GridProps) => {
@@ -52,9 +40,16 @@ export const Grid = (props: GridProps) => {
 					<Index each={level.solid}>
 						{(isSolid, sectorIndex) => (
 							<Show when={isSolid()} keyed>
-								<Tile
-									column={sectorIndex % level.width}
-									row={Math.floor(sectorIndex / level.width)}
+								<image
+									x={
+										(sectorIndex % level.width) *
+										gridUnitSize
+									}
+									y={
+										Math.floor(sectorIndex / level.width) *
+										gridUnitSize
+									}
+									href={getTexture(level.style[sectorIndex])}
 								/>
 							</Show>
 						)}
@@ -99,14 +94,14 @@ export const Grid = (props: GridProps) => {
 										<image
 											x={pos.column * gridUnitSize}
 											y={pos.row * gridUnitSize}
-											href={
+											href={getTexture(
 												[
-													moveNorthIcon,
-													moveSouthIcon,
-													moveEastIcon,
-													moveWestIcon,
+													"nightfall:moveNorth",
+													"nightfall:moveSouth",
+													"nightfall:moveEast",
+													"nightfall:moveWest",
 												][nsewI()]
-											}
+											)}
 											onClick={() => {
 												batch(() => {
 													setLevel(

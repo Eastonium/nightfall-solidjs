@@ -1,3 +1,4 @@
+import { getTexture } from "game/game";
 import { createContext, Show, splitProps, useContext } from "solid-js";
 import { createStore } from "solid-js/store";
 import { css, styled } from "solid-styled-components";
@@ -8,8 +9,6 @@ import { Window, WindowProps } from "ui/atoms/window";
 import { ChitInfo } from "./chitInfo";
 import { Grid } from "./grid";
 import type { Level, Selection } from "./level";
-
-import spybotImage from "assets/packs/nightfall/textures/spybots/Snaptrax S45.png";
 
 const DataBattleContext = createContext<
 	ReturnType<typeof createStore<Level & { selection: Selection }>> | undefined
@@ -46,7 +45,7 @@ export const DataBattle = (props: DataBattleProps) => {
 				<DataBattleContext.Provider value={levelStore}>
 					<Window title="spybot" sectioned>
 						<img
-							src={spybotImage}
+							src={getTexture("nightfall:snaptraxS45")}
 							alt="spybot"
 							style={{ display: "block" }}
 						/>

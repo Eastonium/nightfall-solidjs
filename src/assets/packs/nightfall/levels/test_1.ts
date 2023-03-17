@@ -31,8 +31,8 @@ const Test_Level_1: LevelDefinition = {
 		🟧🟧🟧🟧🟧🟧🟧🟧🟧🟧🟧🟧🟧🟧
 	`,
 	styleKey: {
-		"🟧": "tileA",
-		"🔲": "tileB",
+		"🟧": "nightfall:tile0",
+		"🔲": "nightfall:tile1",
 	},
 	chits: [
 		{ id: "nightfall:data_item", pos: [1, 2] },

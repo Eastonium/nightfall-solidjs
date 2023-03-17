@@ -1,7 +1,6 @@
 import { shade } from "polished";
 
-// import { DataBattleIdContext } from "game/dataBattle";
-import { mergeProps, useContext } from "solid-js";
+import { mergeProps } from "solid-js";
 import { css, keyframes } from "solid-styled-components";
 
 export const gridUnitSize = 32;
@@ -28,13 +27,19 @@ export const Segment = (props: SegmentProps) => {
 
 	const shadeColor = shade(0.5, p.color);
 	return (
-		<g transform={`translate(${p.column * gridUnitSize} ${p.row * gridUnitSize})`}>
+		<g
+			transform={`translate(${p.column * gridUnitSize} ${
+				p.row * gridUnitSize
+			})`}
+		>
 			{p.connectRight && (
 				<path
 					fill="none"
 					stroke={shadeColor}
 					stroke-width={connectorWidth}
-					d={`M${connectorOffset},${connectorOffset + depth}h${gridUnitSize}`}
+					d={`M${connectorOffset},${
+						connectorOffset + depth
+					}h${gridUnitSize}`}
 				/>
 			)}
 			{p.connectDown && (
@@ -42,7 +47,9 @@ export const Segment = (props: SegmentProps) => {
 					fill="none"
 					stroke={shadeColor}
 					stroke-width={connectorWidth}
-					d={`M${connectorOffset + depth},${connectorOffset}v${gridUnitSize}`}
+					d={`M${
+						connectorOffset + depth
+					},${connectorOffset}v${gridUnitSize}`}
 				/>
 			)}
 			<path
@@ -69,8 +76,18 @@ export const Segment = (props: SegmentProps) => {
 				/>
 			)}
 			<g clip-path={`url(#segment-clipPath-${"square"})`}>
-				<rect x={0} y={0} width={gridUnitSize} height={gridUnitSize} fill={p.color} />
-				<image href={p.icon ?? undefined} x={iconOffset} y={iconOffset} />
+				<rect
+					x={0}
+					y={0}
+					width={gridUnitSize}
+					height={gridUnitSize}
+					fill={p.color}
+				/>
+				<image
+					href={p.icon ?? undefined}
+					x={iconOffset}
+					y={iconOffset}
+				/>
 			</g>
 		</g>
 	);
@@ -79,7 +96,12 @@ export const Segment = (props: SegmentProps) => {
 export const SegmentClipPath = () => {
 	return (
 		<clipPath id={`segment-clipPath-${"square"}`}>
-			<rect x={shapeOffset} y={shapeOffset} width={shapeSize} height={shapeSize} />
+			<rect
+				x={shapeOffset}
+				y={shapeOffset}
+				width={shapeSize}
+				height={shapeSize}
+			/>
 		</clipPath>
 	);
 };
@@ -88,7 +110,9 @@ interface CellSelectionIndicatorProps extends PositionProps {}
 export const CellSelectionIndicator = (p: CellSelectionIndicatorProps) => (
 	<rect
 		class={selectionIndicatorStyles}
-		transform={`translate(${p.column * gridUnitSize} ${p.row * gridUnitSize})`}
+		transform={`translate(${p.column * gridUnitSize} ${
+			p.row * gridUnitSize
+		})`}
 		x={1}
 		y={1}
 		width={gridUnitSize - 2}
@@ -101,18 +125,3 @@ const selectionIndicatorStyles = css`
 	stroke-width: 2;
 	animation: 530ms infinite ${keyframes`to { stroke: transparent; }`};
 `;
-
-interface TileProps extends PositionProps {
-	fill?: string;
-}
-export const Tile = (p: TileProps) => (
-	<rect
-		transform={`translate(${p.column * gridUnitSize} ${p.row * gridUnitSize})`}
-		x={2}
-		y={2}
-		width={gridUnitSize - 4}
-		height={gridUnitSize - 4}
-		fill={p.fill ?? "#0006"}
-	/>
-);
-
