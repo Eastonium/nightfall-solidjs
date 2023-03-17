@@ -1,0 +1,13 @@
+<!-- Create map reference for chits and programs -->
+<!-- Convert stored data to a data store instead of individual signals -->
+<!-- Check if the store is mutating -->
+<!-- Stop using classes -->
+<!-- Get a program to move -->
+<!-- Get a program to move based on clicking arrows -->
+<!-- Get selection to be accessible from entire databattle -->
+
+<!-- Get StyleKey stuff on level to work -->
+<!-- Get tiles to appear in their style -->
+<!-- Get random textures working but not directly imported -->
+
+<!-- Figure out why context is undefined when I update a file -->

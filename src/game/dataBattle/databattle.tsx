@@ -10,9 +10,10 @@ import { ChitInfo } from "./chitInfo";
 import { Grid } from "./grid";
 import type { Level, Selection } from "./level";
 
-const DataBattleContext = createContext<
-	ReturnType<typeof createStore<Level & { selection: Selection }>> | undefined
->();
+export const DataBattleContext =
+	createContext<
+		ReturnType<typeof createStore<Level & { selection: Selection }>>
+	>();
 export const useDataBattle = () => {
 	const dataBattle = useContext(DataBattleContext);
 	if (!dataBattle)
