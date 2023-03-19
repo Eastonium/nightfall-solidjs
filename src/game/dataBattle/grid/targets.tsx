@@ -1,39 +1,93 @@
-/** @jsxImportSource @emotion/react */
-// import { css } from "@emotion/react";
-export default null;
-// const Targets = (position: Position, type, cellTrueEmptyState, distance: number) => {};
+import { getTexture } from "game/game";
+import { batch, For, Show } from "solid-js";
+import { useDataBattle } from "../databattle";
+import { Command, isProgram, Program } from "../program";
+import { gridUnitSize } from "./segment";
+import { floodFindPositions } from "./utils";
 
-// function floodFillScanline(startX: number, startY: number, newColor, oldColor) {
-// 	if (oldColor === newColor) return;
+export const Targets = () => {
+	const [level, setLevel] = useDataBattle();
 
-// 	let x, spanAbove, spanBelow;
+	const programSelection = (): null | {
+		program: Program;
+		command: Command | null;
+	} => {
+		if (!level.selection || !isProgram(level.selection.chit)) return null;
+		return {
+			program: level.selection.chit,
+			command: level.selection.command,
+		};
+	};
 
-// 	const arr = [startX, startY];
-// 	while (arr.length) {
-// 		const y = arr.pop();
-
-// 		while (x >= 0 && screenBuffer[x + y * w] === oldColor) x--;
-// 		x++;
-// 		spanAbove = spanBelow = false;
-
-// 		while (x < w && screenBuffer[x + y * w] === oldColor) {
-// 			screenBuffer[y * w + x] = newColor;
-
-// 			if (!spanAbove && y > 0 && screenBuffer[x + (y - 1) * w] === oldColor) {
-// 				arr.push(x, y - 1);
-// 				spanAbove = true;
-// 			} else if (spanAbove && y > 0 && screenBuffer[x + (y - 1) * w] !== oldColor) {
-// 				spanAbove = false;
-// 			}
-
-// 			if (!spanBelow && y < h - 1 && screenBuffer[x + (y + 1) * w] === oldColor) {
-// 				arr.push(x, y + 1);
-// 				spanBelow = true;
-// 			} else if (spanBelow && y < h - 1 && screenBuffer[x + (y + 1) * w] !== oldColor) {
-// 				spanBelow = false;
-// 			}
-
-// 			x++;
-// 		}
-// 	}
-// }
+	return (
+		<Show when={programSelection()} keyed>
+			{({ program, command }) => (
+				<For
+					each={floodFindPositions(
+						program.slug[0],
+						(pos, dist) =>
+							dist <= (command?.range ?? program.speed) &&
+							level.solid[pos.sectorIndex] &&
+							(!level.mapPrograms[pos.sectorIndex] ||
+								level.mapPrograms[pos.sectorIndex] == program)
+					).slice(1)} // remove starting cell
+				>
+					{([sectorIndex, dist]) => {
+						const pos = program.slug[0].new(sectorIndex);
+						return (
+							<image
+								x={pos.column * gridUnitSize}
+								y={pos.row * gridUnitSize}
+								href={getTexture(
+									sectorIndex ==
+										program.slug[0].sectorIndex + 1
+										? "nightfall:moveEast"
+										: sectorIndex ==
+										  program.slug[0].sectorIndex - 1
+										? "nightfall:moveWest"
+										: sectorIndex ==
+										  program.slug[0].sectorIndex -
+												program.slug[0].gridWidth
+										? "nightfall:moveNorth"
+										: sectorIndex ==
+										  program.slug[0].sectorIndex +
+												program.slug[0].gridWidth
+										? "nightfall:moveSouth"
+										: "nightfall:moveSpace"
+								)}
+								onClick={
+									dist === 1
+										? () => {
+												batch(() => {
+													setLevel(
+														"programs",
+														(p) =>
+															p.id === program.id,
+														"slug",
+														(slug) => [
+															pos,
+															...slug.filter(
+																(pos2) =>
+																	!pos2.equals(
+																		pos
+																	)
+															),
+														]
+													);
+													setLevel(
+														"mapPrograms",
+														pos.sectorIndex,
+														program
+													);
+												});
+										  }
+										: undefined
+								}
+							/>
+						);
+					}}
+				</For>
+			)}
+		</Show>
+	);
+};

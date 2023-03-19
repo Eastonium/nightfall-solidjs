@@ -1,5 +1,5 @@
 import { getTexture } from "game/game";
-import { createContext, Show, splitProps, useContext } from "solid-js";
+import { createContext, createEffect, on, Show, splitProps, useContext } from "solid-js";
 import { createStore } from "solid-js/store";
 import { css, styled } from "solid-styled-components";
 
@@ -34,6 +34,7 @@ export const DataBattle = (props: DataBattleProps) => {
 			selection: null,
 		})
 	);
+	createEffect(() => levelStore[1]("selection", { chit: levelStore[0].programs[4], command: null }));
 
 	return (
 		<Window

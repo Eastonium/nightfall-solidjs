@@ -5,7 +5,7 @@ export class Position {
 	column: number;
 
 	constructor(
-		pos: [number, number] | number,
+		pos: [number, number] | number, // [x,y] pair or sectorIndex
 		gridWidth: number,
 		gridHeight: number
 	) {
@@ -36,6 +36,10 @@ export class Position {
 		}
 		return this.column + this.row * this.gridWidth;
 	}
+	set sectorIndex(sectorIndex: number) {
+		this.column = sectorIndex % this.gridWidth;
+		this.row = Math.floor(sectorIndex / this.gridWidth);
+	}
 
 	offset = (xOffset: number, yOffset: number) => {
 		this.column += xOffset;
@@ -53,6 +57,11 @@ export class Position {
 			this.gridWidth,
 			this.gridHeight
 		).offset(xOffset, yOffset);
+	new = (sectorIndex: number) => {
+		const pos = this.clone();
+		pos.sectorIndex = sectorIndex;
+		return pos;
+	};
 
 	static compare(
 		positionA: Position,
@@ -66,9 +75,3 @@ export class Position {
 		);
 	}
 }
-
-const North = [0, -1] as const;
-const South = [0, 1] as const;
-const East = [1, 0] as const;
-const West = [-1, 0] as const;
-export const NSEW: (readonly [number, number])[] = [North, South, East, West];

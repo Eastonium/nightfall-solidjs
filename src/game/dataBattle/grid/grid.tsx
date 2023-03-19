@@ -1,7 +1,7 @@
 import { batch, For, Index, JSX, Show, splitProps } from "solid-js";
 
 import { useDataBattle } from "../index";
-import { NSEW, Position } from "./position";
+import { Position } from "./position";
 import {
 	gridUnitSize,
 	Segment,
@@ -11,6 +11,7 @@ import {
 import { Chit as IChit } from "../chit";
 import { isProgram, Program as IProgram } from "../program";
 import { getTexture } from "game/game";
+import { Targets } from "./targets";
 
 interface GridProps extends JSX.HTMLAttributes<HTMLDivElement> {}
 export const Grid = (props: GridProps) => {
@@ -23,11 +24,6 @@ export const Grid = (props: GridProps) => {
 		return isProgram(selectedChit)
 			? selectedChit.slug[0]
 			: selectedChit.pos;
-	};
-	const selectedProgram = () => {
-		const selectedChit = level.selection?.chit;
-		if (!selectedChit) return null;
-		return isProgram(selectedChit) ? selectedChit : null;
 	};
 
 	return (
@@ -75,56 +71,7 @@ export const Grid = (props: GridProps) => {
 						/>
 					)}
 				</Show>
-				<Show when={selectedProgram()} keyed>
-					{(program) => (
-						<For
-							each={NSEW.map((offset) =>
-								program.slug[0].clone(...offset)
-							)}
-						>
-							{(pos, nsewI) => {
-								return (
-									<Show
-										when={
-											pos.isValid() &&
-											level.solid[pos.sectorIndex] &&
-											!level.mapPrograms[pos.sectorIndex]
-										}
-									>
-										<image
-											x={pos.column * gridUnitSize}
-											y={pos.row * gridUnitSize}
-											href={getTexture(
-												[
-													"nightfall:moveNorth",
-													"nightfall:moveSouth",
-													"nightfall:moveEast",
-													"nightfall:moveWest",
-												][nsewI()]
-											)}
-											onClick={() => {
-												batch(() => {
-													setLevel(
-														"programs",
-														(p) =>
-															p.id === program.id,
-														"slug",
-														(slug) => [pos, ...slug]
-													);
-													setLevel(
-														"mapPrograms",
-														pos.sectorIndex,
-														program
-													);
-												});
-											}}
-										/>
-									</Show>
-								);
-							}}
-						</For>
-					)}
-				</Show>
+				<Targets />
 			</svg>
 		</div>
 	);
