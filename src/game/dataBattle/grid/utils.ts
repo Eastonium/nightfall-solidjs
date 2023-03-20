@@ -9,8 +9,8 @@ export function floodFindPositions(
 	let pos = startPos.clone(), // current position being tested
 		dist = 0, // current distance from starting position
 		reverse: boolean, // check going backwards
-		spanAbove: boolean,
-		spanBelow: boolean;
+		spanAbove: boolean, // trackers to see if we need to check above/below
+		spanBelow: boolean; // true means don't check, already will be handled
 	const stack: [cellI: number, dist: number][] = []; // working positions to test
 	const positions: [cellI: number, dist: number][] = []; // final positions to return
 	const shouldExpand = (pos: Position, dist: number) =>
@@ -23,14 +23,7 @@ export function floodFindPositions(
 	while (stack.length) {
 		[pos.sectorIndex, dist] = stack[0]; // don't shift() off now, will need again later
 
-		// check initial above and below cells
-		pos.offset(0, -1); // switch to above cell for tests
-		if (shouldExpand(pos, dist + 1)) stack.push([pos.sectorIndex, dist + 1]);
-		pos.offset(0, 2); // switch from above to below cell for tests
-		if (shouldExpand(pos, dist + 1)) stack.push([pos.sectorIndex, dist + 1]);
-		pos.offset(0, -1); // restore position
-
-		reverse = spanAbove = spanBelow = true; // 1st above/below is handled, assume span to start
+		reverse = spanAbove = spanBelow = false;
 
 		while (true) {
 			positions.push([pos.sectorIndex, dist]);
@@ -53,11 +46,16 @@ export function floodFindPositions(
 
 			// go no further, check if need to reverse
 			if (!shouldExpand(pos, dist)) {
-				if (!reverse) break; // end since we start going in reverse and its already going forward
-				reverse = !reverse;
-
+				if (reverse) break; // end since it's already reversed
+				reverse = !reverse; // reverse it
 				[pos.sectorIndex, dist] = stack[0]; // grab starting cell data again
-				pos.offset(1, 0), dist++; // move to next cell in row on forward side
+
+				// check initial position's above and below cells
+				pos.offset(0, -1); // switch to above cell for test
+				spanAbove = shouldExpand(pos, dist + 1);
+				pos.offset(0, 2); // switch from above to below cell for test
+				spanBelow = shouldExpand(pos, dist + 1);
+				pos.offset(-1, -1), dist++; // restore position and move to next cell in row on forward side
 				if (!shouldExpand(pos, dist)) break; // can't go forward here, end this row
 			}
 		}
