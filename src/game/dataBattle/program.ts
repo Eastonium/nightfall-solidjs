@@ -2,12 +2,14 @@ import { Chit } from "./chit";
 import { Position } from "./grid/position";
 
 type Target = "void" | "vacant" | "enemy" | "ally" | "self";
+type EffectType = "harm" | "heal" | "other";
 
 export type Command = {
 	name: string;
 	desc: string;
 	range: number;
 	targets: Target[];
+	effectType: EffectType;
 	usable?: (self: Program) => boolean;
 	effect: (target: Program, self: Program, tile: any) => void;
 };

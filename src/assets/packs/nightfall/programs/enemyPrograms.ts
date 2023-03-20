@@ -33,6 +33,7 @@ export const enemyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 1,
 				targets: ["enemy"],
+				effectType: "harm",
 				effect: target => {
 					target.harm(2);
 				},
@@ -53,6 +54,7 @@ export const enemyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 1,
 				targets: ["enemy"],
+				effectType: "harm",
 				effect: target => {
 					target.harm(2);
 				},
@@ -73,6 +75,7 @@ export const enemyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 1,
 				targets: ["enemy"],
+				effectType: "harm",
 				effect: target => {
 					target.harm(4);
 				},
@@ -93,6 +96,7 @@ export const enemyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 2,
 				targets: ["enemy"],
+				effectType: "harm",
 				effect: target => {
 					target.harm(2);
 				},
@@ -113,6 +117,7 @@ export const enemyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 2,
 				targets: ["enemy"],
+				effectType: "harm",
 				effect: target => {
 					target.harm(2);
 				},
@@ -133,6 +138,7 @@ export const enemyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 3,
 				targets: ["enemy"],
+				effectType: "harm",
 				effect: target => {
 					target.harm(2);
 				},
@@ -153,6 +159,7 @@ export const enemyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 1,
 				targets: ["enemy"],
+				effectType: "harm",
 				effect: target => {
 					target.harm(2);
 				},
@@ -173,6 +180,7 @@ export const enemyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 1,
 				targets: ["enemy"],
+				effectType: "harm",
 				effect: target => {
 					target.harm(2);
 				},
@@ -193,6 +201,7 @@ export const enemyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 1,
 				targets: ["enemy"],
+				effectType: "harm",
 				effect: target => {
 					target.harm(3);
 				},
@@ -213,6 +222,7 @@ export const enemyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 1,
 				targets: ["enemy"],
+				effectType: "harm",
 				effect: target => {
 					target.harm(3);
 				},
@@ -233,6 +243,7 @@ export const enemyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 1,
 				targets: ["enemy"],
+				effectType: "harm",
 				effect: target => {
 					target.harm(5);
 				},
@@ -253,6 +264,7 @@ export const enemyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 1,
 				targets: ["enemy"],
+				effectType: "harm",
 				effect: target => {
 					target.harm(7);
 				},
@@ -273,6 +285,7 @@ export const enemyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 5,
 				targets: ["enemy"],
+				effectType: "harm",
 				effect: target => {
 					target.harm(1);
 				},
@@ -293,6 +306,7 @@ export const enemyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 5,
 				targets: ["enemy"],
+				effectType: "harm",
 				effect: target => {
 					target.harm(2);
 				},
@@ -313,6 +327,7 @@ export const enemyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 8,
 				targets: ["enemy"],
+				effectType: "harm",
 				effect: target => {
 					target.harm(1);
 				},
@@ -333,6 +348,7 @@ export const enemyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 1,
 				targets: ["enemy"],
+				effectType: "harm",
 				effect: target => {
 					target.harm(1);
 				},
@@ -353,6 +369,7 @@ export const enemyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 5,
 				targets: ["enemy"],
+				effectType: "harm",
 				effect: target => {
 					target.harm(5);
 				},

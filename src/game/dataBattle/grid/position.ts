@@ -26,15 +26,7 @@ export class Position {
 	}
 
 	get sectorIndex() {
-		if (
-			this.column < 0 ||
-			this.column >= this.gridWidth ||
-			this.row < 0 ||
-			this.row >= this.gridHeight
-		) {
-			return NaN;
-		}
-		return this.column + this.row * this.gridWidth;
+		return this.isValid() ? this.column + this.row * this.gridWidth : NaN;
 	}
 	set sectorIndex(sectorIndex: number) {
 		this.column = sectorIndex % this.gridWidth;
@@ -47,7 +39,11 @@ export class Position {
 		return this;
 	};
 
-	isValid = () => !isNaN(this.sectorIndex);
+	isValid = () =>
+		this.column >= 0 &&
+		this.column < this.gridWidth &&
+		this.row >= 0 &&
+		this.row < this.gridHeight;
 	equals = (position: Position) =>
 		this === position ||
 		(this.column === position.column && this.row === position.row);

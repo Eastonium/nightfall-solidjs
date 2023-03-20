@@ -1,43 +1,43 @@
 import { ProgramConfig } from "game/dataBattle/program";
 
-import hack1Icon from '../textures/grid/programs/hack_1.png';
-import hack2Icon from '../textures/grid/programs/hack_2.png';
-import hack3Icon from '../textures/grid/programs/hack_3.png';
-import slingshotIcon from '../textures/grid/programs/slingshot.png';
-import seeker1Icon from '../textures/grid/programs/seeker_1.png';
-import seeker2Icon from '../textures/grid/programs/seeker_2.png';
-import seeker3Icon from '../textures/grid/programs/seeker_3.png';
-import bug1Icon from '../textures/grid/programs/bug_1.png';
-import bug2Icon from '../textures/grid/programs/bug_2.png';
-import bug3Icon from '../textures/grid/programs/bug_3.png';
-import dataDoctor1Icon from '../textures/grid/programs/data_doctor_1.png';
-import medicIcon from '../textures/grid/programs/medic.png';
-import dataDoctor2Icon from '../textures/grid/programs/data_doctor_2.png';
-import bitManIcon from '../textures/grid/programs/bit_man.png';
-import clog1Icon from '../textures/grid/programs/clog_1.png';
-import clog2Icon from '../textures/grid/programs/clog_2.png';
-import clog3Icon from '../textures/grid/programs/clog_3.png';
-import golem1Icon from '../textures/grid/programs/golem_1.png';
-import golem2Icon from '../textures/grid/programs/golem_2.png';
-import golem3Icon from '../textures/grid/programs/golem_3.png';
-import spider1Icon from '../textures/grid/programs/spider_1.png';
-import spider2Icon from '../textures/grid/programs/spider_2.png';
-import spider3Icon from '../textures/grid/programs/spider_3.png';
-import tower1Icon from '../textures/grid/programs/tower_1.png';
-import tower2Icon from '../textures/grid/programs/tower_2.png';
-import turbo1Icon from '../textures/grid/programs/turbo_1.png';
-import turbo2Icon from '../textures/grid/programs/turbo_2.png';
-import bomb1Icon from '../textures/grid/programs/bomb_1.png';
-import bomb2Icon from '../textures/grid/programs/bomb_2.png';
-import fiddleIcon from '../textures/grid/programs/fiddle.png';
-import satellite1Icon from '../textures/grid/programs/satellite_1.png';
-import satellite2Icon from '../textures/grid/programs/satellite_2.png';
-import fling1Icon from '../textures/grid/programs/fling_1.png';
-import fling2Icon from '../textures/grid/programs/fling_2.png';
-import memoryHogIcon from '../textures/grid/programs/memory_hog.png';
-import wizardIcon from '../textures/grid/programs/wizard.png';
-import sumoIcon from '../textures/grid/programs/sumo.png';
-import guruIcon from '../textures/grid/programs/guru.png';
+import hack1Icon from "../textures/grid/programs/hack_1.png";
+import hack2Icon from "../textures/grid/programs/hack_2.png";
+import hack3Icon from "../textures/grid/programs/hack_3.png";
+import slingshotIcon from "../textures/grid/programs/slingshot.png";
+import seeker1Icon from "../textures/grid/programs/seeker_1.png";
+import seeker2Icon from "../textures/grid/programs/seeker_2.png";
+import seeker3Icon from "../textures/grid/programs/seeker_3.png";
+import bug1Icon from "../textures/grid/programs/bug_1.png";
+import bug2Icon from "../textures/grid/programs/bug_2.png";
+import bug3Icon from "../textures/grid/programs/bug_3.png";
+import dataDoctor1Icon from "../textures/grid/programs/data_doctor_1.png";
+import medicIcon from "../textures/grid/programs/medic.png";
+import dataDoctor2Icon from "../textures/grid/programs/data_doctor_2.png";
+import bitManIcon from "../textures/grid/programs/bit_man.png";
+import clog1Icon from "../textures/grid/programs/clog_1.png";
+import clog2Icon from "../textures/grid/programs/clog_2.png";
+import clog3Icon from "../textures/grid/programs/clog_3.png";
+import golem1Icon from "../textures/grid/programs/golem_1.png";
+import golem2Icon from "../textures/grid/programs/golem_2.png";
+import golem3Icon from "../textures/grid/programs/golem_3.png";
+import spider1Icon from "../textures/grid/programs/spider_1.png";
+import spider2Icon from "../textures/grid/programs/spider_2.png";
+import spider3Icon from "../textures/grid/programs/spider_3.png";
+import tower1Icon from "../textures/grid/programs/tower_1.png";
+import tower2Icon from "../textures/grid/programs/tower_2.png";
+import turbo1Icon from "../textures/grid/programs/turbo_1.png";
+import turbo2Icon from "../textures/grid/programs/turbo_2.png";
+import bomb1Icon from "../textures/grid/programs/bomb_1.png";
+import bomb2Icon from "../textures/grid/programs/bomb_2.png";
+import fiddleIcon from "../textures/grid/programs/fiddle.png";
+import satellite1Icon from "../textures/grid/programs/satellite_1.png";
+import satellite2Icon from "../textures/grid/programs/satellite_2.png";
+import fling1Icon from "../textures/grid/programs/fling_1.png";
+import fling2Icon from "../textures/grid/programs/fling_2.png";
+import memoryHogIcon from "../textures/grid/programs/memory_hog.png";
+import wizardIcon from "../textures/grid/programs/wizard.png";
+import sumoIcon from "../textures/grid/programs/sumo.png";
+import guruIcon from "../textures/grid/programs/guru.png";
 
 export const allyPrograms: ProgramConfig[] = [
 	{
@@ -54,7 +54,8 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 1,
 				targets: ["enemy"],
-				effect: target => {
+				effectType: "harm",
+				effect: (target) => {
 					target.harm(2);
 				},
 			},
@@ -74,7 +75,8 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 1,
 				targets: ["enemy"],
-				effect: target => {
+				effectType: "harm",
+				effect: (target) => {
 					target.harm(2);
 				},
 			},
@@ -83,8 +85,9 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 1,
 				targets: ["enemy"],
-				usable: self => self.slug.length >= 3,
-				effect: target => {
+				usable: (self) => self.slug.length >= 3,
+				effectType: "harm",
+				effect: (target) => {
 					target.harm(3);
 				},
 			},
@@ -104,7 +107,8 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 1,
 				targets: ["enemy"],
-				effect: target => {
+				effectType: "harm",
+				effect: (target) => {
 					target.harm(2);
 				},
 			},
@@ -113,8 +117,9 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 1,
 				targets: ["enemy"],
-				usable: self => self.slug.length >= 4,
-				effect: target => {
+				usable: (self) => self.slug.length >= 4,
+				effectType: "harm",
+				effect: (target) => {
 					target.harm(4);
 				},
 			},
@@ -134,7 +139,8 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 3,
 				targets: ["enemy"],
-				effect: target => {
+				effectType: "harm",
+				effect: (target) => {
 					target.harm(1);
 				},
 			},
@@ -154,7 +160,8 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 2,
 				targets: ["enemy"],
-				effect: target => {
+				effectType: "harm",
+				effect: (target) => {
 					target.harm(2);
 				},
 			},
@@ -174,7 +181,8 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 3,
 				targets: ["enemy"],
-				effect: target => {
+				effectType: "harm",
+				effect: (target) => {
 					target.harm(2);
 				},
 			},
@@ -194,7 +202,8 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 3,
 				targets: ["enemy"],
-				effect: target => {
+				effectType: "harm",
+				effect: (target) => {
 					target.harm(2);
 				},
 			},
@@ -203,7 +212,8 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 2,
 				targets: ["enemy"],
-				usable: self => self.slug.length >= 5,
+				usable: (self) => self.slug.length >= 5,
+				effectType: "harm",
 				effect: (target, self) => {
 					target.harm(5);
 					self.harm(2);
@@ -225,7 +235,8 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 1,
 				targets: ["enemy"],
-				effect: target => {
+				effectType: "harm",
+				effect: (target) => {
 					target.harm(2);
 				},
 			},
@@ -245,7 +256,8 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 1,
 				targets: ["enemy"],
-				effect: target => {
+				effectType: "harm",
+				effect: (target) => {
 					target.harm(4);
 				},
 			},
@@ -265,7 +277,8 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 1,
 				targets: ["enemy"],
-				effect: target => {
+				effectType: "harm",
+				effect: (target) => {
 					target.harm(6);
 				},
 			},
@@ -285,7 +298,8 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 1,
 				targets: ["enemy", "ally"],
-				effect: target => {
+				effectType: "heal",
+				effect: (target) => {
 					target.heal(2);
 				},
 			},
@@ -305,7 +319,8 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 3,
 				targets: ["enemy", "ally"],
-				effect: target => {
+				effectType: "heal",
+				effect: (target) => {
 					target.heal(2);
 				},
 			},
@@ -325,7 +340,8 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 1,
 				targets: ["enemy", "ally"],
-				effect: target => {
+				effectType: "heal",
+				effect: (target) => {
 					target.heal(4);
 				},
 			},
@@ -334,7 +350,8 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 1,
 				targets: ["enemy", "ally"],
-				effect: target => {
+				effectType: "other",
+				effect: (target) => {
 					target.maxSize++;
 				},
 			},
@@ -354,6 +371,7 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 1,
 				targets: ["vacant"],
+				effectType: "other",
 				effect: (_target, _self, tile) => (tile.void = true),
 			},
 			{
@@ -361,6 +379,7 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 1,
 				targets: ["void"],
+				effectType: "other",
 				effect: (_target, _self, tile) => (tile.void = false),
 			},
 		],
@@ -379,7 +398,8 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 3,
 				targets: ["enemy", "ally"],
-				effect: target => {
+				effectType: "other",
+				effect: (target) => {
 					target.speed--;
 				},
 			},
@@ -399,7 +419,8 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 3,
 				targets: ["enemy", "ally"],
-				effect: target => {
+				effectType: "other",
+				effect: (target) => {
 					target.speed -= 2;
 				},
 			},
@@ -419,7 +440,8 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 3,
 				targets: ["enemy", "ally"],
-				usable: self => self.slug.length >= 1,
+				effectType: "other",
+				usable: (self) => self.slug.length >= 1,
 				effect: (target, self) => {
 					target.speed -= 2;
 				},
@@ -429,8 +451,9 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 3,
 				targets: ["enemy", "ally"],
-				usable: self => self.slug.length >= 4,
-				effect: target => {
+				effectType: "other",
+				usable: (self) => self.slug.length >= 4,
+				effect: (target) => {
 					target.speed = 0;
 				},
 			},
@@ -450,7 +473,8 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 1,
 				targets: ["enemy"],
-				effect: target => {
+				effectType: "harm",
+				effect: (target) => {
 					target.harm(3);
 				},
 			},
@@ -470,7 +494,8 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 1,
 				targets: ["enemy"],
-				effect: target => {
+				effectType: "harm",
+				effect: (target) => {
 					target.harm(5);
 				},
 			},
@@ -490,7 +515,8 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 1,
 				targets: ["enemy"],
-				effect: target => {
+				effectType: "harm",
+				effect: (target) => {
 					target.harm(7);
 				},
 			},
@@ -510,7 +536,8 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 1,
 				targets: ["enemy"],
-				effect: target => {
+				effectType: "harm",
+				effect: (target) => {
 					target.harm(2);
 				},
 			},
@@ -530,7 +557,8 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 1,
 				targets: ["enemy"],
-				effect: target => {
+				effectType: "harm",
+				effect: (target) => {
 					target.harm(2);
 				},
 			},
@@ -539,7 +567,8 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 1,
 				targets: ["enemy"],
-				effect: target => {
+				effectType: "other",
+				effect: (target) => {
 					target.speed -= 3;
 				},
 			},
@@ -559,7 +588,8 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 1,
 				targets: ["enemy"],
-				effect: target => {
+				effectType: "harm",
+				effect: (target) => {
 					target.harm(3);
 				},
 			},
@@ -568,7 +598,8 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 1,
 				targets: ["enemy"],
-				effect: target => {
+				effectType: "other",
+				effect: (target) => {
 					target.speed -= 3;
 				},
 			},
@@ -588,7 +619,8 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 3,
 				targets: ["enemy"],
-				effect: target => {
+				effectType: "harm",
+				effect: (target) => {
 					target.harm(3);
 				},
 			},
@@ -608,7 +640,8 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 3,
 				targets: ["enemy"],
-				effect: target => {
+				effectType: "harm",
+				effect: (target) => {
 					target.harm(3);
 				},
 			},
@@ -628,6 +661,7 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 1,
 				targets: ["enemy", "ally"],
+				effectType: "other",
 				effect: (target, self) => {
 					target.speed++;
 					self.harm(1);
@@ -649,7 +683,8 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 2,
 				targets: ["enemy", "ally"],
-				usable: self => self.slug.length >= 3,
+				effectType: "other",
+				usable: (self) => self.slug.length >= 3,
 				effect: (target, self) => {
 					target.speed += 2;
 					self.harm(2);
@@ -671,7 +706,8 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 1,
 				targets: ["enemy", "ally"],
-				effect: target => {
+				effectType: "harm",
+				effect: (target) => {
 					target.harm(1);
 				},
 			},
@@ -680,6 +716,7 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 1,
 				targets: ["enemy", "ally"],
+				effectType: "harm",
 				effect: (target, self) => {
 					target.harm(5);
 					self.harm(self.slug.length);
@@ -701,7 +738,8 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 1,
 				targets: ["enemy", "ally"],
-				usable: self => self.slug.length >= 6,
+				usable: (self) => self.slug.length >= 6,
+				effectType: "harm",
 				effect: (target, self) => {
 					target.harm(10);
 					self.harm(self.slug.length);
@@ -723,6 +761,7 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 1,
 				targets: ["enemy", "ally"],
+				effectType: "other",
 				effect: (target, self) => {
 					target.speed++;
 					self.harm(1);
@@ -733,6 +772,7 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 1,
 				targets: ["enemy", "ally"],
+				effectType: "other",
 				effect: (target, self) => {
 					target.maxSize++;
 					self.harm(1);
@@ -754,7 +794,8 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 2,
 				targets: ["enemy"],
-				effect: target => {
+				effectType: "harm",
+				effect: (target) => {
 					target.harm(4);
 				},
 			},
@@ -774,7 +815,8 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 3,
 				targets: ["enemy"],
-				effect: target => {
+				effectType: "harm",
+				effect: (target) => {
 					target.harm(4);
 				},
 			},
@@ -794,7 +836,8 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 4,
 				targets: ["enemy"],
-				effect: target => {
+				effectType: "harm",
+				effect: (target) => {
 					target.harm(2);
 				},
 			},
@@ -814,7 +857,8 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 4,
 				targets: ["enemy"],
-				effect: target => {
+				effectType: "harm",
+				effect: (target) => {
 					target.harm(2);
 				},
 			},
@@ -844,7 +888,8 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 3,
 				targets: ["enemy"],
-				effect: target => {
+				effectType: "harm",
+				effect: (target) => {
 					target.harm(2);
 				},
 			},
@@ -853,7 +898,8 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 2,
 				targets: ["enemy", "ally"],
-				effect: target => {
+				effectType: "other",
+				effect: (target) => {
 					target.maxSize++;
 				},
 			},
@@ -873,8 +919,9 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 1,
 				targets: ["enemy"],
-				usable: self => self.slug.length >= 6,
-				effect: target => {
+				usable: (self) => self.slug.length >= 6,
+				effectType: "harm",
+				effect: (target) => {
 					target.harm(8);
 				},
 			},
@@ -894,7 +941,8 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 2,
 				targets: ["enemy"],
-				effect: target => {
+				effectType: "harm",
+				effect: (target) => {
 					target.harm(4);
 				},
 			},
@@ -903,7 +951,8 @@ export const allyPrograms: ProgramConfig[] = [
 				desc: "TODO",
 				range: 2,
 				targets: ["enemy"],
-				effect: target => {
+				effectType: "other",
+				effect: (target) => {
 					target.speed -= 3;
 				},
 			},

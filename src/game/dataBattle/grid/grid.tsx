@@ -9,7 +9,7 @@ import {
 	CellSelectionIndicator,
 } from "./segment";
 import { Chit as IChit } from "../chit";
-import { isProgram, Program as IProgram } from "../program";
+import { Command, isProgram, Program as IProgram } from "../program";
 import { getTexture } from "game/game";
 import { Targets } from "./targets";
 
@@ -24,6 +24,17 @@ export const Grid = (props: GridProps) => {
 		return isProgram(selectedChit)
 			? selectedChit.slug[0]
 			: selectedChit.pos;
+	};
+
+	const programSelection = (): null | {
+		program: IProgram;
+		command: Command | null;
+	} => {
+		if (!level.selection || !isProgram(level.selection.chit)) return null;
+		return {
+			program: level.selection.chit,
+			command: level.selection.command,
+		};
 	};
 
 	return (
@@ -71,7 +82,11 @@ export const Grid = (props: GridProps) => {
 						/>
 					)}
 				</Show>
-				<Targets />
+				<g>
+					<Show when={programSelection()} keyed>
+						{Targets}
+					</Show>
+				</g>
 			</svg>
 		</div>
 	);
