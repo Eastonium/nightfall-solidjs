@@ -1,6 +1,5 @@
 import { For, Index, JSX, Show, splitProps } from "solid-js";
 
-import { useDataBattle } from "../index";
 import { Position } from "./position";
 import {
 	gridUnitSize,
@@ -12,14 +11,15 @@ import { Chit as IChit } from "../chit";
 import { Command, isProgram, Program as IProgram } from "../program";
 import { getTexture } from "game/game";
 import { Targets } from "./targets";
+import { useDataBattle } from "../store";
 
 interface GridProps extends JSX.HTMLAttributes<HTMLDivElement> {}
 export const Grid = (props: GridProps) => {
 	const [p, gridProps] = splitProps(props, []);
-	const [level, setLevel] = useDataBattle();
+	const [dataBattle] = useDataBattle();
 
 	const selectedChitPosition = () => {
-		const selectedChit = level.selection?.chit;
+		const selectedChit = dataBattle.selection?.chit;
 		if (!selectedChit) return null;
 		return isProgram(selectedChit)
 			? selectedChit.slug[0]
@@ -30,46 +30,50 @@ export const Grid = (props: GridProps) => {
 		program: IProgram;
 		command: Command | null;
 	} => {
-		if (!level.selection || !isProgram(level.selection.chit)) return null;
+		if (!dataBattle.selection || !isProgram(dataBattle.selection.chit))
+			return null;
 		return {
-			program: level.selection.chit,
-			command: level.selection.command,
+			program: dataBattle.selection.chit,
+			command: dataBattle.selection.command,
 		};
 	};
 
 	return (
 		<div {...gridProps}>
 			<svg
-				width={level.width * gridUnitSize}
-				height={level.height * gridUnitSize}
+				width={dataBattle.width * gridUnitSize}
+				height={dataBattle.height * gridUnitSize}
 			>
 				<g>
-					<Index each={level.solid}>
+					<Index each={dataBattle.solid}>
 						{(isSolid, sectorIndex) =>
 							isSolid() && ( // TODO: Make sure this isn't broken when I add BitMan
 								<image
 									x={
-										(sectorIndex % level.width) *
+										(sectorIndex % dataBattle.width) *
 										gridUnitSize
 									}
 									y={
-										Math.floor(sectorIndex / level.width) *
-										gridUnitSize
+										Math.floor(
+											sectorIndex / dataBattle.width
+										) * gridUnitSize
 									}
-									href={getTexture(level.style[sectorIndex])}
+									href={getTexture(
+										dataBattle.style[sectorIndex]
+									)}
 								/>
 							)
 						}
 					</Index>
 				</g>
 				<g>
-					<For each={level.chits}>
+					<For each={dataBattle.chits}>
 						{(chit) => <Chit chit={chit} />}
 					</For>
 				</g>
 				<SegmentClipPath />
 				<g>
-					<For each={level.programs}>
+					<For each={dataBattle.programs}>
 						{(program) => <Program program={program} />}
 					</For>
 				</g>
@@ -96,7 +100,7 @@ interface ChitProps {
 	chit: IChit;
 }
 const Chit = (p: ChitProps) => {
-	const [, setLevel] = useDataBattle();
+	const [, { setSelection }] = useDataBattle();
 	const { column, row } = p.chit.pos;
 
 	return (
@@ -104,9 +108,7 @@ const Chit = (p: ChitProps) => {
 			x={column * gridUnitSize}
 			y={row * gridUnitSize}
 			href={p.chit.icon}
-			onClick={() =>
-				setLevel("selection", { chit: p.chit, command: null })
-			}
+			onClick={() => setSelection({ chit: p.chit, command: null })}
 		/>
 	);
 };
@@ -115,15 +117,11 @@ interface ProgramProps {
 	program: IProgram;
 }
 const Program = (p: ProgramProps) => {
-	const [, setLevel] = useDataBattle();
+	const [, { setSelection }] = useDataBattle();
 	const sortedSlug = () => [...p.program.slug].sort(Position.compare);
 
 	return (
-		<g
-			onClick={() =>
-				setLevel("selection", { chit: p.program, command: null })
-			}
-		>
+		<g onClick={() => setSelection({ chit: p.program, command: null })}>
 			<For each={sortedSlug()}>
 				{(pos) => {
 					const { column, row } = pos;

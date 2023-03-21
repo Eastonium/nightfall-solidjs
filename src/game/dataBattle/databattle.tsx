@@ -1,6 +1,5 @@
 import { getTexture } from "game/game";
-import { createContext, createEffect, on, Show, splitProps, useContext } from "solid-js";
-import { createStore } from "solid-js/store";
+import { createEffect, Show, splitProps } from "solid-js";
 import { css, styled } from "solid-styled-components";
 
 import { Button } from "ui/atoms/button";
@@ -8,20 +7,8 @@ import { Window, WindowProps } from "ui/atoms/window";
 
 import { ChitInfo } from "./chitInfo";
 import { Grid } from "./grid";
-import type { Level, Selection } from "./level";
-
-export const DataBattleContext =
-	createContext<
-		ReturnType<typeof createStore<Level & { selection: Selection }>>
-	>();
-export const useDataBattle = () => {
-	const dataBattle = useContext(DataBattleContext);
-	if (!dataBattle)
-		throw Error(
-			"useDataBattle must be used with a DataBattleContext provider"
-		);
-	return dataBattle;
-};
+import type { Level } from "./level";
+import { createDataBattleStore, DataBattleContext } from "./store";
 
 interface DataBattleProps extends WindowProps {
 	level: Level;
@@ -29,12 +16,7 @@ interface DataBattleProps extends WindowProps {
 export const DataBattle = (props: DataBattleProps) => {
 	const [p, windowProps] = splitProps(props, ["level"]);
 
-	const levelStore = createStore(
-		Object.assign<Level, { selection: Selection }>(p.level, {
-			selection: null,
-		})
-	);
-	createEffect(() => levelStore[1]("selection", { chit: levelStore[0].programs[4], command: null }));
+	const dataBattleStore = createDataBattleStore(p.level);
 
 	return (
 		<Window
@@ -44,7 +26,7 @@ export const DataBattle = (props: DataBattleProps) => {
 			{...windowProps}
 		>
 			<LayoutContainer>
-				<DataBattleContext.Provider value={levelStore}>
+				<DataBattleContext.Provider value={dataBattleStore}>
 					<Window title="spybot" sectioned>
 						<img
 							src={getTexture("nightfall:snaptraxS45")}
@@ -62,7 +44,7 @@ export const DataBattle = (props: DataBattleProps) => {
 							</Button>
 						}
 					>
-						<Show when={levelStore[0].selection} keyed>
+						<Show when={dataBattleStore[0].selection} keyed>
 							{(selection) => <ChitInfo selection={selection} />}
 						</Show>
 					</Window>

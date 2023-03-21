@@ -1,7 +1,7 @@
 import { getTexture } from "game/game";
-import { batch, For, JSX } from "solid-js";
-import { useDataBattle } from "../databattle";
+import { For, JSX } from "solid-js";
 import { Command, Program } from "../program";
+import { useDataBattle } from "../store";
 import { Position } from "./position";
 import { gridUnitSize } from "./segment";
 import { floodFindPositions } from "./utils";
@@ -11,7 +11,7 @@ interface TargetProps {
 	command: Command | null;
 }
 export const Targets = (p: TargetProps) => {
-	const [level, setLevel] = useDataBattle();
+	const [databattle, { moveProgram }] = useDataBattle();
 
 	const targetPositions = () => {
 		if (p.command) {
@@ -24,9 +24,9 @@ export const Targets = (p: TargetProps) => {
 				p.program.slug[0],
 				(pos, dist) =>
 					dist <= p.program.speed &&
-					level.solid[pos.sectorIndex] &&
-					(!level.mapPrograms[pos.sectorIndex] ||
-						level.mapPrograms[pos.sectorIndex] == p.program)
+					databattle.solid[pos.sectorIndex] &&
+					(!databattle.mapPrograms[pos.sectorIndex] ||
+						databattle.mapPrograms[pos.sectorIndex] == p.program)
 			).slice(1); // remove starting cell
 		}
 	};
@@ -43,13 +43,15 @@ export const Targets = (p: TargetProps) => {
 					? "nightfall:targetGreen"
 					: "nightfall:targetCyan";
 
-			const programTarget = level.mapPrograms[pos.sectorIndex];
+			const programTarget = databattle.mapPrograms[pos.sectorIndex];
 			if (
 				(p.command.usable?.call(p.program) ?? true) &&
 				p.command.targets.find(
 					(target) =>
-						(target === "void" && !level.solid[pos.sectorIndex]) ||
-						(target === "solid" && level.solid[pos.sectorIndex]) ||
+						(target === "void" &&
+							!databattle.solid[pos.sectorIndex]) ||
+						(target === "solid" &&
+							databattle.solid[pos.sectorIndex]) ||
 						(programTarget &&
 							((target === "enemy" &&
 								programTarget.team !== p.program.team) ||
@@ -76,20 +78,7 @@ export const Targets = (p: TargetProps) => {
 							p.program.slug[0].gridWidth
 					? "nightfall:moveNorth"
 					: "nightfall:moveSouth";
-			props.onClick = () => {
-				batch(() => {
-					setLevel(
-						"programs",
-						(program) => program.id === p.program.id,
-						"slug",
-						(slug) => [
-							pos,
-							...slug.filter((pos2) => !pos2.equals(pos)),
-						]
-					);
-					setLevel("mapPrograms", pos.sectorIndex, p.program);
-				});
-			};
+			props.onClick = () => moveProgram(p.program, pos);
 			props.style = "cursor: pointer";
 		} else {
 			props.style = "opacity: 0.7; pointer-events: none";

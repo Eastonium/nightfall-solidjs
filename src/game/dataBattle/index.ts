@@ -1,1 +1,1 @@
-export { DataBattle, useDataBattle } from "./databattle";
+export { DataBattle } from "./databattle";

@@ -4,14 +4,14 @@ import { Fonts } from "ui/fonts";
 import { Segment, gridUnitSize } from "./grid/segment";
 import { isProgram } from "./program";
 import { css, styled } from "solid-styled-components";
-import { useDataBattle } from "./databattle";
 import { Selection } from "./level";
+import { useDataBattle } from "./store";
 
 interface ChitInfoProps {
 	selection: NonNullable<Selection>;
 }
 export const ChitInfo = (p: ChitInfoProps) => {
-	const [, setLevel] = useDataBattle();
+	const [, { setSelection }] = useDataBattle();
 
 	const programCommands = () =>
 		isProgram(p.selection.chit) ? p.selection.chit.commands : null;
@@ -45,38 +45,39 @@ export const ChitInfo = (p: ChitInfoProps) => {
 			</BasicInfoContainer>
 			<span class={h1StyleClass}>{p.selection.chit.name}</span>
 			<span class={pStyleClass}>{p.selection.chit.desc}</span>
-			{isProgram(p.selection.chit) && (
-				<>
-					<span class={h2StyleClass}>Commands</span>
-					<CommandContainer>
-						<For each={programCommands()}>
-							{(command) => (
-								<button
-									onClick={() =>
-										setLevel(
-											"selection",
-											"command",
-											command
-										)
-									}
-								>
-									{command.name}
-								</button>
+			<Show when={isProgram(p.selection.chit) && p.selection.chit} keyed>
+				{(program) => (
+					<>
+						<span class={h2StyleClass}>Commands</span>
+						<CommandContainer>
+							<For each={programCommands()}>
+								{(command) => (
+									<button
+										onClick={() =>
+											setSelection({
+												chit: program,
+												command,
+											})
+										}
+									>
+										{command.name}
+									</button>
+								)}
+							</For>
+						</CommandContainer>
+						<Show when={p.selection.command} keyed>
+							{(selectedCommand) => (
+								<span class={pStyleClass}>
+									{selectedCommand.name}:
+									<br />
+									{selectedCommand.desc ||
+										"<Command description not found>"}
+								</span>
 							)}
-						</For>
-					</CommandContainer>
-					<Show when={p.selection.command} keyed>
-						{(selectedCommand) => (
-							<span class={pStyleClass}>
-								{selectedCommand.name}:
-								<br />
-								{selectedCommand.desc ||
-									"<Command description not found>"}
-							</span>
-						)}
-					</Show>
-				</>
-			)}
+						</Show>
+					</>
+				)}
+			</Show>
 		</ChitInfoContainer>
 	);
 };
