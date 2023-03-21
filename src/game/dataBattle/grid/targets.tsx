@@ -24,10 +24,12 @@ export const Targets = (p: TargetProps) => {
 			return floodFindPositions(
 				p.program.slug[0],
 				(pos, dist) =>
-					dist <= p.program.speed &&
-					databattle.solid[pos.sectorIndex] &&
-					(!databattle.mapPrograms[pos.sectorIndex] ||
-						databattle.mapPrograms[pos.sectorIndex] == p.program)
+					dist === 0 || // ensure a program can still move if head cell is no longer solid
+					(dist <= p.program.speed &&
+						databattle.solid[pos.sectorIndex] &&
+						(!databattle.mapPrograms[pos.sectorIndex] ||
+							databattle.mapPrograms[pos.sectorIndex] ==
+								p.program))
 			).slice(1); // remove starting cell
 		}
 	};
@@ -57,13 +59,19 @@ export const Targets = (p: TargetProps) => {
 							((target === "enemy" &&
 								programTarget.team !== p.program.team) ||
 								(target === "ally" &&
+									programTarget !== p.program && // prevent ally from meaning self
 									programTarget.team === p.program.team) ||
 								(target === "self" &&
 									programTarget === p.program)))
 				)
 			) {
 				props.onClick = () =>
-					p.command!.effect.call(p.program, pos, programTarget, actions);
+					p.command!.effect.call(
+						p.program,
+						pos,
+						programTarget,
+						actions
+					);
 				props.style = { cursor: "pointer" };
 			} else {
 				props.style = { opacity: 0.4, "pointer-events": "none" };

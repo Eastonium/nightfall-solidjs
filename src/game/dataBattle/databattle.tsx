@@ -1,5 +1,5 @@
 import { getTexture } from "game/game";
-import { createEffect, Show, splitProps } from "solid-js";
+import { Show, splitProps } from "solid-js";
 import { css, styled } from "solid-styled-components";
 
 import { Button } from "ui/atoms/button";
@@ -49,8 +49,8 @@ export const DataBattle = (props: DataBattleProps) => {
 						</Show>
 					</Window>
 					{/* <Button bold wrapperProps={{ class: beginButtonStyleClass }}>
-					Begin Databattle
-				</Button> */}
+						Begin Databattle
+					</Button> */}
 					<Grid class={gridStyleClass} />
 				</DataBattleContext.Provider>
 			</LayoutContainer>

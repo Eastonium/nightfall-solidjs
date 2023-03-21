@@ -1,8 +1,8 @@
-import { createContext, useContext } from "solid-js";
+import { createContext, createEffect, useContext } from "solid-js";
 import { createStore, produce } from "solid-js/store";
 import { Position } from "./grid/position";
 import { Level, Selection } from "./level";
-import { Command, Program } from "./program";
+import { Command, isProgram, Program } from "./program";
 
 type DataBattle = Level & { selection: Selection };
 export type Actions = ReturnType<typeof createDataBattleStore>[1];
@@ -24,6 +24,18 @@ export const createDataBattleStore = (level: Level) => {
 		...level,
 		selection: null,
 	});
+
+	// clear selection if selected program dies
+	createEffect(() => {
+		if (
+			dataBattle.selection &&
+			isProgram(dataBattle.selection.chit) &&
+			dataBattle.selection.chit.slug.length === 0
+		) {
+			setDataBattle("selection", null);
+		}
+	});
+
 	const actions = {
 		setSelection(selection: Selection) {
 			setDataBattle("selection", selection);
@@ -71,6 +83,18 @@ export const createDataBattleStore = (level: Level) => {
 			);
 		},
 		// healProgram This is gonna suck
+		modProgram(
+			program: Program,
+			property: "speed" | "maxSize",
+			mutator: (current: number) => number
+		) {
+			setDataBattle(
+				"programs",
+				(program2) => program2.id === program.id,
+				property,
+				mutator
+			);
+		},
 		toggleSolid(pos: Position) {
 			setDataBattle("solid", pos.sectorIndex, (solid) => !solid);
 		},

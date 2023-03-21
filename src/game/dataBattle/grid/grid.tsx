@@ -30,7 +30,11 @@ export const Grid = (gridProps: GridProps) => {
 		program: IProgram;
 		command: Command | null;
 	} => {
-		if (!dataBattle.selection || !isProgram(dataBattle.selection.chit))
+		if (
+			!dataBattle.selection ||
+			!isProgram(dataBattle.selection.chit) ||
+			dataBattle.selection.chit.slug.length === 0 // for when program deletes itself
+		)
 			return null;
 		return {
 			program: dataBattle.selection.chit,

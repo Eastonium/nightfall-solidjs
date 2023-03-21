@@ -357,8 +357,8 @@ export const allyPrograms: ProgramConfig[] = [
 				range: 1,
 				targets: ["enemy", "ally"],
 				effectType: "other",
-				effect(_, target, {}) { // TODO:
-					target.maxSize++;
+				effect(_, target, { modProgram }) {
+					modProgram(target!, "maxSize", (maxSize) => maxSize + 1);
 				},
 			},
 		],
@@ -409,8 +409,8 @@ export const allyPrograms: ProgramConfig[] = [
 				range: 3,
 				targets: ["enemy", "ally"],
 				effectType: "other",
-				effect(_, target, {}) { // TODO:
-					target.speed--;
+				effect(_, target, { modProgram }) {
+					modProgram(target!, "speed", (speed) => speed - 1);
 				},
 			},
 		],
@@ -430,8 +430,8 @@ export const allyPrograms: ProgramConfig[] = [
 				range: 3,
 				targets: ["enemy", "ally"],
 				effectType: "other",
-				effect(_, target, {}) { // TODO:
-					target.speed -= 2;
+				effect(_, target, { modProgram }) {
+					modProgram(target!, "speed", (speed) => speed - 2);
 				},
 			},
 		],
@@ -454,8 +454,8 @@ export const allyPrograms: ProgramConfig[] = [
 				usable() {
 					return this.slug.length >= 1;
 				},
-				effect(_, target, {}) { // TODO:
-					target.speed -= 2;
+				effect(_, target, { modProgram }) {
+					modProgram(target!, "speed", (speed) => speed - 2);
 				},
 			},
 			{
@@ -467,8 +467,8 @@ export const allyPrograms: ProgramConfig[] = [
 				usable() {
 					return this.slug.length >= 4;
 				},
-				effect(_, target, {}) { // TODO:
-					target.speed = 0;
+				effect(_, target, { modProgram }) {
+					modProgram(target!, "speed", () => 0);
 				},
 			},
 		],
@@ -582,8 +582,8 @@ export const allyPrograms: ProgramConfig[] = [
 				range: 1,
 				targets: ["enemy"],
 				effectType: "other",
-				effect(_, target, {}) { // TODO:
-					target.speed -= 3;
+				effect(_, target, { modProgram }) {
+					modProgram(target!, "speed", (speed) => speed - 3);
 				},
 			},
 		],
@@ -613,8 +613,8 @@ export const allyPrograms: ProgramConfig[] = [
 				range: 1,
 				targets: ["enemy"],
 				effectType: "other",
-				effect(_, target, {}) { // TODO:
-					target.speed -= 3;
+				effect(_, target, { modProgram }) {
+					modProgram(target!, "speed", (speed) => speed - 3);
 				},
 			},
 		],
@@ -676,8 +676,8 @@ export const allyPrograms: ProgramConfig[] = [
 				range: 1,
 				targets: ["enemy", "ally"],
 				effectType: "other",
-				effect(_, target, { harmProgram }) {
-					target.speed++;
+				effect(_, target, { harmProgram, modProgram }) {
+					modProgram(target!, "speed", (speed) => speed + 1);
 					harmProgram(this, 1);
 				},
 			},
@@ -701,8 +701,8 @@ export const allyPrograms: ProgramConfig[] = [
 				usable() {
 					return this.slug.length >= 3;
 				},
-				effect(_, target, { harmProgram }) {
-					target.speed += 2;
+				effect(_, target, { harmProgram, modProgram }) {
+					modProgram(target!, "speed", (speed) => speed + 2);
 					harmProgram(this, 2);
 				},
 			},
@@ -780,8 +780,8 @@ export const allyPrograms: ProgramConfig[] = [
 				range: 1,
 				targets: ["enemy", "ally"],
 				effectType: "other",
-				effect(_, target, { harmProgram }) {
-					target.speed++;
+				effect(_, target, { harmProgram, modProgram }) {
+					modProgram(target!, "speed", (speed) => speed + 1);
 					harmProgram(this, 1);
 				},
 			},
@@ -791,8 +791,8 @@ export const allyPrograms: ProgramConfig[] = [
 				range: 1,
 				targets: ["enemy", "ally"],
 				effectType: "other",
-				effect(_, target, { harmProgram }) {
-					target.maxSize++;
+				effect(_, target, { harmProgram, modProgram }) {
+					modProgram(target!, "maxSize", (maxSize) => maxSize + 1);
 					harmProgram(this, 1);
 				},
 			},
@@ -917,8 +917,8 @@ export const allyPrograms: ProgramConfig[] = [
 				range: 2,
 				targets: ["enemy", "ally"],
 				effectType: "other",
-				effect(_, target, {}) { // TODO:
-					target.maxSize++;
+				effect(_, target, { modProgram }) {
+					modProgram(target!, "maxSize", (maxSize) => maxSize + 1);
 				},
 			},
 		],
@@ -972,8 +972,8 @@ export const allyPrograms: ProgramConfig[] = [
 				range: 2,
 				targets: ["enemy"],
 				effectType: "other",
-				effect(_, target, {}) { // TODO:
-					target.speed -= 3;
+				effect(_, target, { modProgram }) {
+					modProgram(target!, "speed", (speed) => speed - 3);
 				},
 			},
 		],
