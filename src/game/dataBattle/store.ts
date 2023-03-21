@@ -82,7 +82,55 @@ export const createDataBattleStore = (level: Level) => {
 				})
 			);
 		},
-		// healProgram This is gonna suck
+		healProgram(program: Program, amount: number) {
+			setDataBattle(
+				produce((dataBattle) => {
+					const program2 = dataBattle.programs.find(
+						(program2) => program2.id === program.id
+					)!;
+					const possiblePositions: number[] = [];
+					const grabAround = (slugPos: Position) => {
+						[
+							[0, -1],
+							[-1, 0],
+							[1, 0],
+							[0, 1],
+						].forEach((offset) => {
+							const { sectorIndex } = slugPos.clone(...offset);
+							if (
+								dataBattle.solid[sectorIndex] &&
+								!dataBattle.mapPrograms[sectorIndex] &&
+								!possiblePositions.includes(sectorIndex)
+							) {
+								possiblePositions.push(sectorIndex);
+							}
+						});
+					};
+					program2.slug.forEach(grabAround);
+
+					for (let i = 0; i < amount; i++) {
+						if (
+							!possiblePositions.length ||
+							program2.slug.length >= program2.maxSize
+						) {
+							break;
+						}
+						const randomPos = program2.slug[0].new(
+							possiblePositions.splice(
+								Math.floor(
+									Math.random() * possiblePositions.length
+								),
+								1
+							)[0]
+						);
+						program2.slug.push(randomPos);
+						dataBattle.mapPrograms[randomPos.sectorIndex] =
+							program2;
+						grabAround(randomPos);
+					}
+				})
+			);
+		},
 		modProgram(
 			program: Program,
 			property: "speed" | "maxSize",

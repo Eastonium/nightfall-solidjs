@@ -10,6 +10,7 @@
 <!-- Have targets respect their target prop -->
 <!-- Setup actions instead of directly modifying level data -->
 <!-- Get most commands to work -->
+<!-- Get heal command to work -->
 
 <!-- Get StyleKey stuff on level to work -->
 <!-- Get tiles to appear in their style -->

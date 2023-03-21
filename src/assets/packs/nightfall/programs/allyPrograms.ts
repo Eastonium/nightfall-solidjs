@@ -303,10 +303,10 @@ export const allyPrograms: ProgramConfig[] = [
 				name: "Grow",
 				desc: "TODO",
 				range: 1,
-				targets: ["enemy", "ally"],
+				targets: ["ally"],
 				effectType: "heal",
 				effect(_, target, { healProgram }) {
-					healProgram(target, 2);
+					healProgram(target!, 2);
 				},
 			},
 		],
@@ -324,10 +324,10 @@ export const allyPrograms: ProgramConfig[] = [
 				name: "Hypo",
 				desc: "TODO",
 				range: 3,
-				targets: ["enemy", "ally"],
+				targets: ["ally"],
 				effectType: "heal",
 				effect(_, target, { healProgram }) {
-					healProgram(target, 2);
+					healProgram(target!, 2);
 				},
 			},
 		],
@@ -345,10 +345,10 @@ export const allyPrograms: ProgramConfig[] = [
 				name: "Megagrow",
 				desc: "TODO",
 				range: 1,
-				targets: ["enemy", "ally"],
+				targets: ["ally"],
 				effectType: "heal",
 				effect(_, target, { healProgram }) {
-					healProgram(target, 4);
+					healProgram(target!, 4);
 				},
 			},
 			{
@@ -407,7 +407,7 @@ export const allyPrograms: ProgramConfig[] = [
 				name: "Lag",
 				desc: "TODO",
 				range: 3,
-				targets: ["enemy", "ally"],
+				targets: ["enemy"],
 				effectType: "other",
 				effect(_, target, { modProgram }) {
 					modProgram(target!, "speed", (speed) => speed - 1);
@@ -428,7 +428,7 @@ export const allyPrograms: ProgramConfig[] = [
 				name: "Chug",
 				desc: "TODO",
 				range: 3,
-				targets: ["enemy", "ally"],
+				targets: ["enemy"],
 				effectType: "other",
 				effect(_, target, { modProgram }) {
 					modProgram(target!, "speed", (speed) => speed - 2);
@@ -449,7 +449,7 @@ export const allyPrograms: ProgramConfig[] = [
 				name: "Chug",
 				desc: "TODO",
 				range: 3,
-				targets: ["enemy", "ally"],
+				targets: ["enemy"],
 				effectType: "other",
 				usable() {
 					return this.slug.length >= 1;
@@ -462,7 +462,7 @@ export const allyPrograms: ProgramConfig[] = [
 				name: "Hang",
 				desc: "TODO",
 				range: 3,
-				targets: ["enemy", "ally"],
+				targets: ["enemy"],
 				effectType: "other",
 				usable() {
 					return this.slug.length >= 4;
@@ -674,7 +674,7 @@ export const allyPrograms: ProgramConfig[] = [
 				name: "Boost",
 				desc: "TODO",
 				range: 1,
-				targets: ["enemy", "ally"],
+				targets: ["ally"],
 				effectType: "other",
 				effect(_, target, { harmProgram, modProgram }) {
 					modProgram(target!, "speed", (speed) => speed + 1);
@@ -696,7 +696,7 @@ export const allyPrograms: ProgramConfig[] = [
 				name: "Megaboost",
 				desc: "TODO",
 				range: 2,
-				targets: ["enemy", "ally"],
+				targets: ["ally"],
 				effectType: "other",
 				usable() {
 					return this.slug.length >= 3;
@@ -721,7 +721,7 @@ export const allyPrograms: ProgramConfig[] = [
 				name: "Sting",
 				desc: "TODO",
 				range: 1,
-				targets: ["enemy", "ally"],
+				targets: ["enemy"],
 				effectType: "harm",
 				effect(_, target, { harmProgram }) {
 					harmProgram(target!, 1);
@@ -731,7 +731,7 @@ export const allyPrograms: ProgramConfig[] = [
 				name: "Kamikazee",
 				desc: "TODO",
 				range: 1,
-				targets: ["enemy", "ally"],
+				targets: ["enemy"],
 				effectType: "harm",
 				effect(_, target, { harmProgram }) {
 					harmProgram(target!, 5);
@@ -753,7 +753,7 @@ export const allyPrograms: ProgramConfig[] = [
 				name: "Selfdestruct",
 				desc: "TODO",
 				range: 1,
-				targets: ["enemy", "ally"],
+				targets: ["enemy"],
 				usable() {
 					return this.slug.length >= 6;
 				},
@@ -778,7 +778,7 @@ export const allyPrograms: ProgramConfig[] = [
 				name: "Tweak",
 				desc: "TODO",
 				range: 1,
-				targets: ["enemy", "ally"],
+				targets: ["ally"],
 				effectType: "other",
 				effect(_, target, { harmProgram, modProgram }) {
 					modProgram(target!, "speed", (speed) => speed + 1);
@@ -789,7 +789,7 @@ export const allyPrograms: ProgramConfig[] = [
 				name: "Twiddle",
 				desc: "TODO",
 				range: 1,
-				targets: ["enemy", "ally"],
+				targets: ["ally"],
 				effectType: "other",
 				effect(_, target, { harmProgram, modProgram }) {
 					modProgram(target!, "maxSize", (maxSize) => maxSize + 1);
@@ -915,7 +915,7 @@ export const allyPrograms: ProgramConfig[] = [
 				name: "Stretch",
 				desc: "TODO",
 				range: 2,
-				targets: ["enemy", "ally"],
+				targets: ["ally"],
 				effectType: "other",
 				effect(_, target, { modProgram }) {
 					modProgram(target!, "maxSize", (maxSize) => maxSize + 1);

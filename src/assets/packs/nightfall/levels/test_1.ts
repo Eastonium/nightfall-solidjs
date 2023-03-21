@@ -45,7 +45,7 @@ const Test_Level_1: LevelDefinition = {
 	],
 	programs: [
 		{
-			id: "nightfall:dog_2",
+			id: "nightfall:data_doctor_1",
 			slug: [
 				[3, 1],
 				[3, 2],
