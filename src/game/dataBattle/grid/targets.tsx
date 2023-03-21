@@ -11,7 +11,8 @@ interface TargetProps {
 	command: Command | null;
 }
 export const Targets = (p: TargetProps) => {
-	const [databattle, { moveProgram }] = useDataBattle();
+	const [databattle, actions] = useDataBattle();
+	const { moveProgram } = actions;
 
 	const targetPositions = () => {
 		if (p.command) {
@@ -62,10 +63,10 @@ export const Targets = (p: TargetProps) => {
 				)
 			) {
 				props.onClick = () =>
-					p.command!.effect.call(p.program, pos, programTarget);
-				props.style = "cursor: pointer";
+					p.command!.effect.call(p.program, pos, programTarget, actions);
+				props.style = { cursor: "pointer" };
 			} else {
-				props.style = "opacity: 0.4; pointer-events: none";
+				props.style = { opacity: 0.4, "pointer-events": "none" };
 			}
 		} else if (dist === 1) {
 			props.href =
@@ -79,9 +80,9 @@ export const Targets = (p: TargetProps) => {
 					? "nightfall:moveNorth"
 					: "nightfall:moveSouth";
 			props.onClick = () => moveProgram(p.program, pos);
-			props.style = "cursor: pointer";
+			props.style = { cursor: "pointer" };
 		} else {
-			props.style = "opacity: 0.7; pointer-events: none";
+			props.style = { opacity: 0.75, "pointer-events": "none" };
 		}
 		props.href = getTexture(props.href!);
 		return props;

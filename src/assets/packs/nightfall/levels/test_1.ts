@@ -55,9 +55,9 @@ const Test_Level_1: LevelDefinition = {
 			team: 1,
 		},
 		{ id: "nightfall:dog_3", slug: [[2, 2]], team: 1 },
-		{ id: "nightfall:dog_2", slug: [[0, 3]], team: 1 },
+		{ id: "nightfall:slingshot", slug: [[0, 3]], team: 0 },
 		{ id: "nightfall:dog_2", slug: [[1, 4]], team: 1 },
-		{ id: "nightfall:dog_2", slug: [[2, 5]], team: 1 },
+		{ id: "nightfall:bit_man", slug: [[2, 5]], team: 0 },
 		{ id: "nightfall:dog_2", slug: [[1, 7]], team: 1 },
 	],
 };

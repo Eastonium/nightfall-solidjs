@@ -1,5 +1,6 @@
 import { Chit } from "./chit";
 import { Position } from "./grid/position";
+import { Actions } from "./store";
 
 type Target = "enemy" | "ally" | "self" | "void" | "solid";
 type EffectType = "harm" | "heal" | "other";
@@ -11,7 +12,12 @@ export type Command = {
 	targets: Target[];
 	effectType: EffectType;
 	usable?: (this: Program) => boolean;
-	effect: (this: Program, position: Position, target: Program | null) => void;
+	effect: (
+		this: Program,
+		position: Position,
+		target: Program | null,
+		actions: Actions
+	) => void;
 };
 
 interface ProgramBase {

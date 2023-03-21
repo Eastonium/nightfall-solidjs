@@ -14,8 +14,8 @@ import { Targets } from "./targets";
 import { useDataBattle } from "../store";
 
 interface GridProps extends JSX.HTMLAttributes<HTMLDivElement> {}
-export const Grid = (props: GridProps) => {
-	const [p, gridProps] = splitProps(props, []);
+export const Grid = (gridProps: GridProps) => {
+	// const [p, gridProps] = splitProps(props, []);
 	const [dataBattle] = useDataBattle();
 
 	const selectedChitPosition = () => {
@@ -46,8 +46,8 @@ export const Grid = (props: GridProps) => {
 			>
 				<g>
 					<Index each={dataBattle.solid}>
-						{(isSolid, sectorIndex) =>
-							isSolid() && ( // TODO: Make sure this isn't broken when I add BitMan
+						{(isSolid, sectorIndex) => (
+							<Show when={isSolid()} keyed>
 								<image
 									x={
 										(sectorIndex % dataBattle.width) *
@@ -62,8 +62,8 @@ export const Grid = (props: GridProps) => {
 										dataBattle.style[sectorIndex]
 									)}
 								/>
-							)
-						}
+							</Show>
+						)}
 					</Index>
 				</g>
 				<g>

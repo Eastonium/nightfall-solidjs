@@ -8,7 +8,8 @@
 <!-- Show what tiles are navigable to with speed -->
 <!-- Show different tiles depending on if and what kind of command is selected -->
 <!-- Have targets respect their target prop -->
-Setup actions instead of directly modifying level data
+<!-- Setup actions instead of directly modifying level data -->
+<!-- Get most commands to work -->
 
 <!-- Get StyleKey stuff on level to work -->
 <!-- Get tiles to appear in their style -->

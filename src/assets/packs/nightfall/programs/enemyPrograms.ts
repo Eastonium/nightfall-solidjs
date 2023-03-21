@@ -1,22 +1,22 @@
 import { ProgramConfig } from "game/dataBattle/program";
 
-import sentinel1Icon from '../textures/grid/programs/sentinel_1.png';
-import sentinel2Icon from '../textures/grid/programs/sentinel_2.png';
-import sentinel3Icon from '../textures/grid/programs/sentinel_3.png';
-import watchman1Icon from '../textures/grid/programs/watchman_1.png';
-import watchman2Icon from '../textures/grid/programs/watchman_2.png';
-import watchman3Icon from '../textures/grid/programs/watchman_3.png';
-import dog1Icon from '../textures/grid/programs/dog_1.png';
-import dog2Icon from '../textures/grid/programs/dog_2.png';
-import dog3Icon from '../textures/grid/programs/dog_3.png';
-import warden1Icon from '../textures/grid/programs/warden_1.png';
-import warden2Icon from '../textures/grid/programs/warden_2.png';
-import warden3Icon from '../textures/grid/programs/warden_3.png';
-import ping1Icon from '../textures/grid/programs/ping_1.png';
-import ping2Icon from '../textures/grid/programs/ping_2.png';
-import ping3Icon from '../textures/grid/programs/ping_3.png';
-import fireWallIcon from '../textures/grid/programs/fire_wall.png';
-import bossIcon from '../textures/grid/programs/boss.png';
+import sentinel1Icon from "../textures/grid/programs/sentinel_1.png";
+import sentinel2Icon from "../textures/grid/programs/sentinel_2.png";
+import sentinel3Icon from "../textures/grid/programs/sentinel_3.png";
+import watchman1Icon from "../textures/grid/programs/watchman_1.png";
+import watchman2Icon from "../textures/grid/programs/watchman_2.png";
+import watchman3Icon from "../textures/grid/programs/watchman_3.png";
+import dog1Icon from "../textures/grid/programs/dog_1.png";
+import dog2Icon from "../textures/grid/programs/dog_2.png";
+import dog3Icon from "../textures/grid/programs/dog_3.png";
+import warden1Icon from "../textures/grid/programs/warden_1.png";
+import warden2Icon from "../textures/grid/programs/warden_2.png";
+import warden3Icon from "../textures/grid/programs/warden_3.png";
+import ping1Icon from "../textures/grid/programs/ping_1.png";
+import ping2Icon from "../textures/grid/programs/ping_2.png";
+import ping3Icon from "../textures/grid/programs/ping_3.png";
+import fireWallIcon from "../textures/grid/programs/fire_wall.png";
+import bossIcon from "../textures/grid/programs/boss.png";
 
 export const enemyPrograms: ProgramConfig[] = [
 	{
@@ -34,9 +34,7 @@ export const enemyPrograms: ProgramConfig[] = [
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
-				effect: target => {
-					target.harm(2);
-				},
+				effect: (_, target, { harmProgram }) => harmProgram(target!, 2),
 			},
 		],
 	},
@@ -55,9 +53,7 @@ export const enemyPrograms: ProgramConfig[] = [
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
-				effect: target => {
-					target.harm(2);
-				},
+				effect(_, target, { harmProgram }) { harmProgram(target!, 2) },
 			},
 		],
 	},
@@ -76,9 +72,7 @@ export const enemyPrograms: ProgramConfig[] = [
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
-				effect: target => {
-					target.harm(4);
-				},
+				effect(_, target, { harmProgram }) { harmProgram(target!, 4) },
 			},
 		],
 	},
@@ -97,9 +91,7 @@ export const enemyPrograms: ProgramConfig[] = [
 				range: 2,
 				targets: ["enemy"],
 				effectType: "harm",
-				effect: target => {
-					target.harm(2);
-				},
+				effect(_, target, { harmProgram }) { harmProgram(target!, 2) },
 			},
 		],
 	},
@@ -118,9 +110,7 @@ export const enemyPrograms: ProgramConfig[] = [
 				range: 2,
 				targets: ["enemy"],
 				effectType: "harm",
-				effect: target => {
-					target.harm(2);
-				},
+				effect(_, target, { harmProgram }) { harmProgram(target!, 2) },
 			},
 		],
 	},
@@ -139,9 +129,7 @@ export const enemyPrograms: ProgramConfig[] = [
 				range: 3,
 				targets: ["enemy"],
 				effectType: "harm",
-				effect: target => {
-					target.harm(2);
-				},
+				effect(_, target, { harmProgram }) { harmProgram(target!, 2) },
 			},
 		],
 	},
@@ -160,9 +148,7 @@ export const enemyPrograms: ProgramConfig[] = [
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
-				effect: target => {
-					target.harm(2);
-				},
+				effect(_, target, { harmProgram }) { harmProgram(target!, 2) },
 			},
 		],
 	},
@@ -181,9 +167,7 @@ export const enemyPrograms: ProgramConfig[] = [
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
-				effect: target => {
-					target.harm(2);
-				},
+				effect(_, target, { harmProgram }) { harmProgram(target!, 2) },
 			},
 		],
 	},
@@ -202,9 +186,7 @@ export const enemyPrograms: ProgramConfig[] = [
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
-				effect: target => {
-					target.harm(3);
-				},
+				effect(_, target, { harmProgram }) { harmProgram(target!, 3) },
 			},
 		],
 	},
@@ -223,9 +205,7 @@ export const enemyPrograms: ProgramConfig[] = [
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
-				effect: target => {
-					target.harm(3);
-				},
+				effect(_, target, { harmProgram }) { harmProgram(target!, 3) },
 			},
 		],
 	},
@@ -244,9 +224,7 @@ export const enemyPrograms: ProgramConfig[] = [
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
-				effect: target => {
-					target.harm(5);
-				},
+				effect(_, target, { harmProgram }) { harmProgram(target!, 5) },
 			},
 		],
 	},
@@ -265,9 +243,7 @@ export const enemyPrograms: ProgramConfig[] = [
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
-				effect: target => {
-					target.harm(7);
-				},
+				effect(_, target, { harmProgram }) { harmProgram(target!, 7) },
 			},
 		],
 	},
@@ -286,9 +262,7 @@ export const enemyPrograms: ProgramConfig[] = [
 				range: 5,
 				targets: ["enemy"],
 				effectType: "harm",
-				effect: target => {
-					target.harm(1);
-				},
+				effect(_, target, { harmProgram }) { harmProgram(target!, 1) },
 			},
 		],
 	},
@@ -307,9 +281,7 @@ export const enemyPrograms: ProgramConfig[] = [
 				range: 5,
 				targets: ["enemy"],
 				effectType: "harm",
-				effect: target => {
-					target.harm(2);
-				},
+				effect(_, target, { harmProgram }) { harmProgram(target!, 2) },
 			},
 		],
 	},
@@ -328,9 +300,7 @@ export const enemyPrograms: ProgramConfig[] = [
 				range: 8,
 				targets: ["enemy"],
 				effectType: "harm",
-				effect: target => {
-					target.harm(1);
-				},
+				effect(_, target, { harmProgram }) { harmProgram(target!, 1) },
 			},
 		],
 	},
@@ -349,9 +319,7 @@ export const enemyPrograms: ProgramConfig[] = [
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
-				effect: target => {
-					target.harm(1);
-				},
+				effect(_, target, { harmProgram }) { harmProgram(target!, 1) },
 			},
 		],
 	},
@@ -370,9 +338,7 @@ export const enemyPrograms: ProgramConfig[] = [
 				range: 5,
 				targets: ["enemy"],
 				effectType: "harm",
-				effect: target => {
-					target.harm(5);
-				},
+				effect(_, target, { harmProgram }) { harmProgram(target!, 5) },
 			},
 		],
 	},

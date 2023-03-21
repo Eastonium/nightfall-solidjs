@@ -5,6 +5,7 @@ import { Level, Selection } from "./level";
 import { Command, Program } from "./program";
 
 type DataBattle = Level & { selection: Selection };
+export type Actions = ReturnType<typeof createDataBattleStore>[1];
 
 export const DataBattleContext =
 	createContext<ReturnType<typeof createDataBattleStore>>();
@@ -24,13 +25,13 @@ export const createDataBattleStore = (level: Level) => {
 		selection: null,
 	});
 	const actions = {
-		setSelection: (selection: Selection) => {
+		setSelection(selection: Selection) {
 			setDataBattle("selection", selection);
 		},
-		setSelectedCommand: (command: Command) => {
+		setSelectedCommand(command: Command) {
 			setDataBattle("selection", "command", command);
 		},
-		moveProgram: (program: Program, pos: Position) => {
+		moveProgram(program: Program, pos: Position) {
 			setDataBattle(
 				produce((dataBattle) => {
 					const program2 = dataBattle.programs.find(
@@ -53,6 +54,25 @@ export const createDataBattleStore = (level: Level) => {
 						);
 				})
 			);
+		},
+		harmProgram(program: Program, amount: number) {
+			setDataBattle(
+				produce((dataBattle) => {
+					const program2 = dataBattle.programs.find(
+						(program2) => program2.id === program.id
+					)!;
+					program2.slug
+						.splice(-amount, amount)
+						.forEach(
+							(pos) =>
+								(dataBattle.mapPrograms[pos.sectorIndex] = null)
+						);
+				})
+			);
+		},
+		// healProgram This is gonna suck
+		toggleSolid(pos: Position) {
+			setDataBattle("solid", pos.sectorIndex, (solid) => !solid);
 		},
 	};
 	return [dataBattle, actions] as const;
