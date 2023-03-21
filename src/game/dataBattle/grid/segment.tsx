@@ -83,11 +83,9 @@ export const Segment = (props: SegmentProps) => {
 					height={gridUnitSize}
 					fill={p.color}
 				/>
-				<image
-					href={p.icon ?? undefined}
-					x={iconOffset}
-					y={iconOffset}
-				/>
+				{p.icon && (
+					<image href={p.icon} x={iconOffset} y={iconOffset} />
+				)}
 			</g>
 		</g>
 	);
@@ -124,4 +122,5 @@ const selectionIndicatorStyles = css`
 	stroke: #fff;
 	stroke-width: 2;
 	animation: 530ms infinite ${keyframes`to { stroke: transparent; }`};
+	pointer-events: none;
 `;

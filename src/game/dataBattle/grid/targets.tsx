@@ -1,7 +1,7 @@
 import { getTexture } from "game/game";
-import { batch, For, JSX, Show } from "solid-js";
+import { batch, For, JSX } from "solid-js";
 import { useDataBattle } from "../databattle";
-import { Command, isProgram, Program } from "../program";
+import { Command, Program } from "../program";
 import { Position } from "./position";
 import { gridUnitSize } from "./segment";
 import { floodFindPositions } from "./utils";
@@ -18,9 +18,7 @@ export const Targets = (p: TargetProps) => {
 			return floodFindPositions(
 				p.program.slug[0],
 				(pos, dist) => dist <= p.command!.range
-			)
-				.slice(1)
-				.filter(([sectorIndex]) => level.solid[sectorIndex]); // TODO: Make this use the targets prop
+			).slice(1);
 		} else {
 			return floodFindPositions(
 				p.program.slug[0],
@@ -44,14 +42,28 @@ export const Targets = (p: TargetProps) => {
 					: p.command.effectType === "heal"
 					? "nightfall:targetGreen"
 					: "nightfall:targetCyan";
+
+			const programTarget = level.mapPrograms[pos.sectorIndex];
 			if (
-				level.mapPrograms[pos.sectorIndex] &&
-				level.mapPrograms[pos.sectorIndex] != p.program
+				(p.command.usable?.call(p.program) ?? true) &&
+				p.command.targets.find(
+					(target) =>
+						(target === "void" && !level.solid[pos.sectorIndex]) ||
+						(target === "solid" && level.solid[pos.sectorIndex]) ||
+						(programTarget &&
+							((target === "enemy" &&
+								programTarget.team !== p.program.team) ||
+								(target === "ally" &&
+									programTarget.team === p.program.team) ||
+								(target === "self" &&
+									programTarget === p.program)))
+				)
 			) {
-				props.onClick = () => console.log("Attack!");
+				props.onClick = () =>
+					p.command!.effect.call(p.program, pos, programTarget);
 				props.style = "cursor: pointer";
 			} else {
-				props.style = "opacity: 0.4";
+				props.style = "opacity: 0.4; pointer-events: none";
 			}
 		} else if (dist === 1) {
 			props.href =
@@ -79,6 +91,8 @@ export const Targets = (p: TargetProps) => {
 				});
 			};
 			props.style = "cursor: pointer";
+		} else {
+			props.style = "opacity: 0.7; pointer-events: none";
 		}
 		props.href = getTexture(props.href!);
 		return props;

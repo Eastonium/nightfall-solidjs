@@ -1,4 +1,4 @@
-import { batch, For, Index, JSX, Show, splitProps } from "solid-js";
+import { For, Index, JSX, Show, splitProps } from "solid-js";
 
 import { useDataBattle } from "../index";
 import { Position } from "./position";
@@ -45,8 +45,8 @@ export const Grid = (props: GridProps) => {
 			>
 				<g>
 					<Index each={level.solid}>
-						{(isSolid, sectorIndex) => (
-							<Show when={isSolid()} keyed>
+						{(isSolid, sectorIndex) =>
+							isSolid() && ( // TODO: Make sure this isn't broken when I add BitMan
 								<image
 									x={
 										(sectorIndex % level.width) *
@@ -58,8 +58,8 @@ export const Grid = (props: GridProps) => {
 									}
 									href={getTexture(level.style[sectorIndex])}
 								/>
-							</Show>
-						)}
+							)
+						}
 					</Index>
 				</g>
 				<g>

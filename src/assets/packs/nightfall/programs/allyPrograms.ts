@@ -370,7 +370,7 @@ export const allyPrograms: ProgramConfig[] = [
 				name: "Zero",
 				desc: "TODO",
 				range: 1,
-				targets: ["vacant"],
+				targets: ["solid"],
 				effectType: "other",
 				effect: (_target, _self, tile) => (tile.void = true),
 			},

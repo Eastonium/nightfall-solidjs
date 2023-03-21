@@ -1,7 +1,7 @@
 import { Chit } from "./chit";
 import { Position } from "./grid/position";
 
-type Target = "void" | "vacant" | "enemy" | "ally" | "self";
+type Target = "enemy" | "ally" | "self" | "void" | "solid";
 type EffectType = "harm" | "heal" | "other";
 
 export type Command = {
@@ -10,8 +10,8 @@ export type Command = {
 	range: number;
 	targets: Target[];
 	effectType: EffectType;
-	usable?: (self: Program) => boolean;
-	effect: (target: Program, self: Program, tile: any) => void;
+	usable?: (this: Program) => boolean;
+	effect: (this: Program, position: Position, target: Program | null) => void;
 };
 
 interface ProgramBase {
@@ -29,11 +29,13 @@ export interface ProgramConfig extends Required<ProgramBase> {
 export interface ProgramInstanceDefinition extends ProgramBase {
 	id: string; // For referencing a config
 	slug: [number, number][];
+	team: number;
 }
 
 export interface Program extends ProgramConfig {
 	// id is here, but is instead a UID
 	slug: Position[];
+	team: number;
 }
 
 export function isProgram(chit: Chit | Program): chit is Program {
