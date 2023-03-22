@@ -1,10 +1,27 @@
 import { createContext, createEffect, useContext } from "solid-js";
 import { createStore, produce } from "solid-js/store";
+import { Chit } from "./chit";
 import { Position } from "./grid/position";
-import { Level, Selection } from "./level";
-import { Command, isProgram, Program } from "./program";
+import { Level } from "./level";
+import {
+	Command,
+	isProgram,
+	isProgramInstance,
+	Program,
+	ProgramConfig,
+} from "./program";
 
-type DataBattle = Level & { selection: Selection };
+type BattlePhase =
+	| { name: "setup"; team: number }
+	| { name: "turn"; team: number }
+	| { name: "end"; winner: number };
+
+export type Selection =
+	| null
+	| { chit: Chit; command: null }
+	| { chit: Program | ProgramConfig; command: Command | null };
+
+type DataBattle = Level & { phase: BattlePhase; selection: Selection };
 export type Actions = ReturnType<typeof createDataBattleStore>[1];
 
 export const DataBattleContext =
@@ -22,6 +39,7 @@ export const useDataBattle = () => {
 export const createDataBattleStore = (level: Level) => {
 	const [dataBattle, setDataBattle] = createStore<DataBattle>({
 		...level,
+		phase: { name: "setup", team: 0 },
 		selection: null,
 	});
 
@@ -29,14 +47,47 @@ export const createDataBattleStore = (level: Level) => {
 	createEffect(() => {
 		if (
 			dataBattle.selection &&
-			isProgram(dataBattle.selection.chit) &&
+			isProgramInstance(dataBattle.selection.chit) &&
 			dataBattle.selection.chit.slug.length === 0
 		) {
 			setDataBattle("selection", null);
 		}
 	});
 
+	// createEffect(() => {
+	// 	console.log(dataBattle.uploadZones[0].program?.name);
+	// });
+
 	const actions = {
+		selectListedProgram(program: ProgramConfig) {
+			const selectionPos =
+				dataBattle.selection &&
+				(isProgram(dataBattle.selection.chit)
+					? isProgramInstance(dataBattle.selection.chit)
+						? dataBattle.selection.chit.slug[0]
+						: null
+					: dataBattle.selection.chit.pos);
+			if (
+				selectionPos &&
+				dataBattle.uploadZones.find((uz) => uz.pos.equals(selectionPos))
+			) {
+				setDataBattle(
+					"uploadZones",
+					(uz) => uz.pos.equals(selectionPos),
+					"programId",
+					"nightfall:" + program.id
+				);
+				setDataBattle("selection", {
+					chit: { team: 0, slug: [selectionPos], ...program },
+					command: null,
+				});
+			} else {
+				setDataBattle("selection", { chit: program, command: null });
+			}
+		},
+		endSetup() {
+			setDataBattle(produce((dataBattle) => {}));
+		},
 		setSelection(selection: Selection) {
 			setDataBattle("selection", selection);
 		},

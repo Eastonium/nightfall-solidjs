@@ -47,8 +47,8 @@ export const Game = () => {
 					level={processLevel(
 						nightfallPackConfig.nightfall.levels[0]
 					)}
-					x={30 + 10 * 1}
-					y={30 + 10 * 1}
+					x={2}
+					y={2}
 				/>
 			</WindowsContainer>
 		</>

@@ -1,5 +1,5 @@
 import { getTexture } from "game/game";
-import { Show, splitProps } from "solid-js";
+import { For, Show, splitProps } from "solid-js";
 import { css, styled } from "solid-styled-components";
 
 import { Button } from "ui/atoms/button";
@@ -8,6 +8,7 @@ import { Window, WindowProps } from "ui/atoms/window";
 import { ChitInfo } from "./chitInfo";
 import { Grid } from "./grid";
 import type { Level } from "./level";
+import { ProgramList } from "./programList";
 import { createDataBattleStore, DataBattleContext } from "./store";
 
 interface DataBattleProps extends WindowProps {
@@ -17,6 +18,7 @@ export const DataBattle = (props: DataBattleProps) => {
 	const [p, windowProps] = splitProps(props, ["level"]);
 
 	const dataBattleStore = createDataBattleStore(p.level);
+	const [dataBattle, { endSetup }] = dataBattleStore;
 
 	return (
 		<Window
@@ -27,30 +29,47 @@ export const DataBattle = (props: DataBattleProps) => {
 		>
 			<LayoutContainer>
 				<DataBattleContext.Provider value={dataBattleStore}>
-					<Window title="spybot" sectioned>
-						<img
-							src={getTexture("nightfall:snaptraxS45")}
-							alt="spybot"
-							style={{ display: "block" }}
-						/>
-					</Window>
+					<Show
+						when={dataBattle.phase.name === "setup"}
+						fallback={
+							<Window title="spybot" sectioned>
+								<img
+									src={getTexture("nightfall:snaptraxS45")}
+									alt="spybot"
+									style={{ display: "block" }}
+								/>
+							</Window>
+						}
+						keyed
+					>
+						<ProgramList />
+					</Show>
+
 					<Window
 						class={css({ gridRow: 2 })}
 						title="program.info"
 						sectioned
 						postFooter={
 							<Button color="red" fill bold>
-								Undo
+								{dataBattle.phase.name === "setup"
+									? "Remove"
+									: "Undo"}
 							</Button>
 						}
 					>
-						<Show when={dataBattleStore[0].selection} keyed>
+						<Show when={dataBattle.selection} keyed>
 							{(selection) => <ChitInfo selection={selection} />}
 						</Show>
 					</Window>
-					{/* <Button bold wrapperProps={{ class: beginButtonStyleClass }}>
-						Begin Databattle
-					</Button> */}
+					<Show when={dataBattle.phase.name === "setup"} keyed>
+						<Button
+							bold
+							wrapperProps={{ class: beginButtonStyleClass }}
+							onClick={endSetup}
+						>
+							Begin DataBattle
+						</Button>
+					</Show>
 					<Grid class={gridStyleClass} />
 				</DataBattleContext.Provider>
 			</LayoutContainer>

@@ -1,17 +1,22 @@
-import { For, Index, JSX, Show, splitProps } from "solid-js";
+import { For, Index, JSX, Show } from "solid-js";
 
-import { Position } from "./position";
 import {
 	gridUnitSize,
-	Segment,
 	SegmentClipPath,
 	CellSelectionIndicator,
 } from "./segment";
-import { Chit as IChit } from "../chit";
-import { Command, isProgram, Program as IProgram } from "../program";
-import { getTexture } from "game/game";
+import { ChitComponent } from "../chit";
+import {
+	Command,
+	isProgram,
+	isProgramInstance,
+	Program,
+	ProgramComponent,
+} from "../program";
+import { getChitConfig, getProgramConfig, getTexture } from "game/game";
 import { Targets } from "./targets";
 import { useDataBattle } from "../store";
+import { UploadZone } from "../level";
 
 interface GridProps extends JSX.HTMLAttributes<HTMLDivElement> {}
 export const Grid = (gridProps: GridProps) => {
@@ -22,17 +27,19 @@ export const Grid = (gridProps: GridProps) => {
 		const selectedChit = dataBattle.selection?.chit;
 		if (!selectedChit) return null;
 		return isProgram(selectedChit)
-			? selectedChit.slug[0]
+			? isProgramInstance(selectedChit)
+				? selectedChit.slug[0]
+				: null
 			: selectedChit.pos;
 	};
 
 	const programSelection = (): null | {
-		program: IProgram;
+		program: Program;
 		command: Command | null;
 	} => {
 		if (
 			!dataBattle.selection ||
-			!isProgram(dataBattle.selection.chit) ||
+			!isProgramInstance(dataBattle.selection.chit) ||
 			dataBattle.selection.chit.slug.length === 0 // for when program deletes itself
 		)
 			return null;
@@ -48,39 +55,37 @@ export const Grid = (gridProps: GridProps) => {
 				width={dataBattle.width * gridUnitSize}
 				height={dataBattle.height * gridUnitSize}
 			>
-				<g>
-					<Index each={dataBattle.solid}>
-						{(isSolid, sectorIndex) => (
-							<Show when={isSolid()} keyed>
-								<image
-									x={
-										(sectorIndex % dataBattle.width) *
-										gridUnitSize
-									}
-									y={
-										Math.floor(
-											sectorIndex / dataBattle.width
-										) * gridUnitSize
-									}
-									href={getTexture(
-										dataBattle.style[sectorIndex]
-									)}
-								/>
-							</Show>
-						)}
-					</Index>
-				</g>
-				<g>
-					<For each={dataBattle.chits}>
-						{(chit) => <Chit chit={chit} />}
-					</For>
-				</g>
+				<Index each={dataBattle.solid}>
+					{(isSolid, sectorIndex) => (
+						<Show when={isSolid()} keyed>
+							<image
+								x={
+									(sectorIndex % dataBattle.width) *
+									gridUnitSize
+								}
+								y={
+									Math.floor(sectorIndex / dataBattle.width) *
+									gridUnitSize
+								}
+								href={getTexture(dataBattle.style[sectorIndex])}
+							/>
+						</Show>
+					)}
+				</Index>
+
+				<For each={dataBattle.chits}>
+					{(chit) => <ChitComponent chit={chit} />}
+				</For>
+
 				<SegmentClipPath />
-				<g>
-					<For each={dataBattle.programs}>
-						{(program) => <Program program={program} />}
-					</For>
-				</g>
+
+				<For each={dataBattle.programs}>
+					{(program) => <ProgramComponent program={program} />}
+				</For>
+
+				<For each={dataBattle.uploadZones}>
+					{(uploadZone) => <UploadZoneComponent {...uploadZone} />}
+				</For>
 
 				<Show when={selectedChitPosition()} keyed>
 					{(position) => (
@@ -90,68 +95,36 @@ export const Grid = (gridProps: GridProps) => {
 						/>
 					)}
 				</Show>
-				<g>
-					<Show when={programSelection()} keyed>
-						{Targets}
-					</Show>
-				</g>
+
+				<Show when={programSelection()} keyed>
+					{Targets}
+				</Show>
 			</svg>
 		</div>
 	);
 };
 
-interface ChitProps {
-	chit: IChit;
-}
-const Chit = (p: ChitProps) => {
-	const [, { setSelection }] = useDataBattle();
-	const { column, row } = p.chit.pos;
+const UploadZoneComponent = (p: UploadZone) => {
+	const program = () =>
+		p.programId
+			? { team: p.team, slug: [p.pos], ...getProgramConfig(p.programId)! }
+			: null;
 
 	return (
-		<image
-			x={column * gridUnitSize}
-			y={row * gridUnitSize}
-			href={p.chit.icon}
-			onClick={() => setSelection({ chit: p.chit, command: null })}
-		/>
-	);
-};
-
-interface ProgramProps {
-	program: IProgram;
-}
-const Program = (p: ProgramProps) => {
-	const [, { setSelection }] = useDataBattle();
-	const sortedSlug = () => [...p.program.slug].sort(Position.compare);
-
-	return (
-		<g onClick={() => setSelection({ chit: p.program, command: null })}>
-			<For each={sortedSlug()}>
-				{(pos) => {
-					const { column, row } = pos;
-					const posRight = pos.clone(1, 0);
-					const posDown = pos.clone(0, 1);
-					return (
-						<Segment
-							{...{ column, row }}
-							color={p.program.color}
-							icon={
-								pos === p.program.slug[0]
-									? p.program.icon
-									: null
-							}
-							connectRight={
-								posRight &&
-								sortedSlug().find(posRight.equals) != null
-							}
-							connectDown={
-								posDown &&
-								sortedSlug().find(posDown.equals) != null
-							}
-						/>
-					);
+		<g>
+			<ChitComponent
+				chit={{
+					pos: p.pos,
+					...getChitConfig("nightfall:upload_zone")!,
 				}}
-			</For>
+			/>
+			<Show when={program()} keyed>
+				{(program) => (
+					<g opacity={0.65}>
+						<ProgramComponent program={program} />;
+					</g>
+				)}
+			</Show>
 		</g>
 	);
 };

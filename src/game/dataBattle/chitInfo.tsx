@@ -2,10 +2,9 @@ import { For, Show } from "solid-js";
 
 import { Fonts } from "ui/fonts";
 import { Segment, gridUnitSize } from "./grid/segment";
-import { isProgram } from "./program";
+import { isProgram, isProgramInstance } from "./program";
 import { css, styled } from "solid-styled-components";
-import { Selection } from "./level";
-import { useDataBattle } from "./store";
+import { Selection, useDataBattle } from "./store";
 
 interface ChitInfoProps {
 	selection: NonNullable<Selection>;
@@ -31,9 +30,11 @@ export const ChitInfo = (p: ChitInfoProps) => {
 						</svg>
 						<span>Move: {p.selection.chit.speed}</span>
 						<span>Max Size: {p.selection.chit.maxSize}</span>
-						<span>
-							Current Size: {p.selection.chit.slug.length}
-						</span>
+						{isProgramInstance(p.selection.chit) && (
+							<span>
+								Current Size: {p.selection.chit.slug.length}
+							</span>
+						)}
 					</>
 				) : (
 					<img
@@ -90,6 +91,7 @@ const BasicInfoContainer = styled("div")`
 	flex-direction: column;
 	flex-wrap: wrap;
 	justify-content: center;
+	align-content: flex-start;
 	height: ${gridUnitSize.toString()}px;
 	margin-bottom: 6px;
 `;

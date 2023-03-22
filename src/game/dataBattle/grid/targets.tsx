@@ -48,6 +48,8 @@ export const Targets = (p: TargetProps) => {
 
 			const programTarget = databattle.mapPrograms[pos.sectorIndex];
 			if (
+				databattle.phase.name === "turn" &&
+				// TODO: Make sure its YOUR turn
 				(p.command.usable?.call(p.program) ?? true) &&
 				p.command.targets.find(
 					(target) =>
@@ -76,7 +78,11 @@ export const Targets = (p: TargetProps) => {
 			} else {
 				props.style = { opacity: 0.4, "pointer-events": "none" };
 			}
-		} else if (dist === 1) {
+		} else if (
+			databattle.phase.name === "turn" &&
+			// TODO: Make sure its YOUR turn
+			dist === 1
+		) {
 			props.href =
 				pos.sectorIndex == p.program.slug[0].sectorIndex + 1
 					? "nightfall:moveEast"

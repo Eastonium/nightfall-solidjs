@@ -1,9 +1,18 @@
-import { findChitConfig, findProgramConfig } from "game";
+import { getChitConfig, getProgramConfig } from "game/game";
 import { createUniqueId } from "solid-js";
 import { Chit, ChitInstanceDefinition } from "./chit";
 import { Position } from "./grid/position";
-import { Command, Program, ProgramInstanceDefinition } from "./program";
+import { Program, ProgramConfig, ProgramInstanceDefinition } from "./program";
 
+type UploadZoneInstanceDefinition = {
+	team: number;
+	pos: [number, number];
+};
+export type UploadZone = {
+	team: number;
+	pos: Position;
+	programId: string | null;
+};
 export type LevelDefinition = {
 	orientation: "orthogonal"; // | "hexagonal";
 	width: number;
@@ -13,6 +22,8 @@ export type LevelDefinition = {
 	styleKey: { [char: string]: string };
 	chits: ChitInstanceDefinition[];
 	programs: ProgramInstanceDefinition[];
+	uploadZones: UploadZoneInstanceDefinition[];
+	teams: number;
 };
 export type Level = ReturnType<typeof processLevel>;
 
@@ -30,7 +41,7 @@ export const processLevel = ({ styleKey, ...level }: LevelDefinition) => {
 			...level.style.replaceAll(/\s+/g, ""), // Strip whitespace
 		].map((char) => styleKey[char]), // Spread string into array to avoid breaking emojis
 		chits: level.chits.map(({ id, pos, ...mods }): Chit => {
-			const config = findChitConfig(id);
+			const config = getChitConfig(id);
 			if (!config)
 				throw Error(`Could not find chit config for id: ${id}`);
 
@@ -42,7 +53,7 @@ export const processLevel = ({ styleKey, ...level }: LevelDefinition) => {
 			};
 		}),
 		programs: level.programs.map(({ id, slug, ...mods }) => {
-			const config = findProgramConfig(id);
+			const config = getProgramConfig(id);
 			if (!config)
 				throw Error(`Could not find program config for id: ${id}`);
 
@@ -59,11 +70,13 @@ export const processLevel = ({ styleKey, ...level }: LevelDefinition) => {
 			);
 			return program;
 		}),
+		uploadZones: level.uploadZones.map(
+			({ team, pos }): UploadZone => ({
+				team,
+				pos: new Position(pos, level.width, level.height),
+				programId: null,
+			})
+		),
 		mapPrograms,
 	};
 };
-
-export type Selection =
-	| null
-	| { chit: Chit; command: null }
-	| { chit: Program; command: Command | null };

@@ -38,27 +38,21 @@ const Test_Level_1: LevelDefinition = {
 		{ id: "nightfall:data_item", pos: [1, 2] },
 		{ id: "nightfall:credits", pos: [1, 5] },
 		{ id: "nightfall:credits", pos: [1, 8] },
-		{ id: "nightfall:upload_zone", pos: [11, 1] },
-		{ id: "nightfall:upload_zone", pos: [12, 1] },
-		{ id: "nightfall:upload_zone", pos: [11, 9] },
-		{ id: "nightfall:upload_zone", pos: [12, 9] },
 	],
 	programs: [
-		{
-			id: "nightfall:data_doctor_1",
-			slug: [
-				[3, 1],
-				[3, 2],
-				[3, 3],
-				[3, 4],
-			],
-			team: 1,
-		},
+		{ id: "nightfall:data_doctor_1", slug: [[3, 1]], team: 1 },
 		{ id: "nightfall:dog_3", slug: [[2, 2]], team: 1 },
 		{ id: "nightfall:slingshot", slug: [[0, 3]], team: 0 },
 		{ id: "nightfall:dog_2", slug: [[1, 4]], team: 1 },
 		{ id: "nightfall:bit_man", slug: [[2, 5]], team: 0 },
 		{ id: "nightfall:fiddle", slug: [[1, 7]], team: 1 },
 	],
+	uploadZones: [
+		{ team: 0, pos: [11, 1] },
+		{ team: 0, pos: [12, 1] },
+		{ team: 0, pos: [11, 9] },
+		{ team: 0, pos: [12, 9] },
+	],
+	teams: 2,
 };
 export default Test_Level_1;
