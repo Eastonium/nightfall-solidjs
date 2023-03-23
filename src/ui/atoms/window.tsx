@@ -11,23 +11,31 @@ export interface WindowProps extends JSX.HTMLAttributes<HTMLDivElement> {
 	titleBarButtonProps?: JSX.ButtonHTMLAttributes<HTMLButtonElement>;
 	sectioned?: boolean;
 	postFooter?: JSX.Element;
-};
+}
 const _Window = (props: WindowProps) => {
-	const [p, containerProps] = splitProps(mergeProps({ x: 0, y: 0, sectioned: false }, props), [
-		"x",
-		"y",
-		"width",
-		"height",
-		"title",
-		"titleBarIcon",
-		"titleBarButtonProps",
-		"sectioned",
-		"postFooter",
-		"children",
-	]);
+	const [p, containerProps] = splitProps(
+		mergeProps({ x: 0, y: 0, sectioned: false }, props),
+		[
+			"x",
+			"y",
+			"width",
+			"height",
+			"title",
+			"titleBarIcon",
+			"titleBarButtonProps",
+			"sectioned",
+			"postFooter",
+			"children",
+		]
+	);
 	return (
 		<WindowContainer
-			style={{ top: p.x, left: p.y, width: p.width, height: p.height }}
+			style={{
+				top: p.x + "px",
+				left: p.y + "px",
+				width: p.width + "px",
+				height: p.height + "px",
+			}}
 			{...containerProps}
 		>
 			<div>
@@ -44,9 +52,11 @@ const _Window = (props: WindowProps) => {
 			{p.children != null && (
 				<>
 					<ContentWrapper>
-						{p.sectioned
-							? <WindowSection>{p.children}</WindowSection>
-							: p.children}
+						{p.sectioned ? (
+							<WindowSection>{p.children}</WindowSection>
+						) : (
+							p.children
+						)}
 					</ContentWrapper>
 					<Footer />
 				</>
@@ -94,7 +104,7 @@ const BarContainer = styled("div")<{ hasIcon: boolean }>`
 	background: linear-gradient(#ddd, #777);
 	color: #000;
 
-	${p => (p.hasIcon ? { paddingLeft: 0 } : "")}
+	${(p) => (p.hasIcon ? "padding-left: 0;" : "")}
 
 	> div {
 		flex: 0 0 auto;
@@ -146,14 +156,14 @@ const Footer = styled("div")`
 `;
 
 export const WindowsContainer = styled("div")<{ coverScreen?: boolean }>`
-	position: ${p => (p.coverScreen ? "fixed" : "relative")};
+	position: ${(p) => (p.coverScreen ? "fixed" : "relative")};
 	top: 0;
 	left: 0;
 	width: 100%;
 	height: 100%;
 	pointer-events: none;
 
-	> ${WindowContainer.className} {
+	> ${WindowContainer.class} {
 		position: absolute;
 	}
 `;

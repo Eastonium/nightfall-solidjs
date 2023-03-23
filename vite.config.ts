@@ -7,6 +7,5 @@ export default defineConfig({
 	plugins: [devtools({ autoname: true }), solidPlugin(), tsconfigPaths()],
 	build: {
 		target: "esnext",
-		polyfillDynamicImport: false,
 	},
 });
