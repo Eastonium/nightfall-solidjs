@@ -53,6 +53,6 @@ const Test_Level_1: LevelDefinition = {
 		{ team: 0, pos: [11, 9] },
 		{ team: 0, pos: [12, 9] },
 	],
-	teams: 2,
+	teams: [0, 1],
 };
 export default Test_Level_1;

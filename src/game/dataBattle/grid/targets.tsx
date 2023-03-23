@@ -11,7 +11,7 @@ interface TargetProps {
 	command: Command | null;
 }
 export const Targets = (p: TargetProps) => {
-	const [databattle, actions] = useDataBattle();
+	const [{ dataBattle }, actions] = useDataBattle();
 	const { moveProgram } = actions;
 
 	const targetPositions = () => {
@@ -26,9 +26,9 @@ export const Targets = (p: TargetProps) => {
 				(pos, dist) =>
 					dist === 0 || // ensure a program can still move if head cell is no longer solid
 					(dist <= p.program.speed &&
-						databattle.solid[pos.sectorIndex] &&
-						(!databattle.mapPrograms[pos.sectorIndex] ||
-							databattle.mapPrograms[pos.sectorIndex] ==
+						dataBattle.solid[pos.sectorIndex] &&
+						(!dataBattle.mapPrograms[pos.sectorIndex] ||
+							dataBattle.mapPrograms[pos.sectorIndex] ==
 								p.program))
 			).slice(1); // remove starting cell
 		}
@@ -46,17 +46,18 @@ export const Targets = (p: TargetProps) => {
 					? "nightfall:targetGreen"
 					: "nightfall:targetCyan";
 
-			const programTarget = databattle.mapPrograms[pos.sectorIndex];
+			const programTarget = dataBattle.mapPrograms[pos.sectorIndex];
 			if (
-				databattle.phase.name === "turn" &&
-				// TODO: Make sure its YOUR turn
+				dataBattle.phase.name === "turn" &&
+				dataBattle.phase.team === 0 && // TODO: check for player's turn instead
+				p.program.team === 0 &&
 				(p.command.usable?.call(p.program) ?? true) &&
 				p.command.targets.find(
 					(target) =>
 						(target === "void" &&
-							!databattle.solid[pos.sectorIndex]) ||
+							!dataBattle.solid[pos.sectorIndex]) ||
 						(target === "solid" &&
-							databattle.solid[pos.sectorIndex]) ||
+							dataBattle.solid[pos.sectorIndex]) ||
 						(programTarget &&
 							((target === "enemy" &&
 								programTarget.team !== p.program.team) ||
@@ -79,8 +80,9 @@ export const Targets = (p: TargetProps) => {
 				props.style = { opacity: 0.4, "pointer-events": "none" };
 			}
 		} else if (
-			databattle.phase.name === "turn" &&
-			// TODO: Make sure its YOUR turn
+			dataBattle.phase.name === "turn" &&
+			dataBattle.phase.team === 0 && // TODO: check for player's turn instead
+			p.program.team === 0 &&
 			dist === 1
 		) {
 			props.href =

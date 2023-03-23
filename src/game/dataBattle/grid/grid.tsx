@@ -1,4 +1,4 @@
-import { For, Index, JSX, Show } from "solid-js";
+import { For, Index, JSX, Show, splitProps } from "solid-js";
 
 import {
 	gridUnitSize,
@@ -8,12 +8,11 @@ import {
 import { ChitComponent } from "../chit";
 import {
 	Command,
-	isProgram,
 	isProgramInstance,
 	Program,
 	ProgramComponent,
 } from "../program";
-import { getChitConfig, getProgramConfig, getTexture } from "game/game";
+import { getChitConfig, getTexture } from "game/game";
 import { Targets } from "./targets";
 import { useDataBattle } from "../store";
 import { UploadZone } from "../level";
@@ -21,17 +20,7 @@ import { UploadZone } from "../level";
 interface GridProps extends JSX.HTMLAttributes<HTMLDivElement> {}
 export const Grid = (gridProps: GridProps) => {
 	// const [p, gridProps] = splitProps(props, []);
-	const [dataBattle] = useDataBattle();
-
-	const selectedChitPosition = () => {
-		const selectedChit = dataBattle.selection?.chit;
-		if (!selectedChit) return null;
-		return isProgram(selectedChit)
-			? isProgramInstance(selectedChit)
-				? selectedChit.slug[0]
-				: null
-			: selectedChit.pos;
-	};
+	const [{ dataBattle, selectionPosition }] = useDataBattle();
 
 	const programSelection = (): null | {
 		program: Program;
@@ -87,7 +76,7 @@ export const Grid = (gridProps: GridProps) => {
 					{(uploadZone) => <UploadZoneComponent {...uploadZone} />}
 				</For>
 
-				<Show when={selectedChitPosition()} keyed>
+				<Show when={selectionPosition()} keyed>
 					{(position) => (
 						<CellSelectionIndicator
 							column={position.column}
@@ -106,9 +95,7 @@ export const Grid = (gridProps: GridProps) => {
 
 const UploadZoneComponent = (p: UploadZone) => {
 	const program = () =>
-		p.programId
-			? { team: p.team, slug: [p.pos], ...getProgramConfig(p.programId)! }
-			: null;
+		p.program ? { team: p.team, slug: [p.pos], ...p.program! } : null;
 
 	return (
 		<g>

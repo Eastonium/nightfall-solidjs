@@ -11,7 +11,7 @@ type UploadZoneInstanceDefinition = {
 export type UploadZone = {
 	team: number;
 	pos: Position;
-	programId: string | null;
+	program: ProgramConfig | null;
 };
 export type LevelDefinition = {
 	orientation: "orthogonal"; // | "hexagonal";
@@ -23,7 +23,7 @@ export type LevelDefinition = {
 	chits: ChitInstanceDefinition[];
 	programs: ProgramInstanceDefinition[];
 	uploadZones: UploadZoneInstanceDefinition[];
-	teams: number;
+	teams: number[];
 };
 export type Level = ReturnType<typeof processLevel>;
 
@@ -74,7 +74,7 @@ export const processLevel = ({ styleKey, ...level }: LevelDefinition) => {
 			({ team, pos }): UploadZone => ({
 				team,
 				pos: new Position(pos, level.width, level.height),
-				programId: null,
+				program: null,
 			})
 		),
 		mapPrograms,

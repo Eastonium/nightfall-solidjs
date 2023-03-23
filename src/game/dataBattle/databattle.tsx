@@ -1,8 +1,8 @@
 import { getTexture } from "game/game";
-import { For, Show, splitProps } from "solid-js";
+import { Show, splitProps } from "solid-js";
 import { css, styled } from "solid-styled-components";
 
-import { Button } from "ui/atoms/button";
+import { Button, NormalButtonProps } from "ui/atoms/button";
 import { Window, WindowProps } from "ui/atoms/window";
 
 import { ChitInfo } from "./chitInfo";
@@ -18,7 +18,29 @@ export const DataBattle = (props: DataBattleProps) => {
 	const [p, windowProps] = splitProps(props, ["level"]);
 
 	const dataBattleStore = createDataBattleStore(p.level);
-	const [dataBattle, { endSetup }] = dataBattleStore;
+	const [{ dataBattle, selectionPosition }, { clearUploadZone, endSetup }] =
+		dataBattleStore;
+
+	const programInfoButtonProps = (): NormalButtonProps => {
+		if (dataBattle.phase.name === "setup") {
+			const selectionPos = selectionPosition();
+			return {
+				color: "red",
+				children: "Remove",
+				disabled:
+					!selectionPos ||
+					!dataBattle.uploadZones.find((uz) =>
+						uz.pos.equals(selectionPos)
+					)?.program,
+				onClick: clearUploadZone,
+			};
+		} else
+			return {
+				color: "red",
+				children: "Undo",
+				disabled: true,
+			};
+	};
 
 	return (
 		<Window
@@ -50,11 +72,7 @@ export const DataBattle = (props: DataBattleProps) => {
 						title="program.info"
 						sectioned
 						postFooter={
-							<Button color="red" fill bold>
-								{dataBattle.phase.name === "setup"
-									? "Remove"
-									: "Undo"}
-							</Button>
+							<Button fill bold {...programInfoButtonProps} />
 						}
 					>
 						<Show when={dataBattle.selection} keyed>

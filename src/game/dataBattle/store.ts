@@ -1,4 +1,10 @@
-import { createContext, createEffect, useContext } from "solid-js";
+import { getChitConfig } from "game/game";
+import {
+	createContext,
+	createEffect,
+	createUniqueId,
+	useContext,
+} from "solid-js";
 import { createStore, produce } from "solid-js/store";
 import { Chit } from "./chit";
 import { Position } from "./grid/position";
@@ -58,15 +64,21 @@ export const createDataBattleStore = (level: Level) => {
 	// 	console.log(dataBattle.uploadZones[0].program?.name);
 	// });
 
+	const selectors = {
+		dataBattle,
+		selectionPosition: () =>
+			dataBattle.selection &&
+			(isProgram(dataBattle.selection.chit)
+				? isProgramInstance(dataBattle.selection.chit)
+					? dataBattle.selection.chit.slug[0]
+					: null
+				: dataBattle.selection.chit.pos),
+	};
+
 	const actions = {
 		selectListedProgram(program: ProgramConfig) {
-			const selectionPos =
-				dataBattle.selection &&
-				(isProgram(dataBattle.selection.chit)
-					? isProgramInstance(dataBattle.selection.chit)
-						? dataBattle.selection.chit.slug[0]
-						: null
-					: dataBattle.selection.chit.pos);
+			const selectionPos = selectors.selectionPosition();
+
 			if (
 				selectionPos &&
 				dataBattle.uploadZones.find((uz) => uz.pos.equals(selectionPos))
@@ -74,8 +86,8 @@ export const createDataBattleStore = (level: Level) => {
 				setDataBattle(
 					"uploadZones",
 					(uz) => uz.pos.equals(selectionPos),
-					"programId",
-					"nightfall:" + program.id
+					{ program }
+					// program is not from store, do like this instead of ...["program", program] to avoid corrupting it
 				);
 				setDataBattle("selection", {
 					chit: { team: 0, slug: [selectionPos], ...program },
@@ -85,8 +97,44 @@ export const createDataBattleStore = (level: Level) => {
 				setDataBattle("selection", { chit: program, command: null });
 			}
 		},
+		clearUploadZone() {
+			const selectionPos = selectors.selectionPosition();
+			if (!selectionPos) return;
+			setDataBattle(
+				"uploadZones",
+				(uz) => uz.pos.equals(selectionPos),
+				"program",
+				null
+			);
+			setDataBattle("selection", {
+				chit: {
+					pos: selectionPos,
+					...getChitConfig("nightfall:upload_zone")!,
+				},
+			});
+		},
 		endSetup() {
-			setDataBattle(produce((dataBattle) => {}));
+			setDataBattle(
+				produce((dataBattle) => {
+					dataBattle.uploadZones.forEach(
+						({ team, pos, program: pc }) => {
+							if (!pc) return;
+							const program: Program = {
+								...pc,
+								id: createUniqueId(),
+								slug: [pos],
+								team,
+							};
+							dataBattle.programs.push(program);
+							dataBattle.mapPrograms[pos.sectorIndex] = program;
+						}
+					);
+					dataBattle.uploadZones = [];
+
+					dataBattle.selection = null;
+					dataBattle.phase = { name: "turn", team: 0 };
+				})
+			);
 		},
 		setSelection(selection: Selection) {
 			setDataBattle("selection", selection);
@@ -198,5 +246,5 @@ export const createDataBattleStore = (level: Level) => {
 			setDataBattle("solid", pos.sectorIndex, (solid) => !solid);
 		},
 	};
-	return [dataBattle, actions] as const;
+	return [selectors, actions] as const;
 };

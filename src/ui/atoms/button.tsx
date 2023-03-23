@@ -88,8 +88,12 @@ const NormalStyledButton = styled("button")<{
 			}
 		}
 	}
-	&:disabled > span {
-		background: linear-gradient(to bottom right, #666, #222);
+	&:disabled {
+		color: #ddd;
+
+		& > span {
+			background: linear-gradient(to bottom right, #666, #222);
+		}
 	}
 `;
 
