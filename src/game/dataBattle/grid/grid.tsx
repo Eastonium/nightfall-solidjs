@@ -68,7 +68,11 @@ export const Grid = (gridProps: GridProps) => {
 
 				<SegmentClipPath />
 
-				<For each={dataBattle.programs}>
+				<For
+					each={dataBattle.programs.filter(
+						(prog) => prog.slug.length > 0
+					)}
+				>
 					{(program) => <ProgramComponent program={program} />}
 				</For>
 

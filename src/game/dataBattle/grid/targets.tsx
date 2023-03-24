@@ -49,8 +49,7 @@ export const Targets = (p: TargetProps) => {
 			const programTarget = dataBattle.mapPrograms[pos.sectorIndex];
 			if (
 				dataBattle.phase.name === "turn" &&
-				dataBattle.phase.team === 0 && // TODO: check for player's turn instead
-				p.program.team === 0 &&
+				dataBattle.phase.team === p.program.team &&
 				!p.program.usedAction &&
 				(p.command.usable?.call(p.program) ?? true) &&
 				p.command.targets.find(
@@ -82,8 +81,7 @@ export const Targets = (p: TargetProps) => {
 			}
 		} else if (
 			dataBattle.phase.name === "turn" &&
-			dataBattle.phase.team === 0 && // TODO: check for player's turn instead
-			p.program.team === 0 &&
+			dataBattle.phase.team === p.program.team &&
 			dist === 1
 		) {
 			props.href =

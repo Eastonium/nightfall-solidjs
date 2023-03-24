@@ -3,6 +3,7 @@ import {
 	createContext,
 	createEffect,
 	createUniqueId,
+	untrack,
 	useContext,
 } from "solid-js";
 import { createStore, produce } from "solid-js/store";
@@ -60,9 +61,35 @@ export const createDataBattleStore = (level: Level) => {
 		}
 	});
 
-	// createEffect(() => {
-	// 	console.log(dataBattle.uploadZones[0].program?.name);
-	// });
+	// Select first upload zone or program for new team on their turn
+	createEffect(() => {
+		if (dataBattle.phase.name === "end") return;
+		const team = dataBattle.phase.team;
+		untrack(() => {
+			if (dataBattle.phase.name === "setup") {
+				const uploadZone = dataBattle.uploadZones.find(
+					(uz) => uz.team === team
+				);
+				if (!uploadZone) return;
+				setDataBattle("selection", {
+					chit: {
+						pos: uploadZone.pos,
+						...getChitConfig("nightfall:upload_zone")!,
+					},
+					command: null,
+				});
+			} else {
+				const program = dataBattle.programs.find(
+					(prog) =>
+						prog.team === team &&
+						!prog.usedAction &&
+						prog.slug.length > 0
+				);
+				if (!program) return;
+				setDataBattle("selection", { chit: program, command: null });
+			}
+		});
+	});
 
 	const selectors = {
 		dataBattle,
@@ -139,6 +166,20 @@ export const createDataBattleStore = (level: Level) => {
 			);
 		},
 		setSelection(selection: Selection) {
+			// Check if different program is selected and if the current selection has moved
+			if (
+				dataBattle.selection &&
+				dataBattle.selection.chit.id !== selection?.chit.id &&
+				isProgramInstance(dataBattle.selection.chit) &&
+				dataBattle.selection.chit.usedSpeed > 0
+			) {
+				setDataBattle(
+					"programs",
+					(prog) => prog.id === dataBattle.selection?.chit.id,
+					"usedAction",
+					true
+				);
+			}
 			setDataBattle("selection", selection);
 		},
 		moveProgram(program: Program, pos: Position) {
@@ -178,7 +219,7 @@ export const createDataBattleStore = (level: Level) => {
 		runProgramCommand(
 			sourceProg: Program,
 			...cmd: // cheesy overload
-				| [null]
+			| [null]
 				| [
 						command: Command,
 						targetPos: Position,
@@ -195,6 +236,42 @@ export const createDataBattleStore = (level: Level) => {
 				"usedAction",
 				true
 			);
+
+			if (dataBattle.phase.name !== "turn") return;
+			// Find next program (in order) and select it
+			const progIndex = dataBattle.programs.findIndex(
+				(prog) => prog.id === sourceProg.id
+			);
+			for (
+				let i = (progIndex + 1) % dataBattle.programs.length;
+				i !== progIndex;
+				i = (i + 1) % dataBattle.programs.length
+			) {
+				const program = dataBattle.programs[i];
+				if (
+					program.team === dataBattle.phase.team &&
+					!program.usedAction &&
+					program.slug.length > 0
+				) {
+					setDataBattle("selection", {
+						chit: program,
+						command: null,
+					});
+					return;
+				}
+			}
+			// If no program was found, clear selection and switch to next team's turn
+			setDataBattle("selection", null);
+			const nextTeam =
+				dataBattle.teams[
+					(dataBattle.teams.indexOf(dataBattle.phase.team) + 1) %
+						dataBattle.teams.length
+				];
+			setDataBattle("programs", (prog) => prog.team === nextTeam, {
+				usedSpeed: 0,
+				usedAction: false,
+			});
+			setDataBattle("phase", { name: "turn", team: nextTeam });
 		},
 		harmProgram(program: Program, amount: number) {
 			setDataBattle(

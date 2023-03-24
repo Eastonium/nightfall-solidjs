@@ -14,8 +14,11 @@
 <!-- Game setup phase phases -->
 <!-- Get upload zones to work -->
 <!-- Get remove button for upload zones to work -->
+<!-- Auto-select next program on completing program turn -->
+<!-- Auto-select first program on new team turn -->
+<!-- Complete program turn on change selection -->
+<!-- Program turn completion status -->
 Turn phases
-Program move status
 
 <!-- Get StyleKey stuff on level to work -->
 <!-- Get tiles to appear in their style -->
