@@ -25,7 +25,7 @@ interface SegmentProps extends PositionProps {
 export const Segment = (props: SegmentProps) => {
 	const p = mergeProps({ connectRight: false, connectDown: false }, props);
 
-	const shadeColor = shade(0.5, p.color);
+	const shadeColor = () => shade(0.5, p.color);
 	return (
 		<g
 			transform={`translate(${p.column * gridUnitSize} ${
@@ -35,7 +35,7 @@ export const Segment = (props: SegmentProps) => {
 			{p.connectRight && (
 				<path
 					fill="none"
-					stroke={shadeColor}
+					stroke={shadeColor()}
 					stroke-width={connectorWidth}
 					d={`M${connectorOffset},${
 						connectorOffset + depth
@@ -45,7 +45,7 @@ export const Segment = (props: SegmentProps) => {
 			{p.connectDown && (
 				<path
 					fill="none"
-					stroke={shadeColor}
+					stroke={shadeColor()}
 					stroke-width={connectorWidth}
 					d={`M${
 						connectorOffset + depth
@@ -56,7 +56,7 @@ export const Segment = (props: SegmentProps) => {
 				d={`M${
 					shapeOffset + shapeSize
 				},${shapeOffset}l${depth},${depth}v${shapeSize}h${-shapeSize}l${-depth},${-depth}`}
-				fill={shadeColor}
+				fill={shadeColor()}
 			/>
 
 			{p.connectRight && (

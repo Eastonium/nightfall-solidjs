@@ -64,6 +64,8 @@ export const processLevel = ({ styleKey, ...level }: LevelDefinition) => {
 				slug: slug.map(
 					(pos) => new Position(pos, level.width, level.height)
 				),
+				usedSpeed: 0,
+				usedAction: false,
 			};
 			program.slug.forEach(
 				(pos) => (mapPrograms[pos.sectorIndex] = program)

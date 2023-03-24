@@ -94,8 +94,16 @@ export const Grid = (gridProps: GridProps) => {
 };
 
 const UploadZoneComponent = (p: UploadZone) => {
-	const program = () =>
-		p.program ? { team: p.team, slug: [p.pos], ...p.program! } : null;
+	const program = (): Program | null =>
+		p.program
+			? {
+					team: p.team,
+					slug: [p.pos],
+					usedSpeed: 0,
+					usedAction: false,
+					...p.program!,
+			  }
+			: null;
 
 	return (
 		<g>

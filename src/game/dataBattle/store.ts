@@ -124,6 +124,8 @@ export const createDataBattleStore = (level: Level) => {
 								id: createUniqueId(),
 								slug: [pos],
 								team,
+								usedSpeed: 0,
+								usedAction: false,
 							};
 							dataBattle.programs.push(program);
 							dataBattle.mapPrograms[pos.sectorIndex] = program;
@@ -138,9 +140,6 @@ export const createDataBattleStore = (level: Level) => {
 		},
 		setSelection(selection: Selection) {
 			setDataBattle("selection", selection);
-		},
-		setSelectedCommand(command: Command) {
-			setDataBattle("selection", "command", command);
 		},
 		moveProgram(program: Program, pos: Position) {
 			setDataBattle(
@@ -163,7 +162,38 @@ export const createDataBattleStore = (level: Level) => {
 							(pos) =>
 								(dataBattle.mapPrograms[pos.sectorIndex] = null)
 						);
+
+					// Increased speed used this turn
+					program2.usedSpeed++;
+					// If all speed is used, auto-select first command
+					if (program2.usedSpeed === program2.speed) {
+						dataBattle.selection = {
+							chit: program2,
+							command: program2.commands[0] ?? null,
+						};
+					}
 				})
+			);
+		},
+		runProgramCommand(
+			sourceProg: Program,
+			...cmd: // cheesy overload
+				| [null]
+				| [
+						command: Command,
+						targetPos: Position,
+						targetProg: Program | null
+				  ]
+		) {
+			if (cmd[0]) {
+				const [command, targetPos, targetProg] = cmd;
+				command.effect.call(sourceProg, targetPos, targetProg, actions);
+			}
+			setDataBattle(
+				"programs",
+				(prog) => prog.id === sourceProg.id,
+				"usedAction",
+				true
 			);
 		},
 		harmProgram(program: Program, amount: number) {

@@ -1,7 +1,8 @@
-import { For } from "solid-js";
+import { getTexture } from "game/game";
+import { For, Show } from "solid-js";
 import { Chit } from "./chit";
 import { Position } from "./grid/position";
-import { Segment } from "./grid/segment";
+import { gridUnitSize, Segment } from "./grid/segment";
 import { Actions, useDataBattle } from "./store";
 
 type Target = "enemy" | "ally" | "self" | "void" | "solid";
@@ -44,6 +45,8 @@ export interface Program extends ProgramConfig {
 	// id is here, but is instead a UID
 	slug: Position[];
 	team: number;
+	usedSpeed: number;
+	usedAction: boolean;
 }
 
 export function isProgram(
@@ -60,6 +63,7 @@ export function isProgramInstance(
 export const ProgramComponent = (p: { program: Program }) => {
 	const [, { setSelection }] = useDataBattle();
 	const sortedSlug = () => [...p.program.slug].sort(Position.compare);
+	const headPos = () => p.program.slug[0];
 
 	return (
 		<g onClick={() => setSelection({ chit: p.program, command: null })}>
@@ -72,11 +76,7 @@ export const ProgramComponent = (p: { program: Program }) => {
 						<Segment
 							{...{ column, row }}
 							color={p.program.color}
-							icon={
-								pos === p.program.slug[0]
-									? p.program.icon
-									: null
-							}
+							icon={pos === headPos() ? p.program.icon : null}
 							connectRight={
 								posRight &&
 								sortedSlug().find(posRight.equals) != null
@@ -89,7 +89,13 @@ export const ProgramComponent = (p: { program: Program }) => {
 					);
 				}}
 			</For>
+			<Show when={p.program.usedAction} keyed>
+				<image
+					x={headPos().column * gridUnitSize + 22}
+					y={headPos().row * gridUnitSize - 3}
+					href={getTexture("nightfall:turnCheck")}
+				/>
+			</Show>
 		</g>
 	);
 };
-

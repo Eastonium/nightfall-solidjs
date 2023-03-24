@@ -12,7 +12,7 @@ interface TargetProps {
 }
 export const Targets = (p: TargetProps) => {
 	const [{ dataBattle }, actions] = useDataBattle();
-	const { moveProgram } = actions;
+	const { moveProgram, runProgramCommand } = actions;
 
 	const targetPositions = () => {
 		if (p.command) {
@@ -25,7 +25,7 @@ export const Targets = (p: TargetProps) => {
 				p.program.slug[0],
 				(pos, dist) =>
 					dist === 0 || // ensure a program can still move if head cell is no longer solid
-					(dist <= p.program.speed &&
+					(dist <= p.program.speed - p.program.usedSpeed &&
 						dataBattle.solid[pos.sectorIndex] &&
 						(!dataBattle.mapPrograms[pos.sectorIndex] ||
 							dataBattle.mapPrograms[pos.sectorIndex] ==
@@ -51,6 +51,7 @@ export const Targets = (p: TargetProps) => {
 				dataBattle.phase.name === "turn" &&
 				dataBattle.phase.team === 0 && // TODO: check for player's turn instead
 				p.program.team === 0 &&
+				!p.program.usedAction &&
 				(p.command.usable?.call(p.program) ?? true) &&
 				p.command.targets.find(
 					(target) =>
@@ -69,11 +70,11 @@ export const Targets = (p: TargetProps) => {
 				)
 			) {
 				props.onClick = () =>
-					p.command!.effect.call(
+					runProgramCommand(
 						p.program,
+						p.command!,
 						pos,
-						programTarget,
-						actions
+						programTarget
 					);
 				props.style = { cursor: "pointer" };
 			} else {
