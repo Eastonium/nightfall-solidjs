@@ -3,13 +3,16 @@ import { createUniqueId } from "solid-js";
 import { Chit, ChitInstanceDefinition } from "./chit";
 import { Position } from "./grid/position";
 import { Program, ProgramConfig, ProgramInstanceDefinition } from "./program";
+import { Actions } from "./store";
+
+export type Team = number;
 
 type UploadZoneInstanceDefinition = {
-	team: number;
+	team: Team;
 	pos: [number, number];
 };
 export type UploadZone = {
-	team: number;
+	team: Team;
 	pos: Position;
 	program: ProgramConfig | null;
 };
@@ -23,7 +26,8 @@ export type LevelDefinition = {
 	chits: ChitInstanceDefinition[];
 	programs: ProgramInstanceDefinition[];
 	uploadZones: UploadZoneInstanceDefinition[];
-	teams: number[];
+	teams: Team[];
+	onTeamEliminated?: (team: Team, remainingTeams: Team[], actions: Actions) => void;
 };
 export type Level = ReturnType<typeof processLevel>;
 

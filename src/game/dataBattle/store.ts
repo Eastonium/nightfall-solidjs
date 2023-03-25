@@ -9,7 +9,7 @@ import {
 import { createStore, produce } from "solid-js/store";
 import { Chit } from "./chit";
 import { Position } from "./grid/position";
-import { Level } from "./level";
+import { Level, Team } from "./level";
 import {
 	Command,
 	isProgram,
@@ -19,9 +19,9 @@ import {
 } from "./program";
 
 type BattlePhase =
-	| { name: "setup"; team: number }
-	| { name: "turn"; team: number }
-	| { name: "end"; winner: number };
+	| { name: "setup"; team: Team }
+	| { name: "turn"; turn: number; team: Team }
+	| { name: "end"; winner: Team };
 
 export type Selection =
 	| null
@@ -166,7 +166,7 @@ export const createDataBattleStore = (level: Level) => {
 					dataBattle.uploadZones = [];
 
 					dataBattle.selection = null;
-					dataBattle.phase = { name: "turn", team: 0 };
+					dataBattle.phase = { name: "turn", turn: 1, team: 0 };
 				})
 			);
 		},
@@ -286,7 +286,16 @@ export const createDataBattleStore = (level: Level) => {
 				usedSpeed: 0,
 				usedAction: false,
 			});
-			setDataBattle("phase", { name: "turn", team: nextTeam });
+			setDataBattle("phase", {
+				name: "turn",
+				// Increment the turn number if the next team is not later in the team queue
+				turn:
+					dataBattle.teams.indexOf(dataBattle.phase.team) <=
+					dataBattle.teams.indexOf(nextTeam)
+						? dataBattle.phase.turn + 1
+						: dataBattle.phase.turn,
+				team: nextTeam,
+			});
 		},
 		harmProgram(program: Program, amount: number) {
 			setDataBattle(
@@ -300,6 +309,23 @@ export const createDataBattleStore = (level: Level) => {
 							(pos) =>
 								(dataBattle.mapPrograms[pos.sectorIndex] = null)
 						);
+
+					// If now dead, check if whole team is eliminated
+					if (dataBattle.onTeamEliminated && program2.slug.length) {
+						const teamsAlive = new Set<number>();
+						dataBattle.programs.forEach(
+							(program) =>
+								program.slug.length &&
+								teamsAlive.add(program.team)
+						);
+						if (teamsAlive.has(program2.team)) return; // Team wasn't eliminated
+
+						dataBattle.onTeamEliminated(
+							program2.team,
+							[...teamsAlive],
+							actions
+						);
+					}
 				})
 			);
 		},

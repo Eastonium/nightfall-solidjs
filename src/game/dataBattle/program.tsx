@@ -3,6 +3,7 @@ import { For, Show } from "solid-js";
 import { Chit } from "./chit";
 import { Position } from "./grid/position";
 import { gridUnitSize, Segment } from "./grid/segment";
+import { Team } from "./level";
 import { Actions, useDataBattle } from "./store";
 
 type Target = "enemy" | "ally" | "self" | "void" | "solid";
@@ -38,13 +39,13 @@ export interface ProgramConfig extends Required<ProgramBase> {
 export interface ProgramInstanceDefinition extends ProgramBase {
 	id: string; // For referencing a config
 	slug: [number, number][];
-	team: number;
+	team: Team;
 }
 
 export interface Program extends ProgramConfig {
 	// id is here, but is instead a UID
 	slug: Position[];
-	team: number;
+	team: Team;
 	usedSpeed: number;
 	usedAction: boolean;
 }
@@ -61,7 +62,7 @@ export function isProgramInstance(
 }
 
 export const ProgramComponent = (p: { program: Program }) => {
-	const [, { setSelection }] = useDataBattle();
+	const [{ dataBattle }, { setSelection }] = useDataBattle();
 	const sortedSlug = () => [...p.program.slug].sort(Position.compare);
 	const headPos = () => p.program.slug[0];
 
@@ -89,7 +90,14 @@ export const ProgramComponent = (p: { program: Program }) => {
 					);
 				}}
 			</For>
-			<Show when={p.program.usedAction} keyed>
+			<Show
+				when={
+					dataBattle.phase.name === "turn" &&
+					p.program.team === dataBattle.phase.team &&
+					p.program.usedAction
+				}
+				keyed
+			>
 				<image
 					x={headPos().column * gridUnitSize + 22}
 					y={headPos().row * gridUnitSize - 3}
