@@ -31,7 +31,7 @@ export type Selection =
 type DataBattle = Level & {
 	phase: BattlePhase;
 	selection: Selection;
-	collectedCredits: number;
+	creditsCollected: number;
 };
 export type Actions = ReturnType<typeof createDataBattleStore>[1];
 
@@ -50,9 +50,9 @@ export const useDataBattle = () => {
 export const createDataBattleStore = (level: Level) => {
 	const [dataBattle, setDataBattle] = createStore<DataBattle>({
 		...level,
-		phase: { name: "setup", team: 0 },
+		phase: { name: "setup", team: level.teams[0] },
 		selection: null,
-		collectedCredits: 0,
+		creditsCollected: 0,
 	});
 
 	// clear selection if selected program dies
@@ -394,9 +394,9 @@ export const createDataBattleStore = (level: Level) => {
 			setDataBattle("solid", pos.sectorIndex, (solid) => !solid);
 		},
 		collectCredits(amount: number) {
-			setDataBattle("collectedCredits", (credits) => credits + amount);
+			setDataBattle("creditsCollected", (credits) => credits + amount);
 		},
-		endGame(winningTeam: number) {
+		endGame(winningTeam: Team) {
 			setDataBattle("phase", { name: "end", winner: winningTeam });
 		},
 	};

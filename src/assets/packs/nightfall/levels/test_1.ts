@@ -72,5 +72,9 @@ const Test_Level_1: LevelDefinition = {
 		{ team: 0, pos: [12, 9] },
 	],
 	teams: [0, 1],
+	onTeamEliminated(team, _, { endGame }) {
+		if (team === 0) endGame(1);
+	},
+	creditReward: 1000,
 };
 export default Test_Level_1;

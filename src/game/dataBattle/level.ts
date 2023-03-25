@@ -27,7 +27,8 @@ export type LevelDefinition = {
 	programs: ProgramInstanceDefinition[];
 	uploadZones: UploadZoneInstanceDefinition[];
 	teams: Team[];
-	onTeamEliminated?: (team: Team, remainingTeams: Team[], actions: Actions) => void;
+	creditReward: number;
+	onTeamEliminated: (team: Team, remainingTeams: Team[], actions: Actions) => void;
 };
 export type Level = ReturnType<typeof processLevel>;
 

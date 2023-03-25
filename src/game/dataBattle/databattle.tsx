@@ -4,6 +4,7 @@ import { css, styled } from "solid-styled-components";
 
 import { Button, NormalButtonProps } from "ui/atoms/button";
 import { Window, WindowProps } from "ui/atoms/window";
+import { Fonts } from "ui/fonts";
 
 import { ChitInfo } from "./chitInfo";
 import { Grid } from "./grid";
@@ -79,6 +80,9 @@ export const DataBattle = (props: DataBattleProps) => {
 							{(selection) => <ChitInfo selection={selection} />}
 						</Show>
 					</Window>
+
+					<Grid class={gridStyleClass} />
+
 					<Show when={dataBattle.phase.name === "setup"} keyed>
 						<Button
 							bold
@@ -88,7 +92,44 @@ export const DataBattle = (props: DataBattleProps) => {
 							Begin DataBattle
 						</Button>
 					</Show>
-					<Grid class={gridStyleClass} />
+
+					<Show
+						when={
+							dataBattle.phase.name === "end" && dataBattle.phase
+						}
+						keyed
+					>
+						{(phase) => (
+							<Window
+								class={centeredInfoWindowClass}
+								title="databattle.result"
+								width={250}
+								height={150}
+							>
+								{phase.winner === 0 ? (
+									<WindowInfoSection>
+										<h1>Databattle Successful</h1>
+										<p>
+											Mission credits awarded:{" "}
+											{dataBattle.creditReward}
+										</p>
+										<p>
+											Extra credits acquired:{" "}
+											{dataBattle.creditsCollected}
+										</p>
+									</WindowInfoSection>
+								) : (
+									<WindowInfoSection>
+										<h1>Databattle Unsuccessful</h1>
+										<p>Connection terminated...</p>
+									</WindowInfoSection>
+								)}
+								<Button fill bold color="cyan">
+									Log out
+								</Button>
+							</Window>
+						)}
+					</Show>
 				</DataBattleContext.Provider>
 			</LayoutContainer>
 		</Window>
@@ -107,7 +148,6 @@ const beginButtonStyleClass = css`
 	grid-column: 2;
 	align-self: flex-end;
 	justify-self: flex-start;
-	z-index: 1;
 `;
 const gridStyleClass = css`
 	grid-row: 1 / span 2;
@@ -115,4 +155,19 @@ const gridStyleClass = css`
 	display: flex;
 	justify-content: center;
 	align-items: center;
+`;
+
+const centeredInfoWindowClass = css`
+	grid-row: 1 / 3;
+	grid-column: 2;
+	justify-self: center;
+	align-self: center;
+`;
+const WindowInfoSection = styled(Window.Section)`
+	padding: 2em 1.5em;
+	text-transform: uppercase;
+
+	h1 {
+		${Fonts.O4b_25};
+	}
 `;
