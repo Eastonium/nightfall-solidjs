@@ -28,7 +28,11 @@ export type Selection =
 	| { chit: Chit; command: null }
 	| { chit: Program | ProgramConfig; command: Command | null };
 
-type DataBattle = Level & { phase: BattlePhase; selection: Selection };
+type DataBattle = Level & {
+	phase: BattlePhase;
+	selection: Selection;
+	collectedCredits: number;
+};
 export type Actions = ReturnType<typeof createDataBattleStore>[1];
 
 export const DataBattleContext =
@@ -48,6 +52,7 @@ export const createDataBattleStore = (level: Level) => {
 		...level,
 		phase: { name: "setup", team: 0 },
 		selection: null,
+		collectedCredits: 0,
 	});
 
 	// clear selection if selected program dies
@@ -213,6 +218,16 @@ export const createDataBattleStore = (level: Level) => {
 							command: program2.commands[0] ?? null,
 						};
 					}
+
+					const chit = dataBattle.chits.find((chit) =>
+						chit.pos.equals(pos)
+					);
+					if (chit) {
+						chit.onLandOn?.(program2, actions);
+						dataBattle.chits = dataBattle.chits.filter(
+							(c) => c.id !== chit.id
+						);
+					}
 				})
 			);
 		},
@@ -351,6 +366,12 @@ export const createDataBattleStore = (level: Level) => {
 		},
 		toggleSolid(pos: Position) {
 			setDataBattle("solid", pos.sectorIndex, (solid) => !solid);
+		},
+		collectCredits(amount: number) {
+			setDataBattle("collectedCredits", (credits) => credits + amount);
+		},
+		endGame(winningTeam: number) {
+			setDataBattle("phase", { name: "end", winner: winningTeam });
 		},
 	};
 	return [selectors, actions] as const;

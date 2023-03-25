@@ -35,9 +35,27 @@ const Test_Level_1: LevelDefinition = {
 		"🔲": "nightfall:tile1",
 	},
 	chits: [
-		{ id: "nightfall:data_item", pos: [1, 2] },
-		{ id: "nightfall:credits", pos: [1, 5] },
-		{ id: "nightfall:credits", pos: [1, 8] },
+		{
+			id: "nightfall:data_item",
+			pos: [1, 2],
+			onLandOn(program, { endGame }) {
+				endGame(program.team);
+			},
+		},
+		{
+			id: "nightfall:credits",
+			pos: [1, 5],
+			onLandOn(_, { collectCredits }) {
+				collectCredits(200);
+			},
+		},
+		{
+			id: "nightfall:credits",
+			pos: [1, 8],
+			onLandOn(_, { collectCredits }) {
+				collectCredits(200);
+			},
+		},
 	],
 	programs: [
 		{ id: "nightfall:data_doctor_1", slug: [[3, 1]], team: 1 },
