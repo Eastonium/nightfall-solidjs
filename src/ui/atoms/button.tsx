@@ -32,6 +32,7 @@ interface ButtonProps
 	color?: keyof typeof buttonColors;
 	big?: boolean;
 	wrapperProps?: JSX.HTMLAttributes<HTMLDivElement>;
+	innerSpanProps?: JSX.HTMLAttributes<HTMLSpanElement>;
 }
 export type { ButtonProps as NormalButtonProps };
 const NormalButton: Component<ButtonProps> = (props) => {
@@ -40,13 +41,13 @@ const NormalButton: Component<ButtonProps> = (props) => {
 			{ fill: false, bold: false, big: false, wrapperProps: {} },
 			props
 		),
-		["color", "fill", "wrapperProps", "children"]
+		["color", "fill", "wrapperProps", "innerSpanProps", "children"]
 	);
 
 	return (
 		<ButtonWrapper fill={p.fill} {...p.wrapperProps}>
 			<NormalStyledButton color={p.color ?? "blue"} {...buttonProps}>
-				<span>{p.children}</span>
+				<span {...p.innerSpanProps}>{p.children}</span>
 			</NormalStyledButton>
 		</ButtonWrapper>
 	);
@@ -130,7 +131,7 @@ export const MetalButton: Component<MetalButtonProps> = (props) => {
 };
 const MetalStyledButton = styled("button")<{ dark: boolean; small: boolean }>`
 	position: relative;
-	${Fonts.Abstract};
+	${Fonts.JH_Titles};
 	${(p) => (p.small ? `fontSize: 8px;` : "")};
 	width: 100%;
 	height: ${(p) => (p.small ? "12px" : "20px")};

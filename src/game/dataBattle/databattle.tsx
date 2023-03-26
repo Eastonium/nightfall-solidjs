@@ -28,6 +28,7 @@ export const DataBattle = (props: DataBattleProps) => {
 			return {
 				color: "red",
 				children: "Remove",
+				innerSpanProps: { class: "fixPx" },
 				disabled:
 					!selectionPos ||
 					!dataBattle.uploadZones.find((uz) =>
@@ -108,7 +109,7 @@ export const DataBattle = (props: DataBattleProps) => {
 							>
 								{phase.winner === 0 ? (
 									<WindowInfoSection>
-										<h1>Databattle Successful</h1>
+										<header>Databattle Successful</header>
 										<p>
 											Mission credits awarded:{" "}
 											{dataBattle.creditReward}
@@ -120,7 +121,7 @@ export const DataBattle = (props: DataBattleProps) => {
 									</WindowInfoSection>
 								) : (
 									<WindowInfoSection>
-										<h1>Databattle Unsuccessful</h1>
+										<header>Databattle Unsuccessful</header>
 										<p>Connection terminated...</p>
 									</WindowInfoSection>
 								)}
@@ -164,10 +165,10 @@ const centeredInfoWindowClass = css`
 	align-self: center;
 `;
 const WindowInfoSection = styled(Window.Section)`
-	padding: 2em 1.5em;
+	padding: 16px 12px;
 	text-transform: uppercase;
 
-	h1 {
+	header {
 		${Fonts.O4b_25};
 	}
 `;

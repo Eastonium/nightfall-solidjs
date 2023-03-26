@@ -1,5 +1,5 @@
-const Abstract = `
-	font-family: "Abstract";
+const JH_Titles = `
+	font-family: "JH_Titles";
 	font-size: 16px;
 	text-transform: uppercase;
 `;
@@ -11,4 +11,4 @@ const BitLight = `
 	font-family: "BitLight";
 	font-size: 10px;
 `;
-export const Fonts = { Abstract, O4b_25, BitLight };
+export const Fonts = { JH_Titles, O4b_25, BitLight };

@@ -1,4 +1,4 @@
-import { createGlobalStyles as css, glob } from "solid-styled-components";
+import { createGlobalStyles as css } from "solid-styled-components";
 import { Fonts } from "./fonts";
 
 export const GlobalStyles = css`
@@ -27,6 +27,7 @@ export const GlobalStyles = css`
 		font-smooth: never;
 		-webkit-font-smoothing: none;
 		image-rendering: pixelated;
+		transform: translate3d(0,0,0); // Fixes font blur
 		background: #000;
 		color: #fff;
 	}
@@ -41,5 +42,9 @@ export const GlobalStyles = css`
 
 	#root {
 		height: 100%;
+	}
+
+	.fixPx::after {
+		content: "\u200a\u200a"; // &hairsp;&hairsp;
 	}
 `;

@@ -311,7 +311,7 @@ export const createDataBattleStore = (level: Level) => {
 						);
 
 					// If now dead, check if whole team is eliminated
-					if (dataBattle.onTeamEliminated && program2.slug.length) {
+					if (dataBattle.onTeamEliminated && !program2.slug.length) {
 						const teamsAlive = new Set<number>();
 						dataBattle.programs.forEach(
 							(program) =>

@@ -26,5 +26,6 @@ Undo button
 <!-- Get StyleKey stuff on level to work -->
 <!-- Get tiles to appear in their style -->
 <!-- Get random textures working but not directly imported -->
+Fix fonts getting blurred
 
 <!-- Figure out why context is undefined when I update a file -->

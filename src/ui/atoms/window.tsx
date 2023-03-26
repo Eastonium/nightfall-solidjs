@@ -79,7 +79,7 @@ const WindowContainer = styled("div")`
 
 	display: inline-flex;
 	flex-direction: column;
-	min-width: 126px;
+	min-width: 128px;
 	border: solid #000;
 	border-width: 0 1px;
 
