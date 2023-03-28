@@ -19,8 +19,10 @@ export const DataBattle = (props: DataBattleProps) => {
 	const [p, windowProps] = splitProps(props, ["level"]);
 
 	const dataBattleStore = createDataBattleStore(p.level);
-	const [{ dataBattle, selectionPosition }, { clearUploadZone, endSetup }] =
-		dataBattleStore;
+	const [
+		{ dataBattle, selectionPosition },
+		{ clearUploadZone, endSetup, rollbackState },
+	] = dataBattleStore;
 
 	const programInfoButtonProps = (): NormalButtonProps => {
 		if (dataBattle.phase.name === "setup") {
@@ -40,7 +42,8 @@ export const DataBattle = (props: DataBattleProps) => {
 			return {
 				color: "red",
 				children: "Undo",
-				disabled: true,
+				disabled: !dataBattle.rollbackState,
+				onClick: rollbackState,
 			};
 	};
 

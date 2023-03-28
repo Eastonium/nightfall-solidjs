@@ -28,8 +28,8 @@ export const Targets = (p: TargetProps) => {
 					(dist <= p.program.speed - p.program.usedSpeed &&
 						dataBattle.solid[pos.sectorIndex] &&
 						(!dataBattle.mapPrograms[pos.sectorIndex] ||
-							dataBattle.mapPrograms[pos.sectorIndex] ==
-								p.program))
+							dataBattle.mapPrograms[pos.sectorIndex]?.id ==
+								p.program.id))
 			).slice(1); // remove starting cell
 		}
 	};

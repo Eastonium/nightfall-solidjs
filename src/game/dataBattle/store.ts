@@ -6,7 +6,7 @@ import {
 	untrack,
 	useContext,
 } from "solid-js";
-import { createStore, produce } from "solid-js/store";
+import { createStore, produce, reconcile, unwrap } from "solid-js/store";
 import { Chit } from "./chit";
 import { Position } from "./grid/position";
 import { Level, Team } from "./level";
@@ -17,6 +17,7 @@ import {
 	Program,
 	ProgramConfig,
 } from "./program";
+import cloneDeep from "lodash.clonedeep";
 
 type BattlePhase =
 	| { name: "setup"; team: Team }
@@ -48,11 +49,14 @@ export const useDataBattle = () => {
 };
 
 export const createDataBattleStore = (level: Level) => {
-	const [dataBattle, setDataBattle] = createStore<DataBattle>({
+	const [dataBattle, setDataBattle] = createStore<
+		DataBattle & { rollbackState: null | DataBattle }
+	>({
 		...level,
 		phase: { name: "setup", team: level.teams[0] },
 		selection: null,
 		creditsCollected: 0,
+		rollbackState: null,
 	});
 
 	// clear selection if selected program dies
@@ -194,10 +198,18 @@ export const createDataBattleStore = (level: Level) => {
 						(program2) => program2.id === program.id
 					)!;
 
+					// If this is the first move for this program, save rollback state
+					if (program2.usedSpeed === 0) {
+						const { rollbackState: _, ...stateToSave } = dataBattle;
+						dataBattle.rollbackState = cloneDeep(
+							unwrap(stateToSave)
+						);
+					}
+
 					// Extend to new position
 					program2.slug = [
 						pos,
-						...program.slug.filter((pos2) => !pos2.equals(pos)),
+						...program2.slug.filter((pos2) => !pos2.equals(pos)),
 					];
 					dataBattle.mapPrograms[pos.sectorIndex] = program2;
 
@@ -242,6 +254,9 @@ export const createDataBattleStore = (level: Level) => {
 				  ]
 		) {
 			if (cmd[0]) {
+				// Remove rollback state on running a command
+				setDataBattle("rollbackState", null);
+
 				const [command, targetPos, targetProg] = cmd;
 				command.effect.call(sourceProg, targetPos, targetProg, actions);
 			}
@@ -395,6 +410,15 @@ export const createDataBattleStore = (level: Level) => {
 		},
 		collectCredits(amount: number) {
 			setDataBattle("creditsCollected", (credits) => credits + amount);
+		},
+		rollbackState() {
+			if (!dataBattle.rollbackState) return;
+			setDataBattle(
+				reconcile({
+					...dataBattle.rollbackState,
+					rollbackState: null,
+				})
+			);
 		},
 		endGame(winningTeam: Team) {
 			setDataBattle("phase", { name: "end", winner: winningTeam });
