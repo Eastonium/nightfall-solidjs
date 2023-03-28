@@ -8,7 +8,7 @@ import { floodFindPositions } from "./utils";
 
 interface TargetProps {
 	program: Program;
-	command: Command | null;
+	command?: Command;
 }
 export const Targets = (p: TargetProps) => {
 	const [{ dataBattle }, actions] = useDataBattle();

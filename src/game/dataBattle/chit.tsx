@@ -32,7 +32,7 @@ export const ChitComponent = (p: { chit: Chit }) => {
 			x={column * gridUnitSize}
 			y={row * gridUnitSize}
 			href={p.chit.icon}
-			onClick={() => setSelection({ chit: p.chit, command: null })}
+			onClick={() => setSelection({ chit: p.chit })}
 		/>
 	);
 };

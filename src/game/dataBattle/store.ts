@@ -10,13 +10,7 @@ import { createStore, produce, reconcile, unwrap } from "solid-js/store";
 import { Chit } from "./chit";
 import { Position } from "./grid/position";
 import { Level, Team } from "./level";
-import {
-	Command,
-	isProgram,
-	isProgramInstance,
-	Program,
-	ProgramConfig,
-} from "./program";
+import { Command, isProgramInstance, Program, ProgramConfig } from "./program";
 import cloneDeep from "lodash.clonedeep";
 
 type BattlePhase =
@@ -26,8 +20,8 @@ type BattlePhase =
 
 export type Selection =
 	| null
-	| { chit: Chit; command: null }
-	| { chit: Program | ProgramConfig; command: Command | null };
+	| { chit: Chit; program?: never; command?: never }
+	| { chit?: never; program: Program | ProgramConfig; command?: Command };
 
 type DataBattle = Level & {
 	phase: BattlePhase;
@@ -63,10 +57,10 @@ export const createDataBattleStore = (level: Level) => {
 	createEffect(() => {
 		if (
 			dataBattle.selection &&
-			isProgramInstance(dataBattle.selection.chit) &&
-			dataBattle.selection.chit.slug.length === 0
+			isProgramInstance(dataBattle.selection.program) &&
+			dataBattle.selection.program.slug.length === 0
 		) {
-			setDataBattle("selection", null);
+			actions.setSelection(null);
 		}
 	});
 
@@ -80,12 +74,11 @@ export const createDataBattleStore = (level: Level) => {
 					(uz) => uz.team === team
 				);
 				if (!uploadZone) return;
-				setDataBattle("selection", {
+				actions.setSelection({
 					chit: {
 						pos: uploadZone.pos,
 						...getChitConfig("nightfall:upload_zone")!,
 					},
-					command: null,
 				});
 			} else {
 				const program = dataBattle.programs.find(
@@ -95,7 +88,7 @@ export const createDataBattleStore = (level: Level) => {
 						prog.slug.length > 0
 				);
 				if (!program) return;
-				setDataBattle("selection", { chit: program, command: null });
+				actions.setSelection({ program });
 			}
 		});
 	});
@@ -104,11 +97,10 @@ export const createDataBattleStore = (level: Level) => {
 		dataBattle,
 		selectionPosition: () =>
 			dataBattle.selection &&
-			(isProgram(dataBattle.selection.chit)
-				? isProgramInstance(dataBattle.selection.chit)
-					? dataBattle.selection.chit.slug[0]
-					: null
-				: dataBattle.selection.chit.pos),
+			(dataBattle.selection.chit?.pos ??
+				(isProgramInstance(dataBattle.selection.program)
+					? dataBattle.selection.program.slug[0]
+					: null)),
 	};
 
 	const actions = {
@@ -125,12 +117,11 @@ export const createDataBattleStore = (level: Level) => {
 					{ program }
 					// program is not from store, do like this instead of ...["program", program] to avoid corrupting it
 				);
-				setDataBattle("selection", {
-					chit: { team: 0, slug: [selectionPos], ...program },
-					command: null,
+				actions.setSelection({
+					program: { team: 0, slug: [selectionPos], ...program },
 				});
 			} else {
-				setDataBattle("selection", { chit: program, command: null });
+				actions.setSelection({ program });
 			}
 		},
 		clearUploadZone() {
@@ -142,7 +133,7 @@ export const createDataBattleStore = (level: Level) => {
 				"program",
 				null
 			);
-			setDataBattle("selection", {
+			actions.setSelection({
 				chit: {
 					pos: selectionPos,
 					...getChitConfig("nightfall:upload_zone")!,
@@ -178,18 +169,27 @@ export const createDataBattleStore = (level: Level) => {
 			// Check if different program is selected and if the current selection has moved
 			if (
 				dataBattle.selection &&
-				dataBattle.selection.chit.id !== selection?.chit.id &&
-				isProgramInstance(dataBattle.selection.chit) &&
-				dataBattle.selection.chit.usedSpeed > 0
+				dataBattle.selection.program?.id !== selection?.program?.id &&
+				isProgramInstance(dataBattle.selection.program) &&
+				dataBattle.selection.program.usedSpeed > 0
 			) {
-				setDataBattle(
-					"programs",
-					(prog) => prog.id === dataBattle.selection?.chit.id,
-					"usedAction",
-					true
-				);
+				const programId = dataBattle.selection.program.id;
+				setDataBattle("programs", (prog) => prog.id === programId, {
+					usedSpeed: Infinity,
+					usedAction: true,
+				});
 			}
-			setDataBattle("selection", selection);
+			setDataBattle(
+				"selection",
+				selection
+					? {
+							chit: undefined,
+							program: undefined,
+							command: undefined,
+							...selection,
+					  }
+					: null
+			);
 		},
 		moveProgram(program: Program, pos: Position) {
 			setDataBattle(
@@ -224,9 +224,9 @@ export const createDataBattleStore = (level: Level) => {
 					// Increased speed used this turn
 					program2.usedSpeed++;
 					// If all speed is used, auto-select first command
-					if (program2.usedSpeed === program2.speed) {
+					if (program2.usedSpeed >= program2.speed) {
 						dataBattle.selection = {
-							chit: program2,
+							program: program2,
 							command: program2.commands[0] ?? null,
 						};
 					}
@@ -260,12 +260,10 @@ export const createDataBattleStore = (level: Level) => {
 				const [command, targetPos, targetProg] = cmd;
 				command.effect.call(sourceProg, targetPos, targetProg, actions);
 			}
-			setDataBattle(
-				"programs",
-				(prog) => prog.id === sourceProg.id,
-				"usedAction",
-				true
-			);
+			setDataBattle("programs", (prog) => prog.id === sourceProg.id, {
+				usedSpeed: Infinity, // Prevent speed-adding programs from letting it move again
+				usedAction: true,
+			});
 
 			if (dataBattle.phase.name !== "turn") return;
 			// Find next program (in order) and select it
@@ -283,24 +281,21 @@ export const createDataBattleStore = (level: Level) => {
 					!program.usedAction &&
 					program.slug.length > 0
 				) {
-					setDataBattle("selection", {
-						chit: program,
-						command: null,
-					});
+					actions.setSelection({ program });
 					return;
 				}
 			}
-			// If no program was found, clear selection and switch to next team's turn
-			setDataBattle("selection", null);
+			// No program found. Clear selection, reset used vars, and switch to next team's turn
+			actions.setSelection(null);
+			setDataBattle("programs", (prog) => prog.team === sourceProg.team, {
+				usedSpeed: 0,
+				usedAction: false,
+			});
 			const nextTeam =
 				dataBattle.teams[
 					(dataBattle.teams.indexOf(dataBattle.phase.team) + 1) %
 						dataBattle.teams.length
 				];
-			setDataBattle("programs", (prog) => prog.team === nextTeam, {
-				usedSpeed: 0,
-				usedAction: false,
-			});
 			setDataBattle("phase", {
 				name: "turn",
 				// Increment the turn number if the next team is not later in the team queue
@@ -325,8 +320,15 @@ export const createDataBattleStore = (level: Level) => {
 								(dataBattle.mapPrograms[pos.sectorIndex] = null)
 						);
 
-					// If now dead, check if whole team is eliminated
-					if (dataBattle.onTeamEliminated && !program2.slug.length) {
+					// If dead
+					if (!program2.slug.length) {
+						// Clear selection if harmed program was selected
+						if (dataBattle.selection?.program?.id === program.id) {
+							actions.setSelection(null);
+						}
+
+						if (!dataBattle.onTeamEliminated) return;
+						// Check if whole team is eliminated
 						const teamsAlive = new Set<number>();
 						dataBattle.programs.forEach(
 							(program) =>

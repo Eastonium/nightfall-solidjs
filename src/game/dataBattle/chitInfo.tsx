@@ -1,13 +1,8 @@
-import { For, Show } from "solid-js";
+import { For, Match, Show, Switch } from "solid-js";
 
 import { Fonts } from "ui/fonts";
 import { Segment, gridUnitSize } from "./grid/segment";
-import {
-	isProgram,
-	isProgramInstance,
-	Program,
-	ProgramConfig,
-} from "./program";
+import { isProgramInstance, Program, ProgramConfig } from "./program";
 import { css, styled } from "solid-styled-components";
 import { Selection, useDataBattle } from "./store";
 import { Button } from "ui/atoms/button";
@@ -18,35 +13,44 @@ interface ChitInfoProps {
 export const ChitInfo = (p: ChitInfoProps) => (
 	<ChitInfoContainer>
 		<BasicInfoContainer>
-			{isProgram(p.selection.chit) ? (
-				<>
-					<svg class={iconStyleClass}>
-						<Segment
-							column={0}
-							row={0}
-							icon={p.selection.chit.icon}
-							color={p.selection.chit.color}
-						/>
-					</svg>
-					<span>Move: {p.selection.chit.speed}</span>
-					<span>Max Size: {p.selection.chit.maxSize}</span>
-					{isProgramInstance(p.selection.chit) && (
-						<span>
-							Current Size: {p.selection.chit.slug.length}
-						</span>
+			<Switch>
+				<Match when={p.selection.program} keyed>
+					{(program) => (
+						<>
+							<svg class={iconStyleClass}>
+								<Segment
+									column={0}
+									row={0}
+									icon={program.icon}
+									color={program.color}
+								/>
+							</svg>
+							<span>Move: {program.speed}</span>
+							<span>Max Size: {program.maxSize}</span>
+							{isProgramInstance(program) && (
+								<span>Current Size: {program.slug.length}</span>
+							)}
+						</>
 					)}
-				</>
-			) : (
-				<img
-					src={p.selection.chit.icon}
-					alt={p.selection.chit.name}
-					class={iconStyleClass}
-				/>
-			)}
+				</Match>
+				<Match when={p.selection.chit} keyed>
+					{(chit) => (
+						<img
+							src={chit.icon}
+							alt={chit.name}
+							class={iconStyleClass}
+						/>
+					)}
+				</Match>
+			</Switch>
 		</BasicInfoContainer>
-		<span class={h1StyleClass}>{p.selection.chit.name}</span>
-		<span class={pStyleClass}>{p.selection.chit.desc}</span>
-		<Show when={isProgram(p.selection.chit) && p.selection.chit} keyed>
+		<span class={h1StyleClass}>
+			{p.selection.chit?.name ?? p.selection.program?.name}
+		</span>
+		<span class={pStyleClass}>
+			{p.selection.chit?.desc ?? p.selection.program?.desc}
+		</span>
+		<Show when={p.selection.program} keyed>
 			{(program) => (
 				<>
 					<span class={h2StyleClass}>Commands</span>
@@ -100,7 +104,10 @@ const Commands = (p: { program: ProgramConfig | Program }) => {
 						fallback={
 							<CommandViewButton
 								onClick={() =>
-									setSelection({ chit: p.program, command })
+									setSelection({
+										program: p.program,
+										command,
+									})
 								}
 							>
 								{command.name}
@@ -110,7 +117,7 @@ const Commands = (p: { program: ProgramConfig | Program }) => {
 						<Button
 							fill
 							onClick={() =>
-								setSelection({ chit: p.program, command })
+								setSelection({ program: p.program, command })
 							}
 						>
 							{command.name}

@@ -22,21 +22,6 @@ export const Grid = (gridProps: GridProps) => {
 	// const [p, gridProps] = splitProps(props, []);
 	const [{ dataBattle, selectionPosition }] = useDataBattle();
 
-	const programSelection = (): null | {
-		program: Program;
-		command: Command | null;
-	} => {
-		if (
-			!dataBattle.selection ||
-			!isProgramInstance(dataBattle.selection.chit) ||
-			dataBattle.selection.chit.slug.length === 0 // for when program deletes itself
-		)
-			return null;
-		return {
-			program: dataBattle.selection.chit,
-			command: dataBattle.selection.command,
-		};
-	};
 
 	return (
 		<div {...gridProps}>
@@ -89,7 +74,17 @@ export const Grid = (gridProps: GridProps) => {
 					)}
 				</Show>
 
-				<Show when={programSelection()} keyed>
+				<Show
+					when={
+						dataBattle.selection &&
+						!dataBattle.selection.chit &&
+						isProgramInstance(dataBattle.selection.program) && {
+							program: dataBattle.selection.program,
+							command: dataBattle.selection.command,
+						}
+					}
+					keyed
+				>
 					{Targets}
 				</Show>
 			</svg>

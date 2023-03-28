@@ -50,15 +50,10 @@ export interface Program extends ProgramConfig {
 	usedAction: boolean;
 }
 
-export function isProgram(
-	chit: Chit | Program | ProgramConfig
-): chit is Program | ProgramConfig {
-	return chit.hasOwnProperty("commands");
-}
 export function isProgramInstance(
-	program: Chit | Program | ProgramConfig
+	program: Program | ProgramConfig | null | undefined
 ): program is Program {
-	return program.hasOwnProperty("slug");
+	return !!program?.hasOwnProperty("slug");
 }
 
 export const ProgramComponent = (p: { program: Program }) => {
@@ -67,7 +62,7 @@ export const ProgramComponent = (p: { program: Program }) => {
 	const headPos = () => p.program.slug[0];
 
 	return (
-		<g onClick={() => setSelection({ chit: p.program, command: null })}>
+		<g onClick={() => setSelection({ program: p.program })}>
 			<For each={sortedSlug()}>
 				{(pos) => {
 					const { column, row } = pos;
@@ -90,14 +85,7 @@ export const ProgramComponent = (p: { program: Program }) => {
 					);
 				}}
 			</For>
-			<Show
-				when={
-					dataBattle.phase.name === "turn" &&
-					p.program.team === dataBattle.phase.team &&
-					p.program.usedAction
-				}
-				keyed
-			>
+			<Show when={p.program.usedAction} keyed>
 				<image
 					x={headPos().column * gridUnitSize + 22}
 					y={headPos().row * gridUnitSize - 3}
