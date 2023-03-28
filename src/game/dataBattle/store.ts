@@ -1,12 +1,19 @@
 import { getChitConfig } from "game/game";
 import {
+	batch,
 	createContext,
 	createEffect,
 	createUniqueId,
 	untrack,
 	useContext,
 } from "solid-js";
-import { createStore, produce, reconcile, unwrap } from "solid-js/store";
+import {
+	createStore,
+	produce,
+	reconcile,
+	SetStoreFunction,
+	unwrap,
+} from "solid-js/store";
 import { Chit } from "./chit";
 import { Position } from "./grid/position";
 import { Level, Team } from "./level";
@@ -27,8 +34,9 @@ type DataBattle = Level & {
 	phase: BattlePhase;
 	selection: Selection;
 	creditsCollected: number;
+	rollbackState?: DataBattle;
 };
-export type Actions = ReturnType<typeof createDataBattleStore>[1];
+export type Actions = ReturnType<typeof createActions>;
 
 export const DataBattleContext =
 	createContext<ReturnType<typeof createDataBattleStore>>();
@@ -43,26 +51,14 @@ export const useDataBattle = () => {
 };
 
 export const createDataBattleStore = (level: Level) => {
-	const [dataBattle, setDataBattle] = createStore<
-		DataBattle & { rollbackState: null | DataBattle }
-	>({
+	const [dataBattle, setDataBattle] = createStore<DataBattle>({
 		...level,
 		phase: { name: "setup", team: level.teams[0] },
 		selection: null,
 		creditsCollected: 0,
-		rollbackState: null,
 	});
-
-	// clear selection if selected program dies
-	createEffect(() => {
-		if (
-			dataBattle.selection &&
-			isProgramInstance(dataBattle.selection.program) &&
-			dataBattle.selection.program.slug.length === 0
-		) {
-			actions.setSelection(null);
-		}
-	});
+	const selectors = createSelectors(dataBattle);
+	const actions = createActions(selectors, setDataBattle);
 
 	// Select first upload zone or program for new team on their turn
 	createEffect(() => {
@@ -93,19 +89,25 @@ export const createDataBattleStore = (level: Level) => {
 		});
 	});
 
-	const selectors = {
-		dataBattle,
-		selectionPosition: () =>
-			dataBattle.selection &&
-			(dataBattle.selection.chit?.pos ??
-				(isProgramInstance(dataBattle.selection.program)
-					? dataBattle.selection.program.slug[0]
-					: null)),
-	};
+	return [selectors, actions] as const;
+};
+const createSelectors = (dataBattle: DataBattle) => ({
+	dataBattle,
+	selectionPosition: () =>
+		dataBattle.selection &&
+		(dataBattle.selection.chit?.pos ??
+			(isProgramInstance(dataBattle.selection.program)
+				? dataBattle.selection.program.slug[0]
+				: null)),
+});
 
+const createActions = (
+	{ dataBattle, selectionPosition }: ReturnType<typeof createSelectors>,
+	setDataBattle: SetStoreFunction<DataBattle>
+) => {
 	const actions = {
 		selectListedProgram(program: ProgramConfig) {
-			const selectionPos = selectors.selectionPosition();
+			const selectionPos = selectionPosition();
 
 			if (
 				selectionPos &&
@@ -125,7 +127,7 @@ export const createDataBattleStore = (level: Level) => {
 			}
 		},
 		clearUploadZone() {
-			const selectionPos = selectors.selectionPosition();
+			const selectionPos = selectionPosition();
 			if (!selectionPos) return;
 			setDataBattle(
 				"uploadZones",
@@ -200,10 +202,12 @@ export const createDataBattleStore = (level: Level) => {
 
 					// If this is the first move for this program, save rollback state
 					if (program2.usedSpeed === 0) {
-						const { rollbackState: _, ...stateToSave } = dataBattle;
-						dataBattle.rollbackState = cloneDeep(
-							unwrap(stateToSave)
-						);
+						const { rollbackState, ...stateToClone } =
+							unwrap(dataBattle);
+						dataBattle.rollbackState = {
+							rollbackState,
+							...cloneDeep(stateToClone),
+						};
 					}
 
 					// Extend to new position
@@ -255,7 +259,7 @@ export const createDataBattleStore = (level: Level) => {
 		) {
 			if (cmd[0]) {
 				// Remove rollback state on running a command
-				setDataBattle("rollbackState", null);
+				setDataBattle("rollbackState", undefined);
 
 				const [command, targetPos, targetProg] = cmd;
 				command.effect.call(sourceProg, targetPos, targetProg, actions);
@@ -415,16 +419,28 @@ export const createDataBattleStore = (level: Level) => {
 		},
 		rollbackState() {
 			if (!dataBattle.rollbackState) return;
-			setDataBattle(
-				reconcile({
-					...dataBattle.rollbackState,
-					rollbackState: null,
-				})
-			);
+			batch(() => {
+				setDataBattle(reconcile(dataBattle.rollbackState!));
+				// Do some manual restoration of the chit/program object reference
+				if (dataBattle.selection?.chit) {
+					actions.setSelection({
+						chit: dataBattle.chits.find(
+							(chit) => chit.id === dataBattle.selection!.chit!.id
+						)!,
+					});
+				} else if (dataBattle.selection?.program) {
+					actions.setSelection({
+						program: dataBattle.programs.find(
+							(prog) =>
+								prog.id === dataBattle.selection!.program!.id
+						)!,
+					});
+				}
+			});
 		},
 		endGame(winningTeam: Team) {
 			setDataBattle("phase", { name: "end", winner: winningTeam });
 		},
 	};
-	return [selectors, actions] as const;
+	return actions;
 };

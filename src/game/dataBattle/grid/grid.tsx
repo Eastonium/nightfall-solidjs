@@ -1,4 +1,4 @@
-import { For, Index, JSX, Show, splitProps } from "solid-js";
+import { For, Index, JSX, Show } from "solid-js";
 
 import {
 	gridUnitSize,
@@ -6,12 +6,7 @@ import {
 	CellSelectionIndicator,
 } from "./segment";
 import { ChitComponent } from "../chit";
-import {
-	Command,
-	isProgramInstance,
-	Program,
-	ProgramComponent,
-} from "../program";
+import { isProgramInstance, Program, ProgramComponent } from "../program";
 import { getChitConfig, getTexture } from "game/game";
 import { Targets } from "./targets";
 import { useDataBattle } from "../store";
@@ -21,7 +16,6 @@ interface GridProps extends JSX.HTMLAttributes<HTMLDivElement> {}
 export const Grid = (gridProps: GridProps) => {
 	// const [p, gridProps] = splitProps(props, []);
 	const [{ dataBattle, selectionPosition }] = useDataBattle();
-
 
 	return (
 		<div {...gridProps}>
