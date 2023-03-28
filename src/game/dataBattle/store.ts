@@ -305,6 +305,7 @@ const createActions = (
 				usedSpeed: 0,
 				usedAction: false,
 			});
+			setRollbackStates([]);
 			const nextTeam =
 				dataBattle.teams[
 					(dataBattle.teams.indexOf(dataBattle.phase.team) + 1) %
