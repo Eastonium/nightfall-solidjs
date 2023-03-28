@@ -1,9 +1,12 @@
 import { getChitConfig } from "game/game";
 import {
+	Accessor,
 	batch,
 	createContext,
 	createEffect,
+	createSignal,
 	createUniqueId,
+	Setter,
 	untrack,
 	useContext,
 } from "solid-js";
@@ -34,7 +37,6 @@ type DataBattle = Level & {
 	phase: BattlePhase;
 	selection: Selection;
 	creditsCollected: number;
-	rollbackState?: DataBattle;
 };
 export type Actions = ReturnType<typeof createActions>;
 
@@ -57,8 +59,9 @@ export const createDataBattleStore = (level: Level) => {
 		selection: null,
 		creditsCollected: 0,
 	});
-	const selectors = createSelectors(dataBattle);
-	const actions = createActions(selectors, setDataBattle);
+	const [rollbackStates, setRollbackStates] = createSignal<DataBattle[]>([]);
+	const selectors = createSelectors(dataBattle, rollbackStates);
+	const actions = createActions(selectors, setDataBattle, setRollbackStates);
 
 	// Select first upload zone or program for new team on their turn
 	createEffect(() => {
@@ -91,7 +94,10 @@ export const createDataBattleStore = (level: Level) => {
 
 	return [selectors, actions] as const;
 };
-const createSelectors = (dataBattle: DataBattle) => ({
+const createSelectors = (
+	dataBattle: DataBattle,
+	rollbackStates: Accessor<DataBattle[]>
+) => ({
 	dataBattle,
 	selectionPosition: () =>
 		dataBattle.selection &&
@@ -99,11 +105,17 @@ const createSelectors = (dataBattle: DataBattle) => ({
 			(isProgramInstance(dataBattle.selection.program)
 				? dataBattle.selection.program.slug[0]
 				: null)),
+	rollbackStates,
 });
 
 const createActions = (
-	{ dataBattle, selectionPosition }: ReturnType<typeof createSelectors>,
-	setDataBattle: SetStoreFunction<DataBattle>
+	{
+		dataBattle,
+		selectionPosition,
+		rollbackStates,
+	}: ReturnType<typeof createSelectors>,
+	setDataBattle: SetStoreFunction<DataBattle>,
+	setRollbackStates: Setter<DataBattle[]>
 ) => {
 	const actions = {
 		selectListedProgram(program: ProgramConfig) {
@@ -202,12 +214,10 @@ const createActions = (
 
 					// If this is the first move for this program, save rollback state
 					if (program2.usedSpeed === 0) {
-						const { rollbackState, ...stateToClone } =
-							unwrap(dataBattle);
-						dataBattle.rollbackState = {
-							rollbackState,
-							...cloneDeep(stateToClone),
-						};
+						setRollbackStates((prev) => [
+							cloneDeep(unwrap(dataBattle)),
+							...prev,
+						]);
 					}
 
 					// Extend to new position
@@ -259,7 +269,7 @@ const createActions = (
 		) {
 			if (cmd[0]) {
 				// Remove rollback state on running a command
-				setDataBattle("rollbackState", undefined);
+				setRollbackStates([]);
 
 				const [command, targetPos, targetProg] = cmd;
 				command.effect.call(sourceProg, targetPos, targetProg, actions);
@@ -418,9 +428,12 @@ const createActions = (
 			setDataBattle("creditsCollected", (credits) => credits + amount);
 		},
 		rollbackState() {
-			if (!dataBattle.rollbackState) return;
+			if (rollbackStates().length < 1) return;
 			batch(() => {
-				setDataBattle(reconcile(dataBattle.rollbackState!));
+				setDataBattle(reconcile(rollbackStates()[0]));
+				setRollbackStates(
+					([_restoredState, ...remainingStates]) => remainingStates
+				);
 				// Do some manual restoration of the chit/program object reference
 				if (dataBattle.selection?.chit) {
 					actions.setSelection({

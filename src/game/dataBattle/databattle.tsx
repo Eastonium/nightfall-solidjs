@@ -20,7 +20,7 @@ export const DataBattle = (props: DataBattleProps) => {
 
 	const dataBattleStore = createDataBattleStore(p.level);
 	const [
-		{ dataBattle, selectionPosition },
+		{ dataBattle, selectionPosition, rollbackStates },
 		{ clearUploadZone, endSetup, rollbackState },
 	] = dataBattleStore;
 
@@ -42,7 +42,7 @@ export const DataBattle = (props: DataBattleProps) => {
 			return {
 				color: "red",
 				children: "Undo",
-				disabled: !dataBattle.rollbackState,
+				disabled: rollbackStates().length < 1,
 				onClick: rollbackState,
 			};
 	};
