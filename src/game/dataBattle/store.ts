@@ -22,6 +22,7 @@ import { Position } from "./grid/position";
 import { Level, Team } from "./level";
 import { Command, isProgramInstance, Program, ProgramConfig } from "./program";
 import cloneDeep from "lodash.clonedeep";
+import { runAiAnalysis } from "./ai";
 
 type BattlePhase =
 	| { name: "setup"; team: Team }
@@ -60,8 +61,15 @@ export const createDataBattleStore = (level: Level) => {
 		creditsCollected: 0,
 	});
 	const [rollbackStates, setRollbackStates] = createSignal<DataBattle[]>([]);
-	const selectors = createSelectors(dataBattle, rollbackStates);
-	const actions = createActions(selectors, setDataBattle, setRollbackStates);
+	const [aiAnalysis, setAiAnalysis] =
+		createSignal<ReturnType<typeof runAiAnalysis>>();
+	const selectors = createSelectors(dataBattle, rollbackStates, aiAnalysis);
+	const actions = createActions(
+		selectors,
+		setDataBattle,
+		setRollbackStates,
+		setAiAnalysis
+	);
 
 	// Select first upload zone or program for new team on their turn
 	createEffect(() => {
@@ -96,7 +104,8 @@ export const createDataBattleStore = (level: Level) => {
 };
 const createSelectors = (
 	dataBattle: DataBattle,
-	rollbackStates: Accessor<DataBattle[]>
+	rollbackStates: Accessor<DataBattle[]>,
+	aiAnalysis: Accessor<ReturnType<typeof runAiAnalysis> | undefined>
 ) => ({
 	dataBattle,
 	selectionPosition: () =>
@@ -106,6 +115,7 @@ const createSelectors = (
 				? dataBattle.selection.program.slug[0]
 				: null)),
 	rollbackStates,
+	aiAnalysis,
 });
 
 const createActions = (
@@ -115,7 +125,8 @@ const createActions = (
 		rollbackStates,
 	}: ReturnType<typeof createSelectors>,
 	setDataBattle: SetStoreFunction<DataBattle>,
-	setRollbackStates: Setter<DataBattle[]>
+	setRollbackStates: Setter<DataBattle[]>,
+	setAiAnalysis: Setter<ReturnType<typeof runAiAnalysis> | undefined>
 ) => {
 	const actions = {
 		selectListedProgram(program: ProgramConfig) {
@@ -204,6 +215,22 @@ const createActions = (
 					  }
 					: null
 			);
+
+			if (
+				selection &&
+				isProgramInstance(selection.program) &&
+				selection.command
+			) {
+				setAiAnalysis(
+					runAiAnalysis(
+						selection.program,
+						selection.command,
+						dataBattle
+					)
+				);
+			} else {
+				setAiAnalysis();
+			}
 		},
 		moveProgram(program: Program, pos: Position) {
 			setDataBattle(

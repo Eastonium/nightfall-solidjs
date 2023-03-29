@@ -11,8 +11,8 @@ const Test_Level_1: LevelDefinition = {
 		⬜⬜⬜⬜⬜⬛⬛⬛⬛⬛⬜⬜⬜⬜
 		⬜⬜⬜⬜⬜⬛⬛⬜⬜⬜⬜⬜⬜⬜
 		⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜
-		⬜⬜⬜⬜⬜⬜⬜⬛⬛⬜⬜⬜⬜⬜
-		⬜⬜⬜⬜⬛⬛⬛⬛⬛⬜⬜⬜⬜⬜
+		⬜⬜⬛⬜⬜⬜⬜⬛⬛⬜⬜⬜⬜⬜
+		⬛⬜⬜⬜⬛⬛⬛⬛⬛⬜⬜⬜⬜⬜
 		⬜⬜⬜⬜⬜⬛⬛⬛⬛⬜⬜⬜⬜⬜
 		⬜⬜⬜⬜⬜⬛⬛⬛⬛⬜⬜⬜⬜⬜
 		⬛⬜⬜⬜⬛⬛⬛⬛⬛⬛⬜⬜⬜⬛
@@ -58,7 +58,7 @@ const Test_Level_1: LevelDefinition = {
 		},
 	],
 	programs: [
-		{ id: "nightfall:data_doctor_1", slug: [[3, 1]], team: 1 },
+		{ id: "nightfall:boss", slug: [[3, 1]], team: 1 },
 		{ id: "nightfall:dog_3", slug: [[2, 2]], team: 1 },
 		{ id: "nightfall:slingshot", slug: [[0, 3]], team: 0 },
 		{ id: "nightfall:dog_2", slug: [[1, 4]], team: 1 },

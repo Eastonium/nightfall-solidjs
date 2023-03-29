@@ -11,11 +11,12 @@ import { getChitConfig, getTexture } from "game/game";
 import { Targets } from "./targets";
 import { useDataBattle } from "../store";
 import { UploadZone } from "../level";
+import { AIAnalysis } from "../ai";
 
 interface GridProps extends JSX.HTMLAttributes<HTMLDivElement> {}
 export const Grid = (gridProps: GridProps) => {
 	// const [p, gridProps] = splitProps(props, []);
-	const [{ dataBattle, selectionPosition }] = useDataBattle();
+	const [{ dataBattle, selectionPosition, aiAnalysis }] = useDataBattle();
 
 	return (
 		<div {...gridProps}>
@@ -68,8 +69,12 @@ export const Grid = (gridProps: GridProps) => {
 					)}
 				</Show>
 
+				<Show when={aiAnalysis()} keyed>
+					{AIAnalysis}
+				</Show>
 				<Show
 					when={
+						!aiAnalysis() &&
 						dataBattle.selection &&
 						!dataBattle.selection.chit &&
 						isProgramInstance(dataBattle.selection.program) && {
