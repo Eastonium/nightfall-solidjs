@@ -71,7 +71,7 @@ const Test_Level_1: LevelDefinition = {
 		{ team: 0, pos: [11, 9] },
 		{ team: 0, pos: [12, 9] },
 	],
-	teams: [0, 1],
+	teams: [{ id: 0 }, { id: 1, ai: true }],
 	onTeamEliminated(team, _, { endGame }) {
 		if (team === 0) endGame(1);
 	},

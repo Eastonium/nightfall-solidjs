@@ -3,7 +3,7 @@ import { For, Show } from "solid-js";
 import { Chit } from "./chit";
 import { Position } from "./grid/position";
 import { gridUnitSize, Segment } from "./grid/segment";
-import { Team } from "./level";
+import { TeamId } from "./level";
 import { Actions, useDataBattle } from "./store";
 
 type Target = "enemy" | "ally" | "self" | "void" | "solid";
@@ -39,13 +39,13 @@ export interface ProgramConfig extends Required<ProgramBase> {
 export interface ProgramInstanceDefinition extends ProgramBase {
 	id: string; // For referencing a config
 	slug: [number, number][];
-	team: Team;
+	team: TeamId;
 }
 
 export interface Program extends ProgramConfig {
 	// id is here, but is instead a UID
 	slug: Position[];
-	team: Team;
+	team: TeamId;
 	usedSpeed: number;
 	usedAction: boolean;
 }

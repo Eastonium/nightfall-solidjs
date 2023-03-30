@@ -5,14 +5,15 @@ import { Position } from "./grid/position";
 import { Program, ProgramConfig, ProgramInstanceDefinition } from "./program";
 import { Actions } from "./store";
 
-export type Team = number;
+export type TeamId = number;
+export type Team = { id: TeamId, ai?: boolean }
 
 type UploadZoneInstanceDefinition = {
-	team: Team;
+	team: TeamId;
 	pos: [number, number];
 };
 export type UploadZone = {
-	team: Team;
+	team: TeamId;
 	pos: Position;
 	program: ProgramConfig | null;
 };
@@ -28,7 +29,11 @@ export type LevelDefinition = {
 	uploadZones: UploadZoneInstanceDefinition[];
 	teams: Team[];
 	creditReward: number;
-	onTeamEliminated: (team: Team, remainingTeams: Team[], actions: Actions) => void;
+	onTeamEliminated: (
+		team: TeamId,
+		remainingTeams: TeamId[],
+		actions: Actions
+	) => void;
 };
 export type Level = ReturnType<typeof processLevel>;
 

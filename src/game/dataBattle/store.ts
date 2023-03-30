@@ -19,15 +19,15 @@ import {
 } from "solid-js/store";
 import { Chit } from "./chit";
 import { Position } from "./grid/position";
-import { Level, Team } from "./level";
+import { Level, TeamId } from "./level";
 import { Command, isProgramInstance, Program, ProgramConfig } from "./program";
 import cloneDeep from "lodash.clonedeep";
 import { findAttackerPath } from "./ai";
 
 type BattlePhase =
-	| { name: "setup"; team: Team }
-	| { name: "turn"; turn: number; team: Team }
-	| { name: "end"; winner: Team };
+	| { name: "setup"; team: TeamId }
+	| { name: "turn"; turn: number; team: TeamId }
+	| { name: "end"; winner: TeamId };
 
 export type Selection =
 	| null
@@ -57,7 +57,7 @@ export const useDataBattle = () => {
 export const createDataBattleStore = (level: Level) => {
 	const [dataBattle, setDataBattle] = createStore<DataBattle>({
 		...level,
-		phase: { name: "setup", team: level.teams[0] },
+		phase: { name: "setup", team: level.teams[0].id },
 		selection: null,
 		creditsCollected: 0,
 	});
@@ -162,7 +162,7 @@ const createActions = (
 			"program",
 			null
 		);
-		actions.setSelection({
+		setSelection({
 			chit: {
 				pos: selectionPos,
 				...getChitConfig("nightfall:upload_zone")!,
@@ -318,31 +318,30 @@ const createActions = (
 				!program.usedAction &&
 				program.slug.length > 0
 			) {
-				actions.setSelection({ program });
+				setSelection({ program });
 				return;
 			}
 		}
 		// No program found. Clear selection, reset used vars, and switch to next team's turn
-		actions.setSelection(null);
+		setSelection(null);
 		setDataBattle("programs", (prog) => prog.team === sourceProg.team, {
 			usedSpeed: 0,
 			usedAction: false,
 		});
 		setRollbackStates([]);
-		const nextTeam =
-			dataBattle.teams[
-				(dataBattle.teams.indexOf(dataBattle.phase.team) + 1) %
-					dataBattle.teams.length
-			];
+		const currentTeamId = dataBattle.phase.team;
+		const currentTeamIndex = dataBattle.teams.findIndex(
+			(team) => team.id === currentTeamId
+		);
+		const nextTeamIndex = (currentTeamIndex + 1) % dataBattle.teams.length;
 		setDataBattle("phase", {
 			name: "turn",
 			// Increment the turn number if the next team is not later in the team queue
 			turn:
-				dataBattle.teams.indexOf(dataBattle.phase.team) <=
-				dataBattle.teams.indexOf(nextTeam)
+				currentTeamIndex <= nextTeamIndex
 					? dataBattle.phase.turn + 1
 					: dataBattle.phase.turn,
-			team: nextTeam,
+			team: dataBattle.teams[nextTeamIndex].id,
 		});
 	}
 
@@ -475,7 +474,7 @@ const createActions = (
 		});
 	}
 
-	function endGame(winningTeam: Team) {
+	function endGame(winningTeam: TeamId) {
 		setDataBattle("phase", { name: "end", winner: winningTeam });
 	}
 
