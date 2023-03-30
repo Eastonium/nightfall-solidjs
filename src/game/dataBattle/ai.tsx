@@ -123,8 +123,8 @@ export function AIAnalysis(p: ReturnType<typeof runAiAnalysis>) {
 
 					return (
 						<image
-							x={pos.column * gridUnitSize}
-							y={pos.row * gridUnitSize}
+							x={pos.x * gridUnitSize}
+							y={pos.y * gridUnitSize}
 							href={getTexture(
 								"nightfall:target" +
 									(p.soonestTurn <= 1
@@ -146,8 +146,8 @@ export function AIAnalysis(p: ReturnType<typeof runAiAnalysis>) {
 
 					return (
 						<image
-							x={pos.column * gridUnitSize}
-							y={pos.row * gridUnitSize}
+							x={pos.x * gridUnitSize}
+							y={pos.y * gridUnitSize}
 							href={getTexture(
 								"nightfall:target" +
 									(p.soonestTurn <= 1
@@ -173,8 +173,8 @@ export function AIAnalysis(p: ReturnType<typeof runAiAnalysis>) {
 
 					return (
 						<image
-							x={pos.column * gridUnitSize}
-							y={pos.row * gridUnitSize}
+							x={pos.x * gridUnitSize}
+							y={pos.y * gridUnitSize}
 							href={getTexture(
 								"nightfall:target" +
 									(navDistance == null

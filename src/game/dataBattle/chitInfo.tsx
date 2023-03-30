@@ -19,8 +19,8 @@ export const ChitInfo = (p: ChitInfoProps) => (
 						<>
 							<svg class={iconStyleClass}>
 								<Segment
-									column={0}
-									row={0}
+									x={0}
+									y={0}
 									icon={program.icon}
 									color={program.color}
 								/>

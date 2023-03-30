@@ -109,8 +109,8 @@ export const Targets = (p: TargetProps) => {
 				const pos = p.program.slug[0].new(sectorIndex);
 				return (
 					<image
-						x={pos.column * gridUnitSize}
-						y={pos.row * gridUnitSize}
+						x={pos.x * gridUnitSize}
+						y={pos.y * gridUnitSize}
 						{...targetProps(pos, dist)}
 					/>
 				);

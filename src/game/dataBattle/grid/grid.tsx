@@ -62,10 +62,7 @@ export const Grid = (gridProps: GridProps) => {
 
 				<Show when={selectionPosition()} keyed>
 					{(position) => (
-						<CellSelectionIndicator
-							column={position.column}
-							row={position.row}
-						/>
+						<CellSelectionIndicator x={position.x} y={position.y} />
 					)}
 				</Show>
 

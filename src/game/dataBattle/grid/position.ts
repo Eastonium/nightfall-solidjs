@@ -1,8 +1,8 @@
 export class Position {
 	readonly gridWidth: number;
 	readonly gridHeight: number;
-	row: number;
-	column: number;
+	x: number;
+	y: number;
 
 	constructor(
 		pos: [number, number] | number, // [x,y] pair or sectorIndex
@@ -18,54 +18,52 @@ export class Position {
 		this.gridHeight = gridHeight;
 
 		if (Array.isArray(pos)) {
-			[this.column, this.row] = pos;
+			[this.x, this.y] = pos;
 		} else {
-			this.column = pos % gridWidth;
-			this.row = Math.floor(pos / gridWidth);
+			this.x = pos % gridWidth;
+			this.y = Math.floor(pos / gridWidth);
 		}
 	}
 
 	get xy() {
-		return [this.column, this.row] as const;
+		return [this.x, this.y] as const;
 	}
 	get sectorIndex() {
-		return this.isValid() ? this.column + this.row * this.gridWidth : NaN;
+		return this.isValid() ? this.x + this.y * this.gridWidth : NaN;
 	}
 	set sectorIndex(sectorIndex: number) {
-		this.column = sectorIndex % this.gridWidth;
-		this.row = Math.floor(sectorIndex / this.gridWidth);
+		this.x = sectorIndex % this.gridWidth;
+		this.y = Math.floor(sectorIndex / this.gridWidth);
 	}
 	getSurroundingSectorIndexes = () => {
 		const sectorIndexes: typeof this.sectorIndex[] = [];
-		if (this.row > 0) sectorIndexes.push(this.sectorIndex - this.gridWidth);
-		if (this.column > 0) sectorIndexes.push(this.sectorIndex - 1);
-		if (this.column < this.gridWidth - 1)
+		if (this.y > 0) sectorIndexes.push(this.sectorIndex - this.gridWidth);
+		if (this.x > 0) sectorIndexes.push(this.sectorIndex - 1);
+		if (this.x < this.gridWidth - 1)
 			sectorIndexes.push(this.sectorIndex + 1);
-		if (this.row < this.gridHeight - 1)
+		if (this.y < this.gridHeight - 1)
 			sectorIndexes.push(this.sectorIndex + this.gridWidth);
 		return sectorIndexes;
 	};
 
 	offset = (xOffset: number, yOffset: number) => {
-		this.column += xOffset;
-		this.row += yOffset;
+		this.x += xOffset;
+		this.y += yOffset;
 		return this;
 	};
 
 	isValid = () =>
-		this.column >= 0 &&
-		this.column < this.gridWidth &&
-		this.row >= 0 &&
-		this.row < this.gridHeight;
+		this.x >= 0 &&
+		this.x < this.gridWidth &&
+		this.y >= 0 &&
+		this.y < this.gridHeight;
 	equals = (position: Position) =>
-		this === position ||
-		(this.column === position.column && this.row === position.row);
+		this === position || (this.x === position.x && this.y === position.y);
 	clone = (xOffset = 0, yOffset = 0) =>
-		new Position(
-			[this.column, this.row],
-			this.gridWidth,
-			this.gridHeight
-		).offset(xOffset, yOffset);
+		new Position([this.x, this.y], this.gridWidth, this.gridHeight).offset(
+			xOffset,
+			yOffset
+		);
 	new = (sectorIndex: number) => {
 		const pos = this.clone();
 		pos.sectorIndex = sectorIndex;
@@ -75,12 +73,12 @@ export class Position {
 	static compare(
 		positionA: Position,
 		positionB: Position,
-		reverseColumn = false,
-		reverseRow = false
+		invertX = false,
+		invertY = false
 	) {
 		return Math.sign(
-			(positionA.row - positionB.row) * (reverseRow ? -1 : 1) ||
-				(positionA.column - positionB.column) * (reverseColumn ? -1 : 1)
+			(positionA.y - positionB.y) * (invertY ? -1 : 1) ||
+				(positionA.x - positionB.x) * (invertX ? -1 : 1)
 		);
 	}
 }

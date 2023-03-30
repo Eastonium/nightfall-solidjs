@@ -65,12 +65,12 @@ export const ProgramComponent = (p: { program: Program }) => {
 		<g onClick={() => setSelection({ program: p.program })}>
 			<For each={sortedSlug()}>
 				{(pos) => {
-					const { column, row } = pos;
+					const { x, y } = pos;
 					const posRight = pos.clone(1, 0);
 					const posDown = pos.clone(0, 1);
 					return (
 						<Segment
-							{...{ column, row }}
+							{...{ x, y }}
 							color={p.program.color}
 							icon={pos === headPos() ? p.program.icon : null}
 							connectRight={
@@ -87,8 +87,8 @@ export const ProgramComponent = (p: { program: Program }) => {
 			</For>
 			<Show when={p.program.usedAction} keyed>
 				<image
-					x={headPos().column * gridUnitSize + 22}
-					y={headPos().row * gridUnitSize - 3}
+					x={headPos().x * gridUnitSize + 22}
+					y={headPos().y * gridUnitSize - 3}
 					href={getTexture("nightfall:turnCheck")}
 				/>
 			</Show>

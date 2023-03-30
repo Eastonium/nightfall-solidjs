@@ -12,8 +12,8 @@ const connectorOffset = shapeSize / 2 + shapeOffset;
 const connectorWidth = 7;
 
 interface PositionProps {
-	column: number;
-	row: number;
+	x: number;
+	y: number;
 }
 
 interface SegmentProps extends PositionProps {
@@ -27,11 +27,7 @@ export const Segment = (props: SegmentProps) => {
 
 	const shadeColor = () => shade(0.5, p.color);
 	return (
-		<g
-			transform={`translate(${p.column * gridUnitSize} ${
-				p.row * gridUnitSize
-			})`}
-		>
+		<g transform={`translate(${p.x * gridUnitSize} ${p.y * gridUnitSize})`}>
 			{p.connectRight && (
 				<path
 					fill="none"
@@ -108,9 +104,7 @@ interface CellSelectionIndicatorProps extends PositionProps {}
 export const CellSelectionIndicator = (p: CellSelectionIndicatorProps) => (
 	<rect
 		class={selectionIndicatorStyles}
-		transform={`translate(${p.column * gridUnitSize} ${
-			p.row * gridUnitSize
-		})`}
+		transform={`translate(${p.x * gridUnitSize} ${p.y * gridUnitSize})`}
 		x={1}
 		y={1}
 		width={gridUnitSize - 2}

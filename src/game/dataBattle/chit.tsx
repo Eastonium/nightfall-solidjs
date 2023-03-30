@@ -25,12 +25,12 @@ export interface Chit extends ChitConfig {
 
 export const ChitComponent = (p: { chit: Chit }) => {
 	const [, { setSelection }] = useDataBattle();
-	const { column, row } = p.chit.pos;
+	const { x, y } = p.chit.pos;
 
 	return (
 		<image
-			x={column * gridUnitSize}
-			y={row * gridUnitSize}
+			x={x * gridUnitSize}
+			y={y * gridUnitSize}
 			href={p.chit.icon}
 			onClick={() => setSelection({ chit: p.chit })}
 		/>
