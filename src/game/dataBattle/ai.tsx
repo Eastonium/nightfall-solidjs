@@ -2,7 +2,11 @@ import { getTexture } from "game/game";
 import { For } from "solid-js";
 import { Position } from "./grid/position";
 import { gridUnitSize } from "./grid/segment";
-import { floodFindPositions, spreadFromPositions } from "./grid/utils";
+import {
+	floodFindPositions,
+	spreadFromPositions,
+	tracePathToPosition,
+} from "./grid/utils";
 import { Level } from "./level";
 import { Command, Program } from "./program";
 import { useDataBattle } from "./store";
@@ -22,7 +26,7 @@ export function runAiAnalysis(
 						attackingProgram.id))
 	);
 
-	const pos = attackingProgram.slug[0].clone(); // reuseable position object
+	const utilPos = attackingProgram.slug[0].clone(); // reuseable position object
 	let soonestTurn = Infinity;
 	const soonestTurnPositions: typeof allNavigablePositions = [];
 
@@ -35,18 +39,18 @@ export function runAiAnalysis(
 
 	const spreadGenerator = spreadFromPositions(
 		targetPositions,
-		pos.gridWidth,
-		pos.gridHeight
+		utilPos.gridWidth,
+		utilPos.gridHeight
 	);
 	for (let dist = 0; dist < command.range; dist++) {
 		const positions = spreadGenerator.next();
 		if (positions.done) break;
-		positions.value.forEach((sectorIndex) => {
+		for (let sectorIndex of positions.value) {
 			// Pre-filter which positions to try to get to based on how soon they can be gotten to
 			const navigablePos = allNavigablePositions.find(
 				([si]) => si === sectorIndex
 			);
-			if (navigablePos == null) return;
+			if (navigablePos == null) continue;
 			// 0 means accessible without moving, 1 means accessible this turn, ect.
 			const turnsFromAttacker = Math.max(
 				1,
@@ -58,40 +62,50 @@ export function runAiAnalysis(
 				soonestTurn = turnsFromAttacker;
 				soonestTurnPositions.splice(0, Infinity, navigablePos);
 			}
-		});
+		}
 	}
 
-	const navTarget: typeof allNavigablePositions[number] =
-		soonestTurnPositions.length
-			? soonestTurnPositions[
-					Math.floor(Math.random() * soonestTurnPositions.length)
-			  ]
-			: [attackingProgram.slug[0].sectorIndex, 0]; // TODO: Just try to move closer to a target
-
-	const navPath = [navTarget];
-	while (navPath[0][1] > 1) {
-		pos.sectorIndex = navPath[0][0];
-		const surroundingSectorIndexes = pos.getSurroundingSectorIndexes();
-		const nextClosestSectorIndexes = allNavigablePositions.filter(
-			([sectorIndex, dist]) =>
-				dist === navPath[0][1] - 1 &&
-				surroundingSectorIndexes.includes(sectorIndex)
-		);
-		navPath.unshift(
-			nextClosestSectorIndexes[
-				Math.floor(Math.random() * nextClosestSectorIndexes.length)
-			]
-		);
+	let navTarget: Position = utilPos.new(-1); // this should never need to be used
+	if (soonestTurnPositions.length) {
+		navTarget.sectorIndex =
+			soonestTurnPositions[
+				Math.floor(Math.random() * soonestTurnPositions.length)
+			][0];
+	} else {
+		for (let positions of spreadGenerator) {
+			const closestNavigablePositions: number[] = [];
+			for (let sectorIndex of positions) {
+				const navigablePos = allNavigablePositions.find(
+					([si]) => si === sectorIndex
+				);
+				if (navigablePos == null) continue;
+				closestNavigablePositions.push(sectorIndex);
+			}
+			if (closestNavigablePositions.length) {
+				navTarget.sectorIndex =
+					closestNavigablePositions[
+						Math.floor(
+							Math.random() * closestNavigablePositions.length
+						)
+					];
+				break;
+			}
+		}
 	}
 
-	return {
-		program: attackingProgram,
-		allNavigablePositions,
-		soonestTurn,
-		soonestTurnPositions,
-		navTarget,
-		navPath,
-	};
+	if (!navTarget.isValid())
+		console.error("Failed to find AI navigation target");
+
+	return tracePathToPosition(navTarget, allNavigablePositions);
+
+	// return {
+	// 	program: attackingProgram,
+	// 	allNavigablePositions,
+	// 	soonestTurn,
+	// 	soonestTurnPositions,
+	// 	navTarget,
+	// 	navPath: tracePathToPosition(navTarget, allNavigablePositions),
+	// };
 }
 
 export function AIAnalysis(p: ReturnType<typeof runAiAnalysis>) {
@@ -99,7 +113,7 @@ export function AIAnalysis(p: ReturnType<typeof runAiAnalysis>) {
 
 	return (
 		<g>
-			<For each={p.navPath}>
+			{/* <For each={p.navPath}>
 				{([sectorIndex, dist]) => {
 					const pos = new Position(
 						sectorIndex,
@@ -121,7 +135,7 @@ export function AIAnalysis(p: ReturnType<typeof runAiAnalysis>) {
 						/>
 					);
 				}}
-			</For>
+			</For> */}
 			{/* <For each={p.soonestTurnPositions}>
 				{([sectorIndex, dist]) => {
 					const pos = new Position(

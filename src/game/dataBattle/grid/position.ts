@@ -25,6 +25,9 @@ export class Position {
 		}
 	}
 
+	get xy() {
+		return [this.column, this.row] as const;
+	}
 	get sectorIndex() {
 		return this.isValid() ? this.column + this.row * this.gridWidth : NaN;
 	}

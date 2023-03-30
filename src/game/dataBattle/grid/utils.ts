@@ -96,3 +96,32 @@ export function* spreadFromPositions(
 		else return positions.slice(0, -1);
 	}
 }
+
+export function tracePathToPosition(
+	targetPosition: Position,
+	navigablePositions: ReturnType<typeof floodFindPositions>
+) {
+	const endPosition = navigablePositions.find(
+		([sectorIndex]) => sectorIndex === targetPosition.sectorIndex
+	);
+	if (!targetPosition.isValid() || !endPosition) return null;
+	if (endPosition[1] === 0) return [];
+
+	const utilPos = targetPosition.clone();
+	const navPath = [endPosition];
+	while (navPath[0][1] > 1) {
+		utilPos.sectorIndex = navPath[0][0];
+		const surroundingSectorIndexes = utilPos.getSurroundingSectorIndexes();
+		const nextClosestSectorIndexes = navigablePositions.filter(
+			([sectorIndex, dist]) =>
+				dist === navPath[0][1] - 1 &&
+				surroundingSectorIndexes.includes(sectorIndex)
+		);
+		navPath.unshift(
+			nextClosestSectorIndexes[
+				Math.floor(Math.random() * nextClosestSectorIndexes.length)
+			]
+		);
+	}
+	return navPath;
+}
