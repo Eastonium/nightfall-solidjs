@@ -60,11 +60,17 @@ export const DataBattle = (props: DataBattleProps) => {
 						when={dataBattle.phase.name === "setup"}
 						fallback={
 							<Window title="spybot" sectioned>
-								<img
+								Phase: {dataBattle.phase.name}
+								<br />
+								Team:{" "}
+								{dataBattle.phase.name === "end"
+									? dataBattle.phase.winner
+									: dataBattle.phase.team.id}
+								{/* <img
 									src={getTexture("nightfall:snaptraxS45")}
 									alt="spybot"
 									style={{ display: "block" }}
-								/>
+								/> */}
 							</Window>
 						}
 						keyed

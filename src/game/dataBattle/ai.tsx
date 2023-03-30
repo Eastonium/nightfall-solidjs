@@ -6,7 +6,37 @@ import {
 } from "./grid/utils";
 import { Level } from "./level";
 import { Command, Program } from "./program";
-import { useDataBattle } from "./store";
+import { Actions, Selectors, useDataBattle } from "./store";
+
+export function executeAiTurn(
+	{ dataBattle }: Selectors,
+	{ moveProgram, switchToNextTeam }: Actions
+) {
+	if (dataBattle.phase.name !== "turn") return;
+	const currentTeam = dataBattle.phase.team;
+
+	const programs = dataBattle.programs.filter(
+		(prog) => prog.team === currentTeam.id
+	);
+	while (programs.length) {
+		const program = programs.splice(
+			Math.floor(Math.random() * programs.length),
+			1
+		)[0];
+		const navPath = findAttackerPath(
+			program,
+			program.commands[0],
+			dataBattle
+		);
+		for (let position of navPath!) {
+			moveProgram(program, program.slug[0].new(position[0]));
+		}
+
+		// TODO: ATTACK!
+	}
+
+	switchToNextTeam();
+}
 
 export function findAttackerPath(
 	attackingProgram: Program,

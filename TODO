@@ -32,7 +32,7 @@
 
 Make AI:
 <!-- Find positions from opponents that are within attack range -->
-If attack-able position is within move range
-	Move within attack range of program
+<!-- If attack-able position is within move range -->
+<!-- 	Move within attack range of program -->
 	Attack program
-else move closer to enemy
+<!-- else move closer to enemy -->

@@ -22,7 +22,7 @@ import { Position } from "./grid/position";
 import { Level, Team, TeamId } from "./level";
 import { Command, isProgramInstance, Program, ProgramConfig } from "./program";
 import cloneDeep from "lodash.clonedeep";
-import { findAttackerPath } from "./ai";
+import { executeAiTurn } from "./ai";
 
 type BattlePhase =
 	| { name: "setup"; turn: number; team: Team } // Setup might have turns in the future?
@@ -68,8 +68,14 @@ export const createDataBattleStore = (level: Level) => {
 	// Select first upload zone or program for new team on their turn
 	createEffect(() => {
 		// Don't auto-select if game is over or if team is an AI
-		if (dataBattle.phase.name === "end" || dataBattle.phase.team.ai) return;
+		if (dataBattle.phase.name === "end") return;
 		const teamId = dataBattle.phase.team.id;
+
+		if (dataBattle.phase.team.ai) {
+			untrack(() => executeAiTurn(selectors, actions));
+			return;
+		}
+
 		untrack(() => {
 			if (dataBattle.phase.name === "setup") {
 				const uploadZone = dataBattle.uploadZones.find(
@@ -130,6 +136,7 @@ const createActions = (
 		toggleSolid,
 		collectCredits,
 		rollbackState,
+		switchToNextTeam,
 		endGame,
 	};
 
@@ -242,7 +249,11 @@ const createActions = (
 				)!;
 
 				// If this is the first move for this program, save rollback state
-				if (program2.usedSpeed === 0) {
+				if (
+					dataBattle.phase.name === "turn" &&
+					!dataBattle.phase.team.ai &&
+					program2.usedSpeed === 0
+				) {
 					setRollbackStates((prev) => [
 						cloneDeep(unwrap(dataBattle)),
 						...prev,

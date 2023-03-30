@@ -39,7 +39,7 @@ const Test_Level_1: LevelDefinition = {
 			id: "nightfall:data_item",
 			pos: [1, 2],
 			onLandOn(program, { endGame }) {
-				endGame(program.team);
+				if (program.team === 0) endGame(program.team);
 			},
 		},
 		{
