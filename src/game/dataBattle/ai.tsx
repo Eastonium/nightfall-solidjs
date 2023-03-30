@@ -1,7 +1,4 @@
-import { getTexture } from "game/game";
-import { For } from "solid-js";
 import { Position } from "./grid/position";
-import { gridUnitSize } from "./grid/segment";
 import {
 	floodFindPositions,
 	spreadFromPositions,
@@ -11,22 +8,24 @@ import { Level } from "./level";
 import { Command, Program } from "./program";
 import { useDataBattle } from "./store";
 
-export function runAiAnalysis(
+export function findAttackerPath(
 	attackingProgram: Program,
 	command: Command,
 	level: Level
 ) {
+	const headPos = attackingProgram.slug[0];
+
+	// Find all navigable positions (ignore speed)
 	const allNavigablePositions = floodFindPositions(
-		attackingProgram.slug[0],
+		headPos,
 		(pos, dist) =>
-			dist === 0 /*dist <= p.program.speed - p.program.usedSpeed &&*/ || // ensure a program can still move if head cell is no longer solid // Remove restriction on speed here
+			dist === 0 || // ensure a program can still move if head cell is no longer solid
 			(level.solid[pos.sectorIndex] &&
 				(!level.mapPrograms[pos.sectorIndex] ||
 					level.mapPrograms[pos.sectorIndex]?.id ==
 						attackingProgram.id))
 	);
 
-	const utilPos = attackingProgram.slug[0].clone(); // reuseable position object
 	let soonestTurn = Infinity;
 	const soonestTurnPositions: typeof allNavigablePositions = [];
 
@@ -39,8 +38,8 @@ export function runAiAnalysis(
 
 	const spreadGenerator = spreadFromPositions(
 		targetPositions,
-		utilPos.gridWidth,
-		utilPos.gridHeight
+		headPos.gridWidth,
+		headPos.gridHeight
 	);
 	for (let dist = 0; dist < command.range; dist++) {
 		const positions = spreadGenerator.next();
@@ -65,7 +64,7 @@ export function runAiAnalysis(
 		}
 	}
 
-	let navTarget: Position = utilPos.new(-1); // this should never need to be used
+	let navTarget: Position = headPos.new(-1); // this should never need to be used
 	if (soonestTurnPositions.length) {
 		navTarget.sectorIndex =
 			soonestTurnPositions[
@@ -108,7 +107,7 @@ export function runAiAnalysis(
 	// };
 }
 
-export function AIAnalysis(p: ReturnType<typeof runAiAnalysis>) {
+export function AIAnalysis(p: ReturnType<typeof findAttackerPath>) {
 	const [{ dataBattle }] = useDataBattle();
 
 	return (

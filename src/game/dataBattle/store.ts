@@ -22,7 +22,7 @@ import { Position } from "./grid/position";
 import { Level, Team } from "./level";
 import { Command, isProgramInstance, Program, ProgramConfig } from "./program";
 import cloneDeep from "lodash.clonedeep";
-import { runAiAnalysis } from "./ai";
+import { findAttackerPath } from "./ai";
 
 type BattlePhase =
 	| { name: "setup"; team: Team }
@@ -39,6 +39,7 @@ type DataBattle = Level & {
 	selection: Selection;
 	creditsCollected: number;
 };
+export type Selectors = ReturnType<typeof createSelectors>;
 export type Actions = ReturnType<typeof createActions>;
 
 export const DataBattleContext =
@@ -61,15 +62,8 @@ export const createDataBattleStore = (level: Level) => {
 		creditsCollected: 0,
 	});
 	const [rollbackStates, setRollbackStates] = createSignal<DataBattle[]>([]);
-	const [aiAnalysis, setAiAnalysis] =
-		createSignal<ReturnType<typeof runAiAnalysis>>();
-	const selectors = createSelectors(dataBattle, rollbackStates, aiAnalysis);
-	const actions = createActions(
-		selectors,
-		setDataBattle,
-		setRollbackStates,
-		setAiAnalysis
-	);
+	const selectors = createSelectors(dataBattle, rollbackStates);
+	const actions = createActions(selectors, setDataBattle, setRollbackStates);
 
 	// Select first upload zone or program for new team on their turn
 	createEffect(() => {
@@ -104,8 +98,7 @@ export const createDataBattleStore = (level: Level) => {
 };
 const createSelectors = (
 	dataBattle: DataBattle,
-	rollbackStates: Accessor<DataBattle[]>,
-	aiAnalysis: Accessor<ReturnType<typeof runAiAnalysis> | undefined>
+	rollbackStates: Accessor<DataBattle[]>
 ) => ({
 	dataBattle,
 	selectionPosition: () =>
@@ -115,369 +108,376 @@ const createSelectors = (
 				? dataBattle.selection.program.slug[0]
 				: null)),
 	rollbackStates,
-	aiAnalysis,
 });
 
 const createActions = (
-	{
-		dataBattle,
-		selectionPosition,
-		rollbackStates,
-	}: ReturnType<typeof createSelectors>,
+	{ dataBattle, selectionPosition, rollbackStates }: Selectors,
 	setDataBattle: SetStoreFunction<DataBattle>,
-	setRollbackStates: Setter<DataBattle[]>,
-	setAiAnalysis: Setter<ReturnType<typeof runAiAnalysis> | undefined>
+	setRollbackStates: Setter<DataBattle[]>
 ) => {
 	const actions = {
-		selectListedProgram(program: ProgramConfig) {
-			const selectionPos = selectionPosition();
+		// #hoisted
+		selectListedProgram,
+		clearUploadZone,
+		endSetup,
+		setSelection,
+		moveProgram,
+		runProgramCommand,
+		harmProgram,
+		healProgram,
+		modProgram,
+		toggleSolid,
+		collectCredits,
+		rollbackState,
+		endGame,
+	};
 
-			if (
-				selectionPos &&
-				dataBattle.uploadZones.find((uz) => uz.pos.equals(selectionPos))
-			) {
-				setDataBattle(
-					"uploadZones",
-					(uz) => uz.pos.equals(selectionPos),
-					{ program }
-					// program is not from store, do like this instead of ...["program", program] to avoid corrupting it
-				);
-				actions.setSelection({
-					program: { team: 0, slug: [selectionPos], ...program },
-				});
-			} else {
-				actions.setSelection({ program });
-			}
-		},
-		clearUploadZone() {
-			const selectionPos = selectionPosition();
-			if (!selectionPos) return;
+	function selectListedProgram(program: ProgramConfig) {
+		const selectionPos = selectionPosition();
+
+		if (
+			selectionPos &&
+			dataBattle.uploadZones.find((uz) => uz.pos.equals(selectionPos))
+		) {
 			setDataBattle(
 				"uploadZones",
 				(uz) => uz.pos.equals(selectionPos),
-				"program",
-				null
+				{ program }
+				// program is not from store, do like this instead of ...["program", program] to avoid corrupting it
 			);
-			actions.setSelection({
-				chit: {
-					pos: selectionPos,
-					...getChitConfig("nightfall:upload_zone")!,
-				},
+			setSelection({
+				program: { team: 0, slug: [selectionPos], ...program },
 			});
-		},
-		endSetup() {
-			setDataBattle(
-				produce((dataBattle) => {
-					dataBattle.uploadZones.forEach(
-						({ team, pos, program: pc }) => {
-							if (!pc) return;
-							const program: Program = {
-								...pc,
-								id: createUniqueId(),
-								slug: [pos],
-								team,
-								usedSpeed: 0,
-								usedAction: false,
-							};
-							dataBattle.programs.push(program);
-							dataBattle.mapPrograms[pos.sectorIndex] = program;
-						}
-					);
-					dataBattle.uploadZones = [];
+		} else {
+			setSelection({ program });
+		}
+	}
 
-					dataBattle.selection = null;
-					dataBattle.phase = { name: "turn", turn: 1, team: 0 };
-				})
-			);
-		},
-		setSelection(selection: Selection) {
-			// Check if different program is selected and if the current selection has moved
-			if (
-				dataBattle.selection &&
-				dataBattle.selection.program?.id !== selection?.program?.id &&
-				isProgramInstance(dataBattle.selection.program) &&
-				dataBattle.selection.program.usedSpeed > 0
-			) {
-				const programId = dataBattle.selection.program.id;
-				setDataBattle("programs", (prog) => prog.id === programId, {
-					usedSpeed: Infinity,
-					usedAction: true,
+	function clearUploadZone() {
+		const selectionPos = selectionPosition();
+		if (!selectionPos) return;
+		setDataBattle(
+			"uploadZones",
+			(uz) => uz.pos.equals(selectionPos),
+			"program",
+			null
+		);
+		actions.setSelection({
+			chit: {
+				pos: selectionPos,
+				...getChitConfig("nightfall:upload_zone")!,
+			},
+		});
+	}
+
+	function endSetup() {
+		setDataBattle(
+			produce((dataBattle) => {
+				dataBattle.uploadZones.forEach(({ team, pos, program: pc }) => {
+					if (!pc) return;
+					const program: Program = {
+						...pc,
+						id: createUniqueId(),
+						slug: [pos],
+						team,
+						usedSpeed: 0,
+						usedAction: false,
+					};
+					dataBattle.programs.push(program);
+					dataBattle.mapPrograms[pos.sectorIndex] = program;
 				});
-			}
-			setDataBattle(
-				"selection",
-				selection
-					? {
-							chit: undefined,
-							program: undefined,
-							command: undefined,
-							...selection,
-					  }
-					: null
-			);
+				dataBattle.uploadZones = [];
 
-			if (
-				selection &&
-				isProgramInstance(selection.program) &&
-				selection.command
-			) {
-				setAiAnalysis(
-					runAiAnalysis(
-						selection.program,
-						selection.command,
-						dataBattle
-					)
-				);
-			} else {
-				setAiAnalysis();
-			}
-		},
-		moveProgram(program: Program, pos: Position) {
-			setDataBattle(
-				produce((dataBattle) => {
-					const program2 = dataBattle.programs.find(
-						(program2) => program2.id === program.id
-					)!;
+				dataBattle.selection = null;
+				dataBattle.phase = { name: "turn", turn: 1, team: 0 };
+			})
+		);
+	}
 
-					// If this is the first move for this program, save rollback state
-					if (program2.usedSpeed === 0) {
-						setRollbackStates((prev) => [
-							cloneDeep(unwrap(dataBattle)),
-							...prev,
-						]);
-					}
-
-					// Extend to new position
-					program2.slug = [
-						pos,
-						...program2.slug.filter((pos2) => !pos2.equals(pos)),
-					];
-					dataBattle.mapPrograms[pos.sectorIndex] = program2;
-
-					// Trim to keep max size
-					program2.slug
-						.splice(program2.maxSize, Infinity)
-						.forEach(
-							(pos) =>
-								(dataBattle.mapPrograms[pos.sectorIndex] = null)
-						);
-
-					// Increased speed used this turn
-					program2.usedSpeed++;
-					// If all speed is used, auto-select first command
-					if (program2.usedSpeed >= program2.speed) {
-						dataBattle.selection = {
-							program: program2,
-							command: program2.commands[0] ?? null,
-						};
-					}
-
-					const chit = dataBattle.chits.find((chit) =>
-						chit.pos.equals(pos)
-					);
-					if (chit) {
-						chit.onLandOn?.(program2, actions);
-						dataBattle.chits = dataBattle.chits.filter(
-							(c) => c.id !== chit.id
-						);
-					}
-				})
-			);
-		},
-		runProgramCommand(
-			sourceProg: Program,
-			...cmd: // cheesy overload
-			| [null]
-				| [
-						command: Command,
-						targetPos: Position,
-						targetProg: Program | null
-				  ]
+	function setSelection(selection: Selection) {
+		// Check if different program is selected and if the current selection has moved
+		if (
+			dataBattle.selection &&
+			dataBattle.selection.program?.id !== selection?.program?.id &&
+			isProgramInstance(dataBattle.selection.program) &&
+			dataBattle.selection.program.usedSpeed > 0
 		) {
-			if (cmd[0]) {
-				// Remove rollback state on running a command
-				setRollbackStates([]);
-
-				const [command, targetPos, targetProg] = cmd;
-				command.effect.call(sourceProg, targetPos, targetProg, actions);
-			}
-			setDataBattle("programs", (prog) => prog.id === sourceProg.id, {
-				usedSpeed: Infinity, // Prevent speed-adding programs from letting it move again
+			const programId = dataBattle.selection.program.id;
+			setDataBattle("programs", (prog) => prog.id === programId, {
+				usedSpeed: Infinity,
 				usedAction: true,
 			});
+		}
+		setDataBattle(
+			"selection",
+			selection
+				? {
+						chit: undefined,
+						program: undefined,
+						command: undefined,
+						...selection,
+				  }
+				: null
+		);
+	}
 
-			if (dataBattle.phase.name !== "turn") return;
-			// Find next program (in order) and select it
-			const progIndex = dataBattle.programs.findIndex(
-				(prog) => prog.id === sourceProg.id
-			);
-			for (
-				let i = (progIndex + 1) % dataBattle.programs.length;
-				i !== progIndex;
-				i = (i + 1) % dataBattle.programs.length
-			) {
-				const program = dataBattle.programs[i];
-				if (
-					program.team === dataBattle.phase.team &&
-					!program.usedAction &&
-					program.slug.length > 0
-				) {
-					actions.setSelection({ program });
-					return;
+	function moveProgram(program: Program, pos: Position) {
+		setDataBattle(
+			produce((dataBattle) => {
+				const program2 = dataBattle.programs.find(
+					(program2) => program2.id === program.id
+				)!;
+
+				// If this is the first move for this program, save rollback state
+				if (program2.usedSpeed === 0) {
+					setRollbackStates((prev) => [
+						cloneDeep(unwrap(dataBattle)),
+						...prev,
+					]);
 				}
-			}
-			// No program found. Clear selection, reset used vars, and switch to next team's turn
-			actions.setSelection(null);
-			setDataBattle("programs", (prog) => prog.team === sourceProg.team, {
-				usedSpeed: 0,
-				usedAction: false,
-			});
-			setRollbackStates([]);
-			const nextTeam =
-				dataBattle.teams[
-					(dataBattle.teams.indexOf(dataBattle.phase.team) + 1) %
-						dataBattle.teams.length
+
+				// Extend to new position
+				program2.slug = [
+					pos,
+					...program2.slug.filter((pos2) => !pos2.equals(pos)),
 				];
-			setDataBattle("phase", {
-				name: "turn",
-				// Increment the turn number if the next team is not later in the team queue
-				turn:
-					dataBattle.teams.indexOf(dataBattle.phase.team) <=
-					dataBattle.teams.indexOf(nextTeam)
-						? dataBattle.phase.turn + 1
-						: dataBattle.phase.turn,
-				team: nextTeam,
-			});
-		},
-		harmProgram(program: Program, amount: number) {
-			setDataBattle(
-				produce((dataBattle) => {
-					const program2 = dataBattle.programs.find(
-						(program2) => program2.id === program.id
-					)!;
-					program2.slug
-						.splice(-amount, amount)
-						.forEach(
-							(pos) =>
-								(dataBattle.mapPrograms[pos.sectorIndex] = null)
-						);
+				dataBattle.mapPrograms[pos.sectorIndex] = program2;
 
-					// If dead
-					if (!program2.slug.length) {
-						// Clear selection if harmed program was selected
-						if (dataBattle.selection?.program?.id === program.id) {
-							actions.setSelection(null);
-						}
+				// Trim to keep max size
+				program2.slug
+					.splice(program2.maxSize, Infinity)
+					.forEach(
+						(pos) =>
+							(dataBattle.mapPrograms[pos.sectorIndex] = null)
+					);
 
-						if (!dataBattle.onTeamEliminated) return;
-						// Check if whole team is eliminated
-						const teamsAlive = new Set<number>();
-						dataBattle.programs.forEach(
-							(program) =>
-								program.slug.length &&
-								teamsAlive.add(program.team)
-						);
-						if (teamsAlive.has(program2.team)) return; // Team wasn't eliminated
-
-						dataBattle.onTeamEliminated(
-							program2.team,
-							[...teamsAlive],
-							actions
-						);
-					}
-				})
-			);
-		},
-		healProgram(program: Program, amount: number) {
-			setDataBattle(
-				produce((dataBattle) => {
-					const program2 = dataBattle.programs.find(
-						(program2) => program2.id === program.id
-					)!;
-					const possiblePositions: number[] = [];
-					const grabAround = (slugPos: Position) => {
-						slugPos
-							.getSurroundingSectorIndexes()
-							.forEach((sectorIndex) => {
-								if (
-									dataBattle.solid[sectorIndex] &&
-									!dataBattle.mapPrograms[sectorIndex] &&
-									!possiblePositions.includes(sectorIndex)
-								) {
-									possiblePositions.push(sectorIndex);
-								}
-							});
+				// Increased speed used this turn
+				program2.usedSpeed++;
+				// If all speed is used, auto-select first command
+				if (program2.usedSpeed >= program2.speed) {
+					dataBattle.selection = {
+						program: program2,
+						command: program2.commands[0] ?? null,
 					};
-					program2.slug.forEach(grabAround);
-
-					for (let i = 0; i < amount; i++) {
-						if (
-							!possiblePositions.length ||
-							program2.slug.length >= program2.maxSize
-						) {
-							break;
-						}
-						const randomPos = program2.slug[0].new(
-							possiblePositions.splice(
-								Math.floor(
-									Math.random() * possiblePositions.length
-								),
-								1
-							)[0]
-						);
-						program2.slug.push(randomPos);
-						dataBattle.mapPrograms[randomPos.sectorIndex] =
-							program2;
-						grabAround(randomPos);
-					}
-				})
-			);
-		},
-		modProgram(
-			program: Program,
-			property: "speed" | "maxSize",
-			mutator: (current: number) => number
-		) {
-			setDataBattle(
-				"programs",
-				(program2) => program2.id === program.id,
-				property,
-				mutator
-			);
-		},
-		toggleSolid(pos: Position) {
-			setDataBattle("solid", pos.sectorIndex, (solid) => !solid);
-		},
-		collectCredits(amount: number) {
-			setDataBattle("creditsCollected", (credits) => credits + amount);
-		},
-		rollbackState() {
-			if (rollbackStates().length < 1) return;
-			batch(() => {
-				setDataBattle(reconcile(rollbackStates()[0]));
-				setRollbackStates(
-					([_restoredState, ...remainingStates]) => remainingStates
-				);
-				// Do some manual restoration of the chit/program object reference
-				if (dataBattle.selection?.chit) {
-					actions.setSelection({
-						chit: dataBattle.chits.find(
-							(chit) => chit.id === dataBattle.selection!.chit!.id
-						)!,
-					});
-				} else if (dataBattle.selection?.program) {
-					actions.setSelection({
-						program: dataBattle.programs.find(
-							(prog) =>
-								prog.id === dataBattle.selection!.program!.id
-						)!,
-					});
 				}
-			});
-		},
-		endGame(winningTeam: Team) {
-			setDataBattle("phase", { name: "end", winner: winningTeam });
-		},
-	};
+
+				const chit = dataBattle.chits.find((chit) =>
+					chit.pos.equals(pos)
+				);
+				if (chit) {
+					chit.onLandOn?.(program2, actions);
+					dataBattle.chits = dataBattle.chits.filter(
+						(c) => c.id !== chit.id
+					);
+				}
+			})
+		);
+	}
+
+	function runProgramCommand(
+		sourceProg: Program,
+		command: null,
+		targetPos: never,
+		targetProg: never
+	): void;
+	function runProgramCommand(
+		sourceProg: Program,
+		command: Command,
+		targetPos: Position,
+		targetProg: Program | null
+	): void;
+	function runProgramCommand(
+		sourceProg: Program,
+		command: Command | null,
+		targetPos: Position,
+		targetProg: Program | null
+	) {
+		if (command) {
+			// Remove rollback state on running a command
+			setRollbackStates([]);
+			command.effect.call(sourceProg, targetPos, targetProg, actions);
+		}
+		setDataBattle("programs", (prog) => prog.id === sourceProg.id, {
+			usedSpeed: Infinity, // Prevent speed-adding programs from letting it move again
+			usedAction: true,
+		});
+
+		if (dataBattle.phase.name !== "turn") return;
+		// Find next program (in order) and select it
+		const progIndex = dataBattle.programs.findIndex(
+			(prog) => prog.id === sourceProg.id
+		);
+		for (
+			let i = (progIndex + 1) % dataBattle.programs.length;
+			i !== progIndex;
+			i = (i + 1) % dataBattle.programs.length
+		) {
+			const program = dataBattle.programs[i];
+			if (
+				program.team === dataBattle.phase.team &&
+				!program.usedAction &&
+				program.slug.length > 0
+			) {
+				actions.setSelection({ program });
+				return;
+			}
+		}
+		// No program found. Clear selection, reset used vars, and switch to next team's turn
+		actions.setSelection(null);
+		setDataBattle("programs", (prog) => prog.team === sourceProg.team, {
+			usedSpeed: 0,
+			usedAction: false,
+		});
+		setRollbackStates([]);
+		const nextTeam =
+			dataBattle.teams[
+				(dataBattle.teams.indexOf(dataBattle.phase.team) + 1) %
+					dataBattle.teams.length
+			];
+		setDataBattle("phase", {
+			name: "turn",
+			// Increment the turn number if the next team is not later in the team queue
+			turn:
+				dataBattle.teams.indexOf(dataBattle.phase.team) <=
+				dataBattle.teams.indexOf(nextTeam)
+					? dataBattle.phase.turn + 1
+					: dataBattle.phase.turn,
+			team: nextTeam,
+		});
+	}
+
+	function harmProgram(program: Program, amount: number) {
+		setDataBattle(
+			produce((dataBattle) => {
+				const program2 = dataBattle.programs.find(
+					(program2) => program2.id === program.id
+				)!;
+				program2.slug
+					.splice(-amount, amount)
+					.forEach(
+						(pos) =>
+							(dataBattle.mapPrograms[pos.sectorIndex] = null)
+					);
+
+				// If dead
+				if (!program2.slug.length) {
+					// Clear selection if harmed program was selected
+					if (dataBattle.selection?.program?.id === program.id) {
+						setSelection(null);
+					}
+
+					if (!dataBattle.onTeamEliminated) return;
+					// Check if whole team is eliminated
+					const teamsAlive = new Set<number>();
+					dataBattle.programs.forEach(
+						(program) =>
+							program.slug.length && teamsAlive.add(program.team)
+					);
+					if (teamsAlive.has(program2.team)) return; // Team wasn't eliminated
+
+					dataBattle.onTeamEliminated(
+						program2.team,
+						[...teamsAlive],
+						actions
+					);
+				}
+			})
+		);
+	}
+
+	function healProgram(program: Program, amount: number) {
+		setDataBattle(
+			produce((dataBattle) => {
+				const program2 = dataBattle.programs.find(
+					(program2) => program2.id === program.id
+				)!;
+				const possiblePositions: number[] = [];
+				const grabAround = (slugPos: Position) => {
+					slugPos
+						.getSurroundingSectorIndexes()
+						.forEach((sectorIndex) => {
+							if (
+								dataBattle.solid[sectorIndex] &&
+								!dataBattle.mapPrograms[sectorIndex] &&
+								!possiblePositions.includes(sectorIndex)
+							) {
+								possiblePositions.push(sectorIndex);
+							}
+						});
+				};
+				program2.slug.forEach(grabAround);
+
+				for (let i = 0; i < amount; i++) {
+					if (
+						!possiblePositions.length ||
+						program2.slug.length >= program2.maxSize
+					) {
+						break;
+					}
+					const randomPos = program2.slug[0].new(
+						possiblePositions.splice(
+							Math.floor(
+								Math.random() * possiblePositions.length
+							),
+							1
+						)[0]
+					);
+					program2.slug.push(randomPos);
+					dataBattle.mapPrograms[randomPos.sectorIndex] = program2;
+					grabAround(randomPos);
+				}
+			})
+		);
+	}
+
+	function modProgram(
+		program: Program,
+		property: "speed" | "maxSize",
+		mutator: (current: number) => number
+	) {
+		setDataBattle(
+			"programs",
+			(program2) => program2.id === program.id,
+			property,
+			mutator
+		);
+	}
+
+	function toggleSolid(pos: Position) {
+		setDataBattle("solid", pos.sectorIndex, (solid) => !solid);
+	}
+
+	function collectCredits(amount: number) {
+		setDataBattle("creditsCollected", (credits) => credits + amount);
+	}
+
+	function rollbackState() {
+		if (rollbackStates().length < 1) return;
+		batch(() => {
+			setDataBattle(reconcile(rollbackStates()[0]));
+			setRollbackStates(
+				([_restoredState, ...remainingStates]) => remainingStates
+			);
+			// Do some manual restoration of the chit/program object reference
+			if (dataBattle.selection?.chit) {
+				setSelection({
+					chit: dataBattle.chits.find(
+						(chit) => chit.id === dataBattle.selection!.chit!.id
+					)!,
+				});
+			} else if (dataBattle.selection?.program) {
+				setSelection({
+					program: dataBattle.programs.find(
+						(prog) => prog.id === dataBattle.selection!.program!.id
+					)!,
+				});
+			}
+		});
+	}
+
+	function endGame(winningTeam: Team) {
+		setDataBattle("phase", { name: "end", winner: winningTeam });
+	}
+
 	return actions;
 };
