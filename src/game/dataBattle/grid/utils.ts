@@ -65,3 +65,34 @@ export function floodFindPositions(
 
 	return positions;
 }
+
+export function* spreadFromPositions(
+	startPositions: number[] | Set<number>,
+	gridWidth: number,
+	gridHeight: number
+) {
+	const utilPos = new Position(0, gridWidth, gridHeight);
+	const positions: Set<number>[] = [
+		Array.isArray(startPositions)
+			? new Set(startPositions)
+			: startPositions,
+	];
+
+	for (let dist = 1; ; dist++) {
+		positions[dist] = new Set();
+		for (let sectorIndex of positions[dist - 1]) {
+			utilPos.sectorIndex = sectorIndex;
+			utilPos.getSurroundingSectorIndexes().forEach((sectorIndex) => {
+				if (
+					positions[dist - 1].has(sectorIndex) ||
+					positions[dist - 2]?.has(sectorIndex)
+				) {
+					return;
+				}
+				positions[dist].add(sectorIndex);
+			});
+		}
+		if (positions[dist].size) yield positions[dist];
+		else return positions.slice(0, -1);
+	}
+}

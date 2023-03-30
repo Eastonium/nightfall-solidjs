@@ -40,7 +40,6 @@ export class Position {
 			sectorIndexes.push(this.sectorIndex + 1);
 		if (this.row < this.gridHeight - 1)
 			sectorIndexes.push(this.sectorIndex + this.gridWidth);
-		console.log(sectorIndexes);
 		return sectorIndexes;
 	};
 
