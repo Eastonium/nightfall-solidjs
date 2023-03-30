@@ -9,11 +9,6 @@ export class Position {
 		gridWidth: number,
 		gridHeight: number
 	) {
-		// TODO: When/if the grid is a class, pass that in instead
-		if (gridWidth == null)
-			throw Error("No grid width specified for Position");
-		if (gridHeight == null)
-			throw Error("No grid height specified for Position");
 		this.gridWidth = gridWidth;
 		this.gridHeight = gridHeight;
 

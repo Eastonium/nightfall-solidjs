@@ -91,8 +91,9 @@ const Commands = (p: { program: ProgramConfig | Program }) => {
 
 	const canAct = () =>
 		dataBattle.phase.name === "turn" &&
+		!dataBattle.phase.team.ai &&
 		isProgramInstance(p.program) &&
-		dataBattle.phase.team === p.program.team &&
+		dataBattle.phase.team.id === p.program.team &&
 		!p.program.usedAction;
 
 	return (

@@ -49,7 +49,8 @@ export const Targets = (p: TargetProps) => {
 			const programTarget = dataBattle.mapPrograms[pos.sectorIndex];
 			if (
 				dataBattle.phase.name === "turn" &&
-				dataBattle.phase.team === p.program.team &&
+				!dataBattle.phase.team.ai &&
+				dataBattle.phase.team.id === p.program.team &&
 				!p.program.usedAction &&
 				(p.command.usable?.call(p.program) ?? true) &&
 				p.command.targets.find(
@@ -62,7 +63,7 @@ export const Targets = (p: TargetProps) => {
 							((target === "enemy" &&
 								programTarget.team !== p.program.team) ||
 								(target === "ally" &&
-									programTarget !== p.program && // prevent ally from meaning self
+									programTarget.id !== p.program.id && // prevent ally from meaning self
 									programTarget.team === p.program.team) ||
 								(target === "self" &&
 									programTarget === p.program)))
@@ -81,7 +82,8 @@ export const Targets = (p: TargetProps) => {
 			}
 		} else if (
 			dataBattle.phase.name === "turn" &&
-			dataBattle.phase.team === p.program.team &&
+			!dataBattle.phase.team.ai &&
+			dataBattle.phase.team.id === p.program.team &&
 			dist === 1
 		) {
 			props.href =

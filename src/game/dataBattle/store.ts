@@ -19,14 +19,14 @@ import {
 } from "solid-js/store";
 import { Chit } from "./chit";
 import { Position } from "./grid/position";
-import { Level, TeamId } from "./level";
+import { Level, Team, TeamId } from "./level";
 import { Command, isProgramInstance, Program, ProgramConfig } from "./program";
 import cloneDeep from "lodash.clonedeep";
 import { findAttackerPath } from "./ai";
 
 type BattlePhase =
-	| { name: "setup"; team: TeamId }
-	| { name: "turn"; turn: number; team: TeamId }
+	| { name: "setup"; turn: number; team: Team } // Setup might have turns in the future?
+	| { name: "turn"; turn: number; team: Team }
 	| { name: "end"; winner: TeamId };
 
 export type Selection =
@@ -57,7 +57,7 @@ export const useDataBattle = () => {
 export const createDataBattleStore = (level: Level) => {
 	const [dataBattle, setDataBattle] = createStore<DataBattle>({
 		...level,
-		phase: { name: "setup", team: level.teams[0].id },
+		phase: { name: "setup", turn: 1, team: level.teams[0] },
 		selection: null,
 		creditsCollected: 0,
 	});
@@ -67,12 +67,13 @@ export const createDataBattleStore = (level: Level) => {
 
 	// Select first upload zone or program for new team on their turn
 	createEffect(() => {
-		if (dataBattle.phase.name === "end") return;
-		const team = dataBattle.phase.team;
+		// Don't auto-select if game is over or if team is an AI
+		if (dataBattle.phase.name === "end" || dataBattle.phase.team.ai) return;
+		const teamId = dataBattle.phase.team.id;
 		untrack(() => {
 			if (dataBattle.phase.name === "setup") {
 				const uploadZone = dataBattle.uploadZones.find(
-					(uz) => uz.team === team
+					(uz) => uz.team === teamId
 				);
 				if (!uploadZone) return;
 				actions.setSelection({
@@ -84,7 +85,7 @@ export const createDataBattleStore = (level: Level) => {
 			} else {
 				const program = dataBattle.programs.find(
 					(prog) =>
-						prog.team === team &&
+						prog.team === teamId &&
 						!prog.usedAction &&
 						prog.slug.length > 0
 				);
@@ -133,11 +134,15 @@ const createActions = (
 	};
 
 	function selectListedProgram(program: ProgramConfig) {
+		if (dataBattle.phase.name !== "setup") return;
 		const selectionPos = selectionPosition();
+		const currentTeamId = dataBattle.phase.team.id;
 
 		if (
 			selectionPos &&
-			dataBattle.uploadZones.find((uz) => uz.pos.equals(selectionPos))
+			dataBattle.uploadZones.find(
+				(uz) => uz.team === currentTeamId && uz.pos.equals(selectionPos)
+			)
 		) {
 			setDataBattle(
 				"uploadZones",
@@ -146,7 +151,11 @@ const createActions = (
 				// program is not from store, do like this instead of ...["program", program] to avoid corrupting it
 			);
 			setSelection({
-				program: { team: 0, slug: [selectionPos], ...program },
+				program: {
+					team: currentTeamId,
+					slug: [selectionPos],
+					...program,
+				},
 			});
 		} else {
 			setSelection({ program });
@@ -189,7 +198,11 @@ const createActions = (
 				dataBattle.uploadZones = [];
 
 				dataBattle.selection = null;
-				dataBattle.phase = { name: "turn", turn: 1, team: 0 };
+				dataBattle.phase = {
+					name: "turn",
+					turn: 1,
+					team: dataBattle.teams[0],
+				};
 			})
 		);
 	}
@@ -277,8 +290,8 @@ const createActions = (
 	function runProgramCommand(
 		sourceProg: Program,
 		command: null,
-		targetPos: never,
-		targetProg: never
+		targetPos?: never,
+		targetProg?: never
 	): void;
 	function runProgramCommand(
 		sourceProg: Program,
@@ -289,20 +302,21 @@ const createActions = (
 	function runProgramCommand(
 		sourceProg: Program,
 		command: Command | null,
-		targetPos: Position,
-		targetProg: Program | null
+		targetPos?: Position,
+		targetProg?: Program | null
 	) {
 		if (command) {
 			// Remove rollback state on running a command
 			setRollbackStates([]);
-			command.effect.call(sourceProg, targetPos, targetProg, actions);
+			command.effect.call(sourceProg, targetPos!, targetProg!, actions);
 		}
 		setDataBattle("programs", (prog) => prog.id === sourceProg.id, {
 			usedSpeed: Infinity, // Prevent speed-adding programs from letting it move again
 			usedAction: true,
 		});
 
-		if (dataBattle.phase.name !== "turn") return;
+		if (dataBattle.phase.name !== "turn" || dataBattle.phase.team.ai)
+			return;
 		// Find next program (in order) and select it
 		const progIndex = dataBattle.programs.findIndex(
 			(prog) => prog.id === sourceProg.id
@@ -314,7 +328,7 @@ const createActions = (
 		) {
 			const program = dataBattle.programs[i];
 			if (
-				program.team === dataBattle.phase.team &&
+				program.team === dataBattle.phase.team.id &&
 				!program.usedAction &&
 				program.slug.length > 0
 			) {
@@ -322,27 +336,9 @@ const createActions = (
 				return;
 			}
 		}
-		// No program found. Clear selection, reset used vars, and switch to next team's turn
+		// No program found. Clear selection, and switch to next team's turn
 		setSelection(null);
-		setDataBattle("programs", (prog) => prog.team === sourceProg.team, {
-			usedSpeed: 0,
-			usedAction: false,
-		});
-		setRollbackStates([]);
-		const currentTeamId = dataBattle.phase.team;
-		const currentTeamIndex = dataBattle.teams.findIndex(
-			(team) => team.id === currentTeamId
-		);
-		const nextTeamIndex = (currentTeamIndex + 1) % dataBattle.teams.length;
-		setDataBattle("phase", {
-			name: "turn",
-			// Increment the turn number if the next team is not later in the team queue
-			turn:
-				currentTeamIndex <= nextTeamIndex
-					? dataBattle.phase.turn + 1
-					: dataBattle.phase.turn,
-			team: dataBattle.teams[nextTeamIndex].id,
-		});
+		switchToNextTeam();
 	}
 
 	function harmProgram(program: Program, amount: number) {
@@ -471,6 +467,32 @@ const createActions = (
 					)!,
 				});
 			}
+		});
+	}
+
+	function switchToNextTeam() {
+		if (dataBattle.phase.name === "end") return;
+
+		const currentTeamId = dataBattle.phase.team.id;
+		// Remove all rollback states and reset used speed and action
+		setRollbackStates([]);
+		setDataBattle("programs", (prog) => prog.team === currentTeamId, {
+			usedSpeed: 0,
+			usedAction: false,
+		});
+
+		const currentTeamIndex = dataBattle.teams.findIndex(
+			(team) => team.id === currentTeamId
+		);
+		const nextTeamIndex = (currentTeamIndex + 1) % dataBattle.teams.length;
+
+		setDataBattle("phase", {
+			// Increment the turn number if the next team is not later in the team queue
+			turn:
+				currentTeamIndex <= nextTeamIndex
+					? dataBattle.phase.turn + 1
+					: dataBattle.phase.turn,
+			team: dataBattle.teams[nextTeamIndex],
 		});
 	}
 
