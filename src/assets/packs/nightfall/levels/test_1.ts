@@ -63,7 +63,7 @@ const Test_Level_1: LevelDefinition = {
 		{ id: "nightfall:slingshot", slug: [[0, 3]], team: 0 },
 		{ id: "nightfall:dog_2", slug: [[1, 4]], team: 1 },
 		{ id: "nightfall:bit_man", slug: [[2, 5]], team: 0 },
-		{ id: "nightfall:fiddle", slug: [[1, 7]], team: 1 },
+		{ id: "nightfall:sentinel_1", slug: [[1, 7]], team: 1 },
 	],
 	uploadZones: [
 		{ team: 0, pos: [11, 1] },

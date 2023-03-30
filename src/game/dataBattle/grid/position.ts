@@ -1,6 +1,6 @@
 export class Position {
-	gridWidth: number;
-	gridHeight: number;
+	readonly gridWidth: number;
+	readonly gridHeight: number;
 	row: number;
 	column: number;
 
@@ -32,6 +32,17 @@ export class Position {
 		this.column = sectorIndex % this.gridWidth;
 		this.row = Math.floor(sectorIndex / this.gridWidth);
 	}
+	getSurroundingSectorIndexes = () => {
+		const sectorIndexes: typeof this.sectorIndex[] = [];
+		if (this.row > 0) sectorIndexes.push(this.sectorIndex - this.gridWidth);
+		if (this.column > 0) sectorIndexes.push(this.sectorIndex - 1);
+		if (this.column < this.gridWidth - 1)
+			sectorIndexes.push(this.sectorIndex + 1);
+		if (this.row < this.gridHeight - 1)
+			sectorIndexes.push(this.sectorIndex + this.gridWidth);
+		console.log(sectorIndexes);
+		return sectorIndexes;
+	};
 
 	offset = (xOffset: number, yOffset: number) => {
 		this.column += xOffset;

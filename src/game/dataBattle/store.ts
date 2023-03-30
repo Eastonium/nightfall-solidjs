@@ -396,21 +396,17 @@ const createActions = (
 					)!;
 					const possiblePositions: number[] = [];
 					const grabAround = (slugPos: Position) => {
-						[
-							[0, -1],
-							[-1, 0],
-							[1, 0],
-							[0, 1],
-						].forEach((offset) => {
-							const { sectorIndex } = slugPos.clone(...offset);
-							if (
-								dataBattle.solid[sectorIndex] &&
-								!dataBattle.mapPrograms[sectorIndex] &&
-								!possiblePositions.includes(sectorIndex)
-							) {
-								possiblePositions.push(sectorIndex);
-							}
-						});
+						slugPos
+							.getSurroundingSectorIndexes()
+							.forEach((sectorIndex) => {
+								if (
+									dataBattle.solid[sectorIndex] &&
+									!dataBattle.mapPrograms[sectorIndex] &&
+									!possiblePositions.includes(sectorIndex)
+								) {
+									possiblePositions.push(sectorIndex);
+								}
+							});
 					};
 					program2.slug.forEach(grabAround);
 

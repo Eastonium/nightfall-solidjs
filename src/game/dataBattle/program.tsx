@@ -53,7 +53,7 @@ export interface Program extends ProgramConfig {
 export function isProgramInstance(
 	program: Program | ProgramConfig | null | undefined
 ): program is Program {
-	return !!program?.hasOwnProperty("slug");
+	return !!program?.hasOwnProperty("slug"); // TODO: Switch to Object.hasOwn
 }
 
 export const ProgramComponent = (p: { program: Program }) => {
