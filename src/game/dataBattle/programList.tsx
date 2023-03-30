@@ -12,19 +12,26 @@ export const ProgramList = () => {
 			<Window.Section class={programListClass}>
 				<For
 					each={[
-						"nightfall:hack_1",
-						"nightfall:slingshot",
+						"nightfall:hack_2",
+						"nightfall:golem_1",
+						"nightfall:seeker_1",
+						"nightfall:turbo_1",
+						"nightfall:bug_1",
+						"nightfall:turbo_1",
+						"nightfall:data_doctor_1",
 						"nightfall:bit_man",
 					]}
 				>
 					{(name) => {
-						const program = getProgramConfig(name)!;
+						const program = getProgramConfig(name);
+						if (!program)
+							throw `Could not find program with name ${name}`;
 						return (
 							<button
 								class={programListItemClass}
 								onClick={() => selectListedProgram(program)}
 							>
-								{program.name} x{1}
+								{program.name}
 							</button>
 						);
 					}}

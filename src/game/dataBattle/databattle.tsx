@@ -59,7 +59,7 @@ export const DataBattle = (props: DataBattleProps) => {
 					<Show
 						when={dataBattle.phase.name === "setup"}
 						fallback={
-							<Window title="spybot" sectioned>
+							<Window title="debug.phase" sectioned>
 								Phase: {dataBattle.phase.name}
 								<br />
 								Team:{" "}

@@ -16,7 +16,7 @@ export function executeAiTurn(
 	const currentTeam = dataBattle.phase.team;
 
 	const programs = dataBattle.programs.filter(
-		(prog) => prog.team === currentTeam.id
+		(prog) => prog.team === currentTeam.id && prog.slug.length
 	);
 	while (programs.length) {
 		const program = programs.splice(
@@ -28,8 +28,12 @@ export function executeAiTurn(
 			program.commands[0],
 			dataBattle
 		);
-		for (let position of navPath!) {
-			moveProgram(program, program.slug[0].new(position[0]));
+		if (!navPath) throw "Error finding path for AI";
+		while (program.usedSpeed < Math.min(program.speed, navPath.length)) {
+			moveProgram(
+				program,
+				program.slug[0].new(navPath[program.usedSpeed][0])
+			);
 		}
 
 		// TODO: ATTACK!

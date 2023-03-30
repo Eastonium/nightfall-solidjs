@@ -65,13 +65,13 @@ export const createDataBattleStore = (level: Level) => {
 	const selectors = createSelectors(dataBattle, rollbackStates);
 	const actions = createActions(selectors, setDataBattle, setRollbackStates);
 
-	// Select first upload zone or program for new team on their turn
+	// Run AI turn or select first upload zone or program for new player turn
 	createEffect(() => {
-		// Don't auto-select if game is over or if team is an AI
 		if (dataBattle.phase.name === "end") return;
-		const teamId = dataBattle.phase.team.id;
 
-		if (dataBattle.phase.team.ai) {
+		const team = dataBattle.phase.team;
+
+		if (team.ai) {
 			untrack(() => executeAiTurn(selectors, actions));
 			return;
 		}
@@ -79,7 +79,7 @@ export const createDataBattleStore = (level: Level) => {
 		untrack(() => {
 			if (dataBattle.phase.name === "setup") {
 				const uploadZone = dataBattle.uploadZones.find(
-					(uz) => uz.team === teamId
+					(uz) => uz.team === team.id
 				);
 				if (!uploadZone) return;
 				actions.setSelection({
@@ -91,7 +91,7 @@ export const createDataBattleStore = (level: Level) => {
 			} else {
 				const program = dataBattle.programs.find(
 					(prog) =>
-						prog.team === teamId &&
+						prog.team === team.id &&
 						!prog.usedAction &&
 						prog.slug.length > 0
 				);
@@ -289,10 +289,11 @@ const createActions = (
 					chit.pos.equals(pos)
 				);
 				if (chit) {
-					chit.onLandOn?.(program2, actions);
-					dataBattle.chits = dataBattle.chits.filter(
-						(c) => c.id !== chit.id
-					);
+					if (chit.onLandOn?.(program2, actions)) {
+						dataBattle.chits = dataBattle.chits.filter(
+							(c) => c.id !== chit.id
+						);
+					}
 				}
 			})
 		);
