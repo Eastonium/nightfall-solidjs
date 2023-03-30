@@ -11,8 +11,8 @@ interface TargetProps {
 	command?: Command;
 }
 export const Targets = (p: TargetProps) => {
-	const [{ dataBattle }, actions] = useDataBattle();
-	const { moveProgram, runProgramCommand } = actions;
+	const [{ dataBattle }, { moveProgram, runProgramCommand }] =
+		useDataBattle();
 
 	const targetPositions = () => {
 		if (p.command) {

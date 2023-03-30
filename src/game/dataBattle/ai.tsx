@@ -10,7 +10,7 @@ import { Actions, Selectors, useDataBattle } from "./store";
 
 export function executeAiTurn(
 	{ dataBattle }: Selectors,
-	{ moveProgram, switchToNextTeam }: Actions
+	{ moveProgram, runProgramCommand, switchToNextTeam }: Actions
 ) {
 	if (dataBattle.phase.name !== "turn") return;
 	const currentTeam = dataBattle.phase.team;
@@ -18,7 +18,8 @@ export function executeAiTurn(
 	const programs = dataBattle.programs.filter(
 		(prog) => prog.team === currentTeam.id && prog.slug.length
 	);
-	while (programs.length) {
+	// TODO: This check for the game phase feels janky. Something about the AI turn here feels like it could break
+	while (programs.length && dataBattle.phase.name === "turn") {
 		const program = programs.splice(
 			Math.floor(Math.random() * programs.length),
 			1
@@ -36,7 +37,25 @@ export function executeAiTurn(
 			);
 		}
 
-		// TODO: ATTACK!
+		const potentialTargetCells = floodFindPositions(
+			program.slug[0],
+			(pos, dist) => dist <= program.commands[0].range
+		).filter(([sectorIndex]) => {
+			const occupyingProgram = dataBattle.mapPrograms[sectorIndex];
+			return occupyingProgram && occupyingProgram.team !== program.team;
+		});
+		if (potentialTargetCells.length) {
+			const targetSectorIndex =
+				potentialTargetCells[
+					Math.floor(Math.random() * potentialTargetCells.length)
+				][0];
+			runProgramCommand(
+				program,
+				program.commands[0],
+				program.slug[0].new(targetSectorIndex),
+				dataBattle.mapPrograms[targetSectorIndex]
+			);
+		}
 	}
 
 	switchToNextTeam();
