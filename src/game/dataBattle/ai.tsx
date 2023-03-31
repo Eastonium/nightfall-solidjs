@@ -1,3 +1,4 @@
+import { wait } from "utils";
 import { Position } from "./grid/position";
 import {
 	floodFindPositions,
@@ -8,9 +9,9 @@ import { Level } from "./level";
 import { Command, Program } from "./program";
 import { Actions, Selectors, useDataBattle } from "./store";
 
-export function executeAiTurn(
+export async function executeAiTurn(
 	{ dataBattle }: Selectors,
-	{ moveProgram, runProgramCommand, switchToNextTeam }: Actions
+	{ setSelection, moveProgram, runProgramCommand, switchToNextTeam }: Actions
 ) {
 	if (dataBattle.phase.name !== "turn") return;
 	const currentTeam = dataBattle.phase.team;
@@ -24,22 +25,27 @@ export function executeAiTurn(
 			Math.floor(Math.random() * programs.length),
 			1
 		)[0];
-		const navPath = findAttackerPath(
-			program,
-			program.commands[0],
-			dataBattle
-		);
+		const command = program.commands[0];
+
+		const navPath = findAttackerPath(program, command, dataBattle);
 		if (!navPath) throw "Error finding path for AI";
 		while (program.usedSpeed < Math.min(program.speed, navPath.length)) {
 			moveProgram(
 				program,
 				program.slug[0].new(navPath[program.usedSpeed][0])
 			);
+			await wait(200);
 		}
+		if (program.usedSpeed < program.speed) {
+			// select command since it usually only does if all speed is used
+			setSelection({ program, command });
+			await wait(200);
+		}
+		await wait(200);
 
 		const potentialTargetCells = floodFindPositions(
 			program.slug[0],
-			(pos, dist) => dist <= program.commands[0].range
+			(pos, dist) => dist <= command.range
 		).filter(([sectorIndex]) => {
 			const occupyingProgram = dataBattle.mapPrograms[sectorIndex];
 			return occupyingProgram && occupyingProgram.team !== program.team;
@@ -49,13 +55,15 @@ export function executeAiTurn(
 				potentialTargetCells[
 					Math.floor(Math.random() * potentialTargetCells.length)
 				][0];
-			runProgramCommand(
+			await runProgramCommand(
 				program,
-				program.commands[0],
+				command,
 				program.slug[0].new(targetSectorIndex),
 				dataBattle.mapPrograms[targetSectorIndex]
 			);
 		}
+
+		setSelection(null);
 	}
 
 	switchToNextTeam();

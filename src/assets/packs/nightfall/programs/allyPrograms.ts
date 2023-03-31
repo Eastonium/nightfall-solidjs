@@ -56,7 +56,7 @@ export const allyPrograms: ProgramConfig[] = [
 				targets: ["enemy"],
 				effectType: "harm",
 				effect(_, target, { harmProgram }) {
-					harmProgram(target!, 2);
+					return harmProgram(target!, 2);
 				},
 			},
 		],
@@ -77,7 +77,7 @@ export const allyPrograms: ProgramConfig[] = [
 				targets: ["enemy"],
 				effectType: "harm",
 				effect(_, target, { harmProgram }) {
-					harmProgram(target!, 2);
+					return harmProgram(target!, 2);
 				},
 			},
 			{
@@ -90,7 +90,7 @@ export const allyPrograms: ProgramConfig[] = [
 				},
 				effectType: "harm",
 				effect(_, target, { harmProgram }) {
-					harmProgram(target!, 3);
+					return harmProgram(target!, 3);
 				},
 			},
 		],
@@ -111,7 +111,7 @@ export const allyPrograms: ProgramConfig[] = [
 				targets: ["enemy"],
 				effectType: "harm",
 				effect(_, target, { harmProgram }) {
-					harmProgram(target!, 2);
+					return harmProgram(target!, 2);
 				},
 			},
 			{
@@ -124,7 +124,7 @@ export const allyPrograms: ProgramConfig[] = [
 				},
 				effectType: "harm",
 				effect(_, target, { harmProgram }) {
-					harmProgram(target!, 4);
+					return harmProgram(target!, 4);
 				},
 			},
 		],
@@ -145,7 +145,7 @@ export const allyPrograms: ProgramConfig[] = [
 				targets: ["enemy"],
 				effectType: "harm",
 				effect(_, target, { harmProgram }) {
-					harmProgram(target!, 1);
+					return harmProgram(target!, 1);
 				},
 			},
 		],
@@ -166,7 +166,7 @@ export const allyPrograms: ProgramConfig[] = [
 				targets: ["enemy"],
 				effectType: "harm",
 				effect(_, target, { harmProgram }) {
-					harmProgram(target!, 2);
+					return harmProgram(target!, 2);
 				},
 			},
 		],
@@ -187,7 +187,7 @@ export const allyPrograms: ProgramConfig[] = [
 				targets: ["enemy"],
 				effectType: "harm",
 				effect(_, target, { harmProgram }) {
-					harmProgram(target!, 2);
+					return harmProgram(target!, 2);
 				},
 			},
 		],
@@ -208,7 +208,7 @@ export const allyPrograms: ProgramConfig[] = [
 				targets: ["enemy"],
 				effectType: "harm",
 				effect(_, target, { harmProgram }) {
-					harmProgram(target!, 2);
+					return harmProgram(target!, 2);
 				},
 			},
 			{
@@ -221,8 +221,10 @@ export const allyPrograms: ProgramConfig[] = [
 				},
 				effectType: "harm",
 				effect(_, target, { harmProgram }) {
-					harmProgram(this, 2);
-					harmProgram(target!, 5);
+					return Promise.all([
+						harmProgram(this, 2),
+						harmProgram(target!, 5),
+					]);
 				},
 			},
 		],
@@ -243,7 +245,7 @@ export const allyPrograms: ProgramConfig[] = [
 				targets: ["enemy"],
 				effectType: "harm",
 				effect(_, target, { harmProgram }) {
-					harmProgram(target!, 2);
+					return harmProgram(target!, 2);
 				},
 			},
 		],
@@ -264,7 +266,7 @@ export const allyPrograms: ProgramConfig[] = [
 				targets: ["enemy"],
 				effectType: "harm",
 				effect(_, target, { harmProgram }) {
-					harmProgram(target!, 4);
+					return harmProgram(target!, 4);
 				},
 			},
 		],
@@ -285,7 +287,7 @@ export const allyPrograms: ProgramConfig[] = [
 				targets: ["enemy"],
 				effectType: "harm",
 				effect(_, target, { harmProgram }) {
-					harmProgram(target!, 6);
+					return harmProgram(target!, 6);
 				},
 			},
 		],
@@ -306,7 +308,7 @@ export const allyPrograms: ProgramConfig[] = [
 				targets: ["ally"],
 				effectType: "heal",
 				effect(_, target, { healProgram }) {
-					healProgram(target!, 2);
+					return healProgram(target!, 2);
 				},
 			},
 		],
@@ -327,7 +329,7 @@ export const allyPrograms: ProgramConfig[] = [
 				targets: ["ally"],
 				effectType: "heal",
 				effect(_, target, { healProgram }) {
-					healProgram(target!, 2);
+					return healProgram(target!, 2);
 				},
 			},
 		],
@@ -348,7 +350,7 @@ export const allyPrograms: ProgramConfig[] = [
 				targets: ["ally"],
 				effectType: "heal",
 				effect(_, target, { healProgram }) {
-					healProgram(target!, 4);
+					return healProgram(target!, 4);
 				},
 			},
 			{
@@ -489,7 +491,7 @@ export const allyPrograms: ProgramConfig[] = [
 				targets: ["enemy"],
 				effectType: "harm",
 				effect(_, target, { harmProgram }) {
-					harmProgram(target!, 3);
+					return harmProgram(target!, 3);
 				},
 			},
 		],
@@ -510,7 +512,7 @@ export const allyPrograms: ProgramConfig[] = [
 				targets: ["enemy"],
 				effectType: "harm",
 				effect(_, target, { harmProgram }) {
-					harmProgram(target!, 5);
+					return harmProgram(target!, 5);
 				},
 			},
 		],
@@ -531,7 +533,7 @@ export const allyPrograms: ProgramConfig[] = [
 				targets: ["enemy"],
 				effectType: "harm",
 				effect(_, target, { harmProgram }) {
-					harmProgram(target!, 7);
+					return harmProgram(target!, 7);
 				},
 			},
 		],
@@ -552,7 +554,7 @@ export const allyPrograms: ProgramConfig[] = [
 				targets: ["enemy"],
 				effectType: "harm",
 				effect(_, target, { harmProgram }) {
-					harmProgram(target!, 2);
+					return harmProgram(target!, 2);
 				},
 			},
 		],
@@ -573,7 +575,7 @@ export const allyPrograms: ProgramConfig[] = [
 				targets: ["enemy"],
 				effectType: "harm",
 				effect(_, target, { harmProgram }) {
-					harmProgram(target!, 2);
+					return harmProgram(target!, 2);
 				},
 			},
 			{
@@ -604,7 +606,7 @@ export const allyPrograms: ProgramConfig[] = [
 				targets: ["enemy"],
 				effectType: "harm",
 				effect(_, target, { harmProgram }) {
-					harmProgram(target!, 3);
+					return harmProgram(target!, 3);
 				},
 			},
 			{
@@ -635,7 +637,7 @@ export const allyPrograms: ProgramConfig[] = [
 				targets: ["enemy"],
 				effectType: "harm",
 				effect(_, target, { harmProgram }) {
-					harmProgram(target!, 3);
+					return harmProgram(target!, 3);
 				},
 			},
 		],
@@ -656,7 +658,7 @@ export const allyPrograms: ProgramConfig[] = [
 				targets: ["enemy"],
 				effectType: "harm",
 				effect(_, target, { harmProgram }) {
-					harmProgram(target!, 3);
+					return harmProgram(target!, 3);
 				},
 			},
 		],
@@ -678,7 +680,7 @@ export const allyPrograms: ProgramConfig[] = [
 				effectType: "other",
 				effect(_, target, { harmProgram, modProgram }) {
 					modProgram(target!, "speed", (speed) => speed + 1);
-					harmProgram(this, 1);
+					return harmProgram(this, 1);
 				},
 			},
 		],
@@ -703,7 +705,7 @@ export const allyPrograms: ProgramConfig[] = [
 				},
 				effect(_, target, { harmProgram, modProgram }) {
 					modProgram(target!, "speed", (speed) => speed + 2);
-					harmProgram(this, 2);
+					return harmProgram(this, 2);
 				},
 			},
 		],
@@ -724,7 +726,7 @@ export const allyPrograms: ProgramConfig[] = [
 				targets: ["enemy"],
 				effectType: "harm",
 				effect(_, target, { harmProgram }) {
-					harmProgram(target!, 1);
+					return harmProgram(target!, 1);
 				},
 			},
 			{
@@ -734,8 +736,10 @@ export const allyPrograms: ProgramConfig[] = [
 				targets: ["enemy"],
 				effectType: "harm",
 				effect(_, target, { harmProgram }) {
-					harmProgram(target!, 5);
-					harmProgram(this, this.slug.length);
+					return Promise.all([
+						harmProgram(target!, 5),
+						harmProgram(this, this.slug.length),
+					]);
 				},
 			},
 		],
@@ -759,8 +763,10 @@ export const allyPrograms: ProgramConfig[] = [
 				},
 				effectType: "harm",
 				effect(_, target, { harmProgram }) {
-					harmProgram(target!, 10);
-					harmProgram(this, this.slug.length);
+					return Promise.all([
+						harmProgram(target!, 10),
+						harmProgram(this, this.slug.length),
+					]);
 				},
 			},
 		],
@@ -782,7 +788,7 @@ export const allyPrograms: ProgramConfig[] = [
 				effectType: "other",
 				effect(_, target, { harmProgram, modProgram }) {
 					modProgram(target!, "speed", (speed) => speed + 1);
-					harmProgram(this, 1);
+					return harmProgram(this, 1);
 				},
 			},
 			{
@@ -793,7 +799,7 @@ export const allyPrograms: ProgramConfig[] = [
 				effectType: "other",
 				effect(_, target, { harmProgram, modProgram }) {
 					modProgram(target!, "maxSize", (maxSize) => maxSize + 1);
-					harmProgram(this, 1);
+					return harmProgram(this, 1);
 				},
 			},
 		],
@@ -814,7 +820,7 @@ export const allyPrograms: ProgramConfig[] = [
 				targets: ["enemy"],
 				effectType: "harm",
 				effect(_, target, { harmProgram }) {
-					harmProgram(target!, 4);
+					return harmProgram(target!, 4);
 				},
 			},
 		],
@@ -835,7 +841,7 @@ export const allyPrograms: ProgramConfig[] = [
 				targets: ["enemy"],
 				effectType: "harm",
 				effect(_, target, { harmProgram }) {
-					harmProgram(target!, 4);
+					return harmProgram(target!, 4);
 				},
 			},
 		],
@@ -856,7 +862,7 @@ export const allyPrograms: ProgramConfig[] = [
 				targets: ["enemy"],
 				effectType: "harm",
 				effect(_, target, { harmProgram }) {
-					harmProgram(target!, 2);
+					return harmProgram(target!, 2);
 				},
 			},
 		],
@@ -877,7 +883,7 @@ export const allyPrograms: ProgramConfig[] = [
 				targets: ["enemy"],
 				effectType: "harm",
 				effect(_, target, { harmProgram }) {
-					harmProgram(target!, 2);
+					return harmProgram(target!, 2);
 				},
 			},
 		],
@@ -908,7 +914,7 @@ export const allyPrograms: ProgramConfig[] = [
 				targets: ["enemy"],
 				effectType: "harm",
 				effect(_, target, { harmProgram }) {
-					harmProgram(target!, 2);
+					return harmProgram(target!, 2);
 				},
 			},
 			{
@@ -942,7 +948,7 @@ export const allyPrograms: ProgramConfig[] = [
 				},
 				effectType: "harm",
 				effect(_, target, { harmProgram }) {
-					harmProgram(target!, 8);
+					return harmProgram(target!, 8);
 				},
 			},
 		],
@@ -963,7 +969,7 @@ export const allyPrograms: ProgramConfig[] = [
 				targets: ["enemy"],
 				effectType: "harm",
 				effect(_, target, { harmProgram }) {
-					harmProgram(target!, 4);
+					return harmProgram(target!, 4);
 				},
 			},
 			{

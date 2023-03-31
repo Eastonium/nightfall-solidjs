@@ -53,7 +53,9 @@ export const enemyPrograms: ProgramConfig[] = [
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
-				effect(_, target, { harmProgram }) { harmProgram(target!, 2) },
+				effect(_, target, { harmProgram }) {
+					return harmProgram(target!, 2);
+				},
 			},
 		],
 	},
@@ -72,7 +74,9 @@ export const enemyPrograms: ProgramConfig[] = [
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
-				effect(_, target, { harmProgram }) { harmProgram(target!, 4) },
+				effect(_, target, { harmProgram }) {
+					return harmProgram(target!, 4);
+				},
 			},
 		],
 	},
@@ -91,7 +95,9 @@ export const enemyPrograms: ProgramConfig[] = [
 				range: 2,
 				targets: ["enemy"],
 				effectType: "harm",
-				effect(_, target, { harmProgram }) { harmProgram(target!, 2) },
+				effect(_, target, { harmProgram }) {
+					return harmProgram(target!, 2);
+				},
 			},
 		],
 	},
@@ -110,7 +116,9 @@ export const enemyPrograms: ProgramConfig[] = [
 				range: 2,
 				targets: ["enemy"],
 				effectType: "harm",
-				effect(_, target, { harmProgram }) { harmProgram(target!, 2) },
+				effect(_, target, { harmProgram }) {
+					return harmProgram(target!, 2);
+				},
 			},
 		],
 	},
@@ -129,7 +137,9 @@ export const enemyPrograms: ProgramConfig[] = [
 				range: 3,
 				targets: ["enemy"],
 				effectType: "harm",
-				effect(_, target, { harmProgram }) { harmProgram(target!, 2) },
+				effect(_, target, { harmProgram }) {
+					return harmProgram(target!, 2);
+				},
 			},
 		],
 	},
@@ -148,7 +158,9 @@ export const enemyPrograms: ProgramConfig[] = [
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
-				effect(_, target, { harmProgram }) { harmProgram(target!, 2) },
+				effect(_, target, { harmProgram }) {
+					return harmProgram(target!, 2);
+				},
 			},
 		],
 	},
@@ -167,7 +179,9 @@ export const enemyPrograms: ProgramConfig[] = [
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
-				effect(_, target, { harmProgram }) { harmProgram(target!, 2) },
+				effect(_, target, { harmProgram }) {
+					return harmProgram(target!, 2);
+				},
 			},
 		],
 	},
@@ -186,7 +200,9 @@ export const enemyPrograms: ProgramConfig[] = [
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
-				effect(_, target, { harmProgram }) { harmProgram(target!, 3) },
+				effect(_, target, { harmProgram }) {
+					return harmProgram(target!, 3);
+				},
 			},
 		],
 	},
@@ -205,7 +221,9 @@ export const enemyPrograms: ProgramConfig[] = [
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
-				effect(_, target, { harmProgram }) { harmProgram(target!, 3) },
+				effect(_, target, { harmProgram }) {
+					return harmProgram(target!, 3);
+				},
 			},
 		],
 	},
@@ -224,7 +242,9 @@ export const enemyPrograms: ProgramConfig[] = [
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
-				effect(_, target, { harmProgram }) { harmProgram(target!, 5) },
+				effect(_, target, { harmProgram }) {
+					return harmProgram(target!, 5);
+				},
 			},
 		],
 	},
@@ -243,7 +263,9 @@ export const enemyPrograms: ProgramConfig[] = [
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
-				effect(_, target, { harmProgram }) { harmProgram(target!, 7) },
+				effect(_, target, { harmProgram }) {
+					return harmProgram(target!, 7);
+				},
 			},
 		],
 	},
@@ -262,7 +284,9 @@ export const enemyPrograms: ProgramConfig[] = [
 				range: 5,
 				targets: ["enemy"],
 				effectType: "harm",
-				effect(_, target, { harmProgram }) { harmProgram(target!, 1) },
+				effect(_, target, { harmProgram }) {
+					return harmProgram(target!, 1);
+				},
 			},
 		],
 	},
@@ -281,7 +305,9 @@ export const enemyPrograms: ProgramConfig[] = [
 				range: 5,
 				targets: ["enemy"],
 				effectType: "harm",
-				effect(_, target, { harmProgram }) { harmProgram(target!, 2) },
+				effect(_, target, { harmProgram }) {
+					return harmProgram(target!, 2);
+				},
 			},
 		],
 	},
@@ -300,7 +326,9 @@ export const enemyPrograms: ProgramConfig[] = [
 				range: 8,
 				targets: ["enemy"],
 				effectType: "harm",
-				effect(_, target, { harmProgram }) { harmProgram(target!, 1) },
+				effect(_, target, { harmProgram }) {
+					return harmProgram(target!, 1);
+				},
 			},
 		],
 	},
@@ -319,7 +347,9 @@ export const enemyPrograms: ProgramConfig[] = [
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
-				effect(_, target, { harmProgram }) { harmProgram(target!, 1) },
+				effect(_, target, { harmProgram }) {
+					return harmProgram(target!, 1);
+				},
 			},
 		],
 	},
@@ -338,7 +368,9 @@ export const enemyPrograms: ProgramConfig[] = [
 				range: 5,
 				targets: ["enemy"],
 				effectType: "harm",
-				effect(_, target, { harmProgram }) { harmProgram(target!, 5) },
+				effect(_, target, { harmProgram }) {
+					return harmProgram(target!, 5);
+				},
 			},
 		],
 	},

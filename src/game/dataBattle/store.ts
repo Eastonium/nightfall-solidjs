@@ -23,6 +23,7 @@ import { Level, Team, TeamId } from "./level";
 import { Command, isProgramInstance, Program, ProgramConfig } from "./program";
 import cloneDeep from "lodash.clonedeep";
 import { executeAiTurn } from "./ai";
+import { wait } from "utils";
 
 type BattlePhase =
 	| { name: "setup"; turn: number; team: Team } // Setup might have turns in the future?
@@ -299,28 +300,26 @@ const createActions = (
 		);
 	}
 
-	function runProgramCommand(
+	async function runProgramCommand(
 		sourceProg: Program,
-		command: null,
-		targetPos?: never,
-		targetProg?: never
-	): void;
-	function runProgramCommand(
-		sourceProg: Program,
-		command: Command,
-		targetPos: Position,
-		targetProg: Program | null
-	): void;
-	function runProgramCommand(
-		sourceProg: Program,
-		command: Command | null,
-		targetPos?: Position,
-		targetProg?: Program | null
+		...cmd:
+			| [null]
+			| [
+					command: Command,
+					targetPos: Position,
+					targetProg: Program | null
+			  ]
 	) {
-		if (command) {
+		if (cmd[0]) {
 			// Remove rollback state on running a command
 			setRollbackStates([]);
-			command.effect.call(sourceProg, targetPos!, targetProg!, actions);
+			const [command, targetPos, targetProg] = cmd;
+			await command.effect.call(
+				sourceProg,
+				targetPos,
+				targetProg,
+				actions
+			);
 		}
 		setDataBattle("programs", (prog) => prog.id === sourceProg.id, {
 			usedSpeed: Infinity, // Prevent speed-adding programs from letting it move again
@@ -353,88 +352,90 @@ const createActions = (
 		switchToNextTeam();
 	}
 
-	function harmProgram(program: Program, amount: number) {
-		setDataBattle(
-			produce((dataBattle) => {
-				const program2 = dataBattle.programs.find(
-					(program2) => program2.id === program.id
-				)!;
-				program2.slug
-					.splice(-amount, amount)
-					.forEach(
-						(pos) =>
-							(dataBattle.mapPrograms[pos.sectorIndex] = null)
-					);
+	async function harmProgram(programId: Program, amount: number) {
+		const program = dataBattle.programs.find(
+			(program) => program.id === programId.id
+		)!;
+		for (let i = 0; i < Math.min(amount, program.slug.length); i++) {
+			batch(() => {
+				setDataBattle(
+					"mapPrograms",
+					program.slug[program.slug.length - 1].sectorIndex,
+					null
+				);
+				setDataBattle(
+					"programs",
+					(prog) => prog.id === program.id,
+					"slug",
+					(slug) => slug.slice(0, -1)
+				);
+			});
+			await wait(200);
+		}
 
-				// If dead
-				if (!program2.slug.length) {
-					// Clear selection if harmed program was selected
-					if (dataBattle.selection?.program?.id === program.id) {
-						setSelection(null);
-					}
+		// If dead
+		if (!program.slug.length) {
+			// Clear selection if harmed program was selected
+			if (dataBattle.selection?.program?.id === program.id) {
+				setSelection(null);
+			}
 
-					if (!dataBattle.onTeamEliminated) return;
-					// Check if whole team is eliminated
-					const teamsAlive = new Set<number>();
-					dataBattle.programs.forEach(
-						(program) =>
-							program.slug.length && teamsAlive.add(program.team)
-					);
-					if (teamsAlive.has(program2.team)) return; // Team wasn't eliminated
+			if (!dataBattle.onTeamEliminated) return;
+			// Check if whole team is eliminated
+			const teamsAlive = new Set<number>();
+			dataBattle.programs.forEach(
+				(program) => program.slug.length && teamsAlive.add(program.team)
+			);
+			if (teamsAlive.has(program.team)) return; // Team wasn't eliminated
 
-					dataBattle.onTeamEliminated(
-						program2.team,
-						[...teamsAlive],
-						actions
-					);
-				}
-			})
-		);
+			dataBattle.onTeamEliminated(program.team, [...teamsAlive], actions);
+		}
 	}
 
-	function healProgram(program: Program, amount: number) {
-		setDataBattle(
-			produce((dataBattle) => {
-				const program2 = dataBattle.programs.find(
-					(program2) => program2.id === program.id
-				)!;
-				const possiblePositions: number[] = [];
-				const grabAround = (slugPos: Position) => {
-					slugPos
-						.getSurroundingSectorIndexes()
-						.forEach((sectorIndex) => {
-							if (
-								dataBattle.solid[sectorIndex] &&
-								!dataBattle.mapPrograms[sectorIndex] &&
-								!possiblePositions.includes(sectorIndex)
-							) {
-								possiblePositions.push(sectorIndex);
-							}
-						});
-				};
-				program2.slug.forEach(grabAround);
-
-				for (let i = 0; i < amount; i++) {
-					if (
-						!possiblePositions.length ||
-						program2.slug.length >= program2.maxSize
-					) {
-						break;
-					}
-					const randomPos = program2.slug[0].new(
-						possiblePositions.splice(
-							Math.floor(
-								Math.random() * possiblePositions.length
-							),
-							1
-						)[0]
-					);
-					program2.slug.push(randomPos);
-					dataBattle.mapPrograms[randomPos.sectorIndex] = program2;
-					grabAround(randomPos);
+	async function healProgram(programId: Program, amount: number) {
+		const program = dataBattle.programs.find(
+			(program2) => program2.id === programId.id
+		)!;
+		const possiblePositions: number[] = [];
+		const grabAround = (slugPos: Position) => {
+			slugPos.getSurroundingSectorIndexes().forEach((sectorIndex) => {
+				if (
+					dataBattle.solid[sectorIndex] &&
+					!dataBattle.mapPrograms[sectorIndex] &&
+					!possiblePositions.includes(sectorIndex)
+				) {
+					possiblePositions.push(sectorIndex);
 				}
-			})
-		);
+			});
+		};
+		program.slug.forEach(grabAround);
+
+		for (let i = 0; i < amount; i++) {
+			if (
+				!possiblePositions.length ||
+				program.slug.length >= program.maxSize
+			) {
+				break;
+			}
+			const randomPos = program.slug[0].new(
+				possiblePositions.splice(
+					Math.floor(Math.random() * possiblePositions.length),
+					1
+				)[0]
+			);
+
+			batch(() => {
+				setDataBattle(
+					"programs",
+					(prog) => prog.id === program.id,
+					"slug",
+					(slug) => [...slug, randomPos]
+				);
+				setDataBattle("mapPrograms", randomPos.sectorIndex, program);
+			});
+			await wait(600);
+			grabAround(randomPos);
+		}
 	}
 
 	function modProgram(

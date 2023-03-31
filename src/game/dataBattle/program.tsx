@@ -21,7 +21,7 @@ export type Command = {
 		position: Position,
 		target: Program | null,
 		actions: Actions
-	) => void;
+	) => PromiseLike<any> | void;
 };
 
 interface ProgramBase {
