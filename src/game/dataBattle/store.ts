@@ -356,7 +356,8 @@ const createActions = (
 		const program = dataBattle.programs.find(
 			(program) => program.id === programId.id
 		)!;
-		for (let i = 0; i < Math.min(amount, program.slug.length); i++) {
+		const initialLength = program.slug.length;
+		for (let i = 0; i < Math.min(amount, initialLength); i++) {
 			batch(() => {
 				setDataBattle(
 					"mapPrograms",

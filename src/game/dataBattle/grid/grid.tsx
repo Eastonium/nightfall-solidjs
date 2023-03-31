@@ -69,7 +69,8 @@ export const Grid = (gridProps: GridProps) => {
 					when={
 						dataBattle.selection &&
 						!dataBattle.selection.chit &&
-						isProgramInstance(dataBattle.selection.program) && {
+						isProgramInstance(dataBattle.selection.program) &&
+						!!dataBattle.selection.program.slug.length && {
 							program: dataBattle.selection.program,
 							command: dataBattle.selection.command,
 						}
