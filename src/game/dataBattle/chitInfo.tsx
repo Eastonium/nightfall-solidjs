@@ -25,7 +25,7 @@ export const ChitInfo = (p: ChitInfoProps) => (
 									color={program.color}
 								/>
 							</svg>
-							<span>Move: {program.speed}</span>
+							<span>Speed: {program.speed}</span>
 							<span>Max Size: {program.maxSize}</span>
 							{isProgramInstance(program) && (
 								<span>Current Size: {program.slug.length}</span>

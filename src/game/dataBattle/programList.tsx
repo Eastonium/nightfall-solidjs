@@ -8,7 +8,7 @@ export const ProgramList = () => {
 	const [, { selectListedProgram }] = useDataBattle();
 
 	return (
-		<Window title="program.list" height={128}>
+		<Window title="program.list"/* height={128}*/>
 			<Window.Section class={programListClass}>
 				<For
 					each={[
@@ -17,7 +17,6 @@ export const ProgramList = () => {
 						"nightfall:seeker_1",
 						"nightfall:turbo_1",
 						"nightfall:bug_1",
-						"nightfall:turbo_1",
 						"nightfall:data_doctor_1",
 						"nightfall:bit_man",
 					]}

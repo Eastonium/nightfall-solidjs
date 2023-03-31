@@ -30,11 +30,13 @@ export const enemyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Cut",
-				desc: "TODO",
+				desc: "Deletes 2 sectors from target",
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
-				effect: (_, target, { harmProgram }) => harmProgram(target!, 2),
+				effect(_, target, { harmProgram }) {
+					return harmProgram(target!, 2);
+				},
 			},
 		],
 	},
@@ -49,7 +51,7 @@ export const enemyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Cut",
-				desc: "TODO",
+				desc: "Deletes 2 sectors from target",
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -70,7 +72,7 @@ export const enemyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Taser",
-				desc: "TODO",
+				desc: "Deletes 4 sectors from target",
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -91,7 +93,7 @@ export const enemyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Phaser",
-				desc: "TODO",
+				desc: "Range:2  Deletes 2 sectors from target",
 				range: 2,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -112,7 +114,7 @@ export const enemyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Phaser",
-				desc: "TODO",
+				desc: "Range:2  Deletes 2 sectors from target",
 				range: 2,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -133,7 +135,7 @@ export const enemyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Photon",
-				desc: "TODO",
+				desc: "Range:3  Deletes 2 sectors from target",
 				range: 3,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -154,7 +156,7 @@ export const enemyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Byte",
-				desc: "TODO",
+				desc: "Deletes 2 sectors from target",
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -175,7 +177,7 @@ export const enemyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Byte",
-				desc: "TODO",
+				desc: "Deletes 2 sectors from target",
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -196,7 +198,7 @@ export const enemyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Megabyte",
-				desc: "TODO",
+				desc: "Deletes 3 sectors from target",
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -217,7 +219,7 @@ export const enemyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Thump",
-				desc: "TODO",
+				desc: "Deletes 3 sectors from target",
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -238,7 +240,7 @@ export const enemyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Bash",
-				desc: "TODO",
+				desc: "Deletes 5 sectors from target",
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -259,7 +261,7 @@ export const enemyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Crash",
-				desc: "TODO",
+				desc: "Deletes 7 sectors from target",
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -280,7 +282,7 @@ export const enemyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Blip",
-				desc: "TODO",
+				desc: "Range:5  Deletes 1 sector from target",
 				range: 5,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -301,7 +303,7 @@ export const enemyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Pong",
-				desc: "TODO",
+				desc: "Range:5  Deletes 2 sectors from target",
 				range: 5,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -322,7 +324,7 @@ export const enemyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Ping",
-				desc: "TODO",
+				desc: "Range:8  Deletes 1 sector from target",
 				range: 8,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -343,7 +345,7 @@ export const enemyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Burn",
-				desc: "TODO",
+				desc: "Deletes 1 sector from target",
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -364,7 +366,7 @@ export const enemyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Shutdown",
-				desc: "TODO",
+				desc: "Range:5  Deletes 5 sectors from target",
 				range: 5,
 				targets: ["enemy"],
 				effectType: "harm",

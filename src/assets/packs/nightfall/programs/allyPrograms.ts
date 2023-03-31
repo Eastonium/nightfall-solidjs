@@ -51,7 +51,7 @@ export const allyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Slice",
-				desc: "TODO",
+				desc: "Deletes 2 sectors from target",
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -72,7 +72,7 @@ export const allyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Slice",
-				desc: "TODO",
+				desc: "Deletes 2 sectors from target",
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -81,8 +81,8 @@ export const allyPrograms: ProgramConfig[] = [
 				},
 			},
 			{
-				name: "Dice",
-				desc: "TODO",
+				name: "Dice (3)",
+				desc: "Size req:3  Deletes 2 sectors from target",
 				range: 1,
 				targets: ["enemy"],
 				usable() {
@@ -106,7 +106,7 @@ export const allyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Slice",
-				desc: "TODO",
+				desc: "Deletes 2 sectors from target",
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -115,8 +115,8 @@ export const allyPrograms: ProgramConfig[] = [
 				},
 			},
 			{
-				name: "Mutilate",
-				desc: "TODO",
+				name: "Mutilate (4)",
+				desc: "Size req:4  Deletes 4 sectors from target",
 				range: 1,
 				targets: ["enemy"],
 				usable() {
@@ -140,7 +140,7 @@ export const allyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Stone",
-				desc: "TODO",
+				desc: "Range:3  Deletes 1 sector from target",
 				range: 3,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -161,7 +161,7 @@ export const allyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Peek",
-				desc: "TODO",
+				desc: "Range:2  Deletes 2 sectors from target",
 				range: 2,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -182,7 +182,7 @@ export const allyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Poke",
-				desc: "TODO",
+				desc: "Range:3  Deletes 2 sectors from target",
 				range: 3,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -203,7 +203,7 @@ export const allyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Poke",
-				desc: "TODO",
+				desc: "Range:3  Deletes 2 sectors from target",
 				range: 3,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -212,8 +212,8 @@ export const allyPrograms: ProgramConfig[] = [
 				},
 			},
 			{
-				name: "Seek and Destroy",
-				desc: "TODO",
+				name: "Seek and Destroy (5)",
+				desc: "Size req:5  Range:2  Deletes 5 sectors from target and 2 from seeker",
 				range: 2,
 				targets: ["enemy"],
 				usable() {
@@ -240,7 +240,7 @@ export const allyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Glitch",
-				desc: "TODO",
+				desc: "Deletes 2 sectors from target",
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -261,7 +261,7 @@ export const allyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Fractal Glitch",
-				desc: "TODO",
+				desc: "Deletes 4 sectors from target",
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -282,7 +282,7 @@ export const allyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Quantum Glitch",
-				desc: "TODO",
+				desc: "Deletes 6 sectors from target",
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -303,7 +303,7 @@ export const allyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Grow",
-				desc: "TODO",
+				desc: "Adds up to 2 sectors to target",
 				range: 1,
 				targets: ["ally"],
 				effectType: "heal",
@@ -324,7 +324,7 @@ export const allyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Hypo",
-				desc: "TODO",
+				desc: "Range:3 Adds up to 2 sectors to target",
 				range: 3,
 				targets: ["ally"],
 				effectType: "heal",
@@ -345,7 +345,7 @@ export const allyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Megagrow",
-				desc: "TODO",
+				desc: "Adds up to 4 sectors to target",
 				range: 1,
 				targets: ["ally"],
 				effectType: "heal",
@@ -355,7 +355,7 @@ export const allyPrograms: ProgramConfig[] = [
 			},
 			{
 				name: "Surgery",
-				desc: "TODO",
+				desc: "Increases max size of target by 1",
 				range: 1,
 				targets: ["enemy", "ally"],
 				effectType: "other",
@@ -376,7 +376,7 @@ export const allyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Zero",
-				desc: "TODO",
+				desc: "Deletes 1 grid square",
 				range: 1,
 				targets: ["solid"],
 				effectType: "other",
@@ -386,7 +386,7 @@ export const allyPrograms: ProgramConfig[] = [
 			},
 			{
 				name: "One",
-				desc: "TODO",
+				desc: "Repairs 1 grid square",
 				range: 1,
 				targets: ["void"],
 				effectType: "other",
@@ -407,7 +407,7 @@ export const allyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Lag",
-				desc: "TODO",
+				desc: "Range:3  Decreases speed of target by 1",
 				range: 3,
 				targets: ["enemy"],
 				effectType: "other",
@@ -428,7 +428,7 @@ export const allyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Chug",
-				desc: "TODO",
+				desc: "Range:3  Decreases speed of target by 2",
 				range: 3,
 				targets: ["enemy"],
 				effectType: "other",
@@ -449,7 +449,7 @@ export const allyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Chug",
-				desc: "TODO",
+				desc: "Range:3  Decreases speed of target by 2",
 				range: 3,
 				targets: ["enemy"],
 				effectType: "other",
@@ -461,8 +461,8 @@ export const allyPrograms: ProgramConfig[] = [
 				},
 			},
 			{
-				name: "Hang",
-				desc: "TODO",
+				name: "Hang (4)",
+				desc: "Size req:4  Range:3  Decreases speed of target to 0",
 				range: 3,
 				targets: ["enemy"],
 				effectType: "other",
@@ -486,7 +486,7 @@ export const allyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Thump",
-				desc: "TODO",
+				desc: "Deletes 3 sectors from target",
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -507,7 +507,7 @@ export const allyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Bash",
-				desc: "TODO",
+				desc: "Deletes 5 sectors from target",
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -528,7 +528,7 @@ export const allyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Crash",
-				desc: "TODO",
+				desc: "Deletes 7 sectors from target",
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -549,7 +549,7 @@ export const allyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Byte",
-				desc: "TODO",
+				desc: "Deletes 2 sectors from target",
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -570,7 +570,7 @@ export const allyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Byte",
-				desc: "TODO",
+				desc: "Deletes 2 sectors from target",
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -580,7 +580,7 @@ export const allyPrograms: ProgramConfig[] = [
 			},
 			{
 				name: "Paralyze",
-				desc: "TODO",
+				desc: "Decreases speed of target by 3",
 				range: 1,
 				targets: ["enemy"],
 				effectType: "other",
@@ -601,7 +601,7 @@ export const allyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Megabyte",
-				desc: "TODO",
+				desc: "Deletes 3 sectors from target",
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -611,7 +611,7 @@ export const allyPrograms: ProgramConfig[] = [
 			},
 			{
 				name: "Paralyze",
-				desc: "TODO",
+				desc: "Decreases speed of target by 3",
 				range: 1,
 				targets: ["enemy"],
 				effectType: "other",
@@ -632,7 +632,7 @@ export const allyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Spot",
-				desc: "TODO",
+				desc: "Range:3  Deletes 3 sectors from target",
 				range: 3,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -653,7 +653,7 @@ export const allyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Spot",
-				desc: "TODO",
+				desc: "Range:3  Deletes 3 sectors from target",
 				range: 3,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -674,7 +674,7 @@ export const allyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Boost",
-				desc: "TODO",
+				desc: "Increases speed of target by 1 and deletes 1 sector from turbo",
 				range: 1,
 				targets: ["ally"],
 				effectType: "other",
@@ -695,8 +695,8 @@ export const allyPrograms: ProgramConfig[] = [
 		color: "#0090fc",
 		commands: [
 			{
-				name: "Megaboost",
-				desc: "TODO",
+				name: "Megaboost (3)",
+				desc: "Size req:3  Range:2  Increases speed of target by 2 and deletes 2 sectors from turbo deluxe",
 				range: 2,
 				targets: ["ally"],
 				effectType: "other",
@@ -721,7 +721,7 @@ export const allyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Sting",
-				desc: "TODO",
+				desc: "Deletes 1 sector from target",
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -731,7 +731,7 @@ export const allyPrograms: ProgramConfig[] = [
 			},
 			{
 				name: "Kamikazee",
-				desc: "TODO",
+				desc: "Deletes 5 sectors from target and terminates BuzzBomb",
 				range: 1,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -754,8 +754,8 @@ export const allyPrograms: ProgramConfig[] = [
 		color: "#0090fc",
 		commands: [
 			{
-				name: "Selfdestruct",
-				desc: "TODO",
+				name: "Self-destruct (6)",
+				desc: "Size req:6  Deletes 10 sectors from target and terminates LogicBomb",
 				range: 1,
 				targets: ["enemy"],
 				usable() {
@@ -782,7 +782,7 @@ export const allyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Tweak",
-				desc: "TODO",
+				desc: "Increases speed of target by 1 and deletes 1 sector from fiddle",
 				range: 1,
 				targets: ["ally"],
 				effectType: "other",
@@ -793,7 +793,7 @@ export const allyPrograms: ProgramConfig[] = [
 			},
 			{
 				name: "Twiddle",
-				desc: "TODO",
+				desc: "Increases max size of target by 1 and deletes 1 sector from fiddle",
 				range: 1,
 				targets: ["ally"],
 				effectType: "other",
@@ -815,7 +815,7 @@ export const allyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Scramble",
-				desc: "TODO",
+				desc: "Range:2  Deletes 4 sectors from target",
 				range: 2,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -836,7 +836,7 @@ export const allyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Megascramble",
-				desc: "TODO",
+				desc: "Range:3  Deletes 4 sectors from target",
 				range: 3,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -857,7 +857,7 @@ export const allyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Fling",
-				desc: "TODO",
+				desc: "Range:4  Deletes 2 sectors from target",
 				range: 4,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -878,7 +878,7 @@ export const allyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Fling",
-				desc: "TODO",
+				desc: "Range:4  Deletes 2 sectors from target",
 				range: 4,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -909,7 +909,7 @@ export const allyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Scorch",
-				desc: "TODO",
+				desc: "Range:3  Deletes 2 sectors from target",
 				range: 3,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -919,7 +919,7 @@ export const allyPrograms: ProgramConfig[] = [
 			},
 			{
 				name: "Stretch",
-				desc: "TODO",
+				desc: "Range:2  Increases max size of target by 1",
 				range: 2,
 				targets: ["ally"],
 				effectType: "other",
@@ -940,7 +940,7 @@ export const allyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Dataslam",
-				desc: "TODO",
+				desc: "Size req:6  Deletes 8 sectors from target",
 				range: 1,
 				targets: ["enemy"],
 				usable() {
@@ -964,7 +964,7 @@ export const allyPrograms: ProgramConfig[] = [
 		commands: [
 			{
 				name: "Fire",
-				desc: "TODO",
+				desc: "Range:2  Deletes 4 sectors from target",
 				range: 2,
 				targets: ["enemy"],
 				effectType: "harm",
@@ -974,7 +974,7 @@ export const allyPrograms: ProgramConfig[] = [
 			},
 			{
 				name: "Ice",
-				desc: "TODO",
+				desc: "Range:2  Decreases speed of target by 3",
 				range: 2,
 				targets: ["enemy"],
 				effectType: "other",
