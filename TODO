@@ -30,9 +30,12 @@
 
 <!-- Figure out why context is undefined when I update a file -->
 
-Make AI:
+<!-- Make AI: -->
 <!-- Find positions from opponents that are within attack range -->
 <!-- If attack-able position is within move range -->
 <!-- 	Move within attack range of program -->
-	Attack program
+<!-- 	Attack program -->
 <!-- else move closer to enemy -->
+
+Bug: AI that doesn't use all its speed isn't shown as completed
+Bug: AI makes weird moves if path is blocked, path should consider a way being opened later while moving generally closer
