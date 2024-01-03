@@ -11,7 +11,7 @@ import { Actions, Selectors, useDataBattle } from "./store";
 
 export async function executeAiTurn(
 	{ dataBattle }: Selectors,
-	{ setSelection, moveProgram, runProgramCommand, switchToNextTeam }: Actions
+	{ setSelection, moveProgram, runProgramCommand, endProgramTurn, switchToNextTeam }: Actions
 ) {
 	if (dataBattle.phase.name !== "turn") return;
 	const currentTeam = dataBattle.phase.team;
@@ -42,7 +42,7 @@ export async function executeAiTurn(
 			await wait(200);
 		}
 		await wait(200);
-
+		
 		const potentialTargetCells = floodFindPositions(
 			program.slug[0],
 			(pos, dist) => dist <= command.range
@@ -62,9 +62,12 @@ export async function executeAiTurn(
 				dataBattle.mapPrograms[targetSectorIndex]
 			);
 		}
-
+		
 		setSelection(null);
+		// Manually mark the program's turn as complete since it won't automatically if the program didn't move or use a command
+		endProgramTurn(program.id);
 	}
+	await wait(200);
 
 	switchToNextTeam();
 }

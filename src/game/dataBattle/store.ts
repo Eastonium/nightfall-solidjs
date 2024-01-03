@@ -134,6 +134,7 @@ const createActions = (
 		harmProgram,
 		healProgram,
 		modProgram,
+		endProgramTurn,
 		toggleSolid,
 		collectCredits,
 		rollbackState,
@@ -216,7 +217,7 @@ const createActions = (
 	}
 
 	function setSelection(selection: Selection) {
-		// Check if different program is selected and if the current selection has moved
+		// Check if different program is selected and if the currently selected program has moved
 		if (
 			dataBattle.selection &&
 			dataBattle.selection.program?.id !== selection?.program?.id &&
@@ -224,11 +225,10 @@ const createActions = (
 			dataBattle.selection.program.usedSpeed > 0
 		) {
 			const programId = dataBattle.selection.program.id;
-			setDataBattle("programs", (prog) => prog.id === programId, {
-				usedSpeed: Infinity,
-				usedAction: true,
-			});
+			// Prevent it from moving again (can be rolled back)
+			endProgramTurn(programId);
 		}
+
 		setDataBattle(
 			"selection",
 			selection
@@ -321,10 +321,7 @@ const createActions = (
 				actions
 			);
 		}
-		setDataBattle("programs", (prog) => prog.id === sourceProg.id, {
-			usedSpeed: Infinity, // Prevent speed-adding programs from letting it move again
-			usedAction: true,
-		});
+		endProgramTurn(sourceProg.id);
 
 		if (dataBattle.phase.name !== "turn" || dataBattle.phase.team.ai)
 			return;
@@ -450,6 +447,13 @@ const createActions = (
 			property,
 			mutator
 		);
+	}
+
+	function endProgramTurn(programId: Program["id"]) {
+		setDataBattle("programs", (prog) => prog.id === programId, {
+			usedSpeed: Infinity, // Prevent speed-adding programs from letting it move again
+			usedAction: true,
+		});
 	}
 
 	function toggleSolid(pos: Position) {
