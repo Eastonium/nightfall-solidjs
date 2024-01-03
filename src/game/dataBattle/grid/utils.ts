@@ -65,7 +65,9 @@ export function floodFindPositions(
 
 	return positions;
 }
-
+/**
+ * Generates a set of positions N-distance away from the starting positions over each iteration
+ */
 export function* spreadFromPositions(
 	startPositions: number[] | Set<number>,
 	gridWidth: number,

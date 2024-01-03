@@ -76,7 +76,7 @@ export function findAttackerPath(
 ) {
 	const headPos = attackingProgram.slug[0];
 
-	// Find all navigable positions (ignore speed)
+	// Find all navigable positions (ignoring speed)
 	const allNavigablePositions = floodFindPositions(
 		headPos,
 		(pos, dist) =>
@@ -86,17 +86,16 @@ export function findAttackerPath(
 					level.mapPrograms[pos.sectorIndex]?.id ==
 						attackingProgram.id))
 	);
-
-	let soonestTurn = Infinity;
-	const soonestTurnPositions: typeof allNavigablePositions = [];
-
 	// get the positions off all enemies
 	const targetPositions: Set<number> = new Set();
 	level.programs.forEach((program) => {
 		if (program.team === attackingProgram.team) return;
-		program.slug.map((pos) => targetPositions.add(pos.sectorIndex));
+		program.slug.forEach((pos) => targetPositions.add(pos.sectorIndex));
 	});
 
+	// Calculate the positions closest to the enemies that can happen the soonest
+	let soonestTurn = Infinity; // Ideally will be 1 (can move there and attack this turn)
+	const soonestTurnPositions: typeof allNavigablePositions = [];
 	const spreadGenerator = spreadFromPositions(
 		targetPositions,
 		headPos.gridWidth,
@@ -108,10 +107,11 @@ export function findAttackerPath(
 		for (let sectorIndex of positions.value) {
 			// Pre-filter which positions to try to get to based on how soon they can be gotten to
 			const navigablePos = allNavigablePositions.find(
+				// TODO: find() is slow, try to find a better way? Map?
 				([si]) => si === sectorIndex
 			);
 			if (navigablePos == null) continue;
-			// 0 means accessible without moving, 1 means accessible this turn, ect.
+			// 0 means accessible without moving, 1 means accessible this turn, 2 means accessible next turn, ect.
 			const turnsFromAttacker = Math.max(
 				1,
 				Math.ceil(navigablePos[1] / attackingProgram.speed)
@@ -119,6 +119,7 @@ export function findAttackerPath(
 			if (turnsFromAttacker === soonestTurn) {
 				soonestTurnPositions.push(navigablePos);
 			} else if (turnsFromAttacker < soonestTurn) {
+				// Positions accessible on a sooner turn found
 				soonestTurn = turnsFromAttacker;
 				soonestTurnPositions.splice(0, Infinity, navigablePos);
 			}
@@ -127,27 +128,40 @@ export function findAttackerPath(
 
 	let navTarget: Position = headPos.new(-1); // this should never need to be used
 	if (soonestTurnPositions.length) {
+		// Choose a random position to go to of the options
 		navTarget.sectorIndex =
 			soonestTurnPositions[
 				Math.floor(Math.random() * soonestTurnPositions.length)
 			][0];
 	} else {
+		// Way is blocked, just try to get as close as possible
+		// Start by iterating over all the next closest positions to the enemies
 		for (let positions of spreadGenerator) {
-			const closestNavigablePositions: number[] = [];
+			const closestNavigablePositions: typeof allNavigablePositions = [];
+			// See if these closer positions are somewhere we can navigate to
 			for (let sectorIndex of positions) {
 				const navigablePos = allNavigablePositions.find(
 					([si]) => si === sectorIndex
 				);
 				if (navigablePos == null) continue;
-				closestNavigablePositions.push(sectorIndex);
+				// Add the position if the list is empty or if the distance is equal to other found positions
+				if (
+					!closestNavigablePositions.length ||
+					navigablePos[1] === closestNavigablePositions[0][1]
+				) {
+					closestNavigablePositions.push(navigablePos);
+				} else if (navigablePos[1] < closestNavigablePositions[0][1]) {
+					closestNavigablePositions.splice(0, Infinity, navigablePos);
+				}
 			}
+			// If any navigable positions were found at this distance, set the navTarget
 			if (closestNavigablePositions.length) {
 				navTarget.sectorIndex =
-					closestNavigablePositions[
+					closestNavigablePositions[ // Choose a random one of the options
 						Math.floor(
 							Math.random() * closestNavigablePositions.length
 						)
-					];
+					][0];
 				break;
 			}
 		}
