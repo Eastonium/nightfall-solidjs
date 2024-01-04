@@ -39,7 +39,7 @@
 <!-- else move closer to enemy -->
 
 ### 0.1.1 - Databattle finishing touches
-Don't let enemies move over credits or data files
+<!-- Don't let enemies move over credits or data files -->
 Turn change modals
 Pop-up when picking up credits
 Flash tail cell when in move mode

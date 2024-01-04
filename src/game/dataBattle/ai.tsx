@@ -11,7 +11,13 @@ import { Actions, Selectors, useDataBattle } from "./store";
 
 export async function executeAiTurn(
 	{ dataBattle }: Selectors,
-	{ setSelection, moveProgram, runProgramCommand, endProgramTurn, switchToNextTeam }: Actions
+	{
+		setSelection,
+		moveProgram,
+		runProgramCommand,
+		endProgramTurn,
+		switchToNextTeam,
+	}: Actions
 ) {
 	if (dataBattle.phase.name !== "turn") return;
 	const currentTeam = dataBattle.phase.team;
@@ -19,8 +25,8 @@ export async function executeAiTurn(
 	const programs = dataBattle.programs.filter(
 		(prog) => prog.team === currentTeam.id && prog.slug.length
 	);
-	// TODO: This check for the game phase feels janky. Something about the AI turn here feels like it could break
-	while (programs.length && dataBattle.phase.name === "turn") {
+	while (programs.length) {
+		// Pick a random program to run
 		const program = programs.splice(
 			Math.floor(Math.random() * programs.length),
 			1
@@ -42,7 +48,7 @@ export async function executeAiTurn(
 			await wait(200);
 		}
 		await wait(200);
-		
+
 		const potentialTargetCells = floodFindPositions(
 			program.slug[0],
 			(pos, dist) => dist <= command.range
@@ -62,7 +68,7 @@ export async function executeAiTurn(
 				dataBattle.mapPrograms[targetSectorIndex]
 			);
 		}
-		
+
 		setSelection(null);
 		// Manually mark the program's turn as complete since it won't automatically if the program didn't move or use a command
 		endProgramTurn(program.id);
@@ -84,10 +90,11 @@ export function findAttackerPath(
 		headPos,
 		(pos, dist) =>
 			dist === 0 || // ensure a program can still move if head cell is no longer solid
-			(level.solid[pos.sectorIndex] &&
-				(!level.mapPrograms[pos.sectorIndex] ||
+			(level.solid[pos.sectorIndex] && // otherwise check if the space is solid
+				(!level.mapPrograms[pos.sectorIndex] || // and check that either the cell is unoccupied...
 					level.mapPrograms[pos.sectorIndex]?.id ==
-						attackingProgram.id))
+						attackingProgram.id) && // ...or is occupied by this program
+				!level.chits.find((chit) => chit.pos.equals(pos))) // and lastly that there is not chit in this space
 	);
 	// get the positions off all enemies
 	const targetPositions: Set<number> = new Set();
