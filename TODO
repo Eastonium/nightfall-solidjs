@@ -1,3 +1,4 @@
+### 0.1 - Properly Functional Databattle ###
 <!-- Create map reference for chits and programs -->
 <!-- Convert stored data to a data store instead of individual signals -->
 <!-- Check if the store is mutating -->
@@ -37,5 +38,26 @@
 <!-- 	Attack program -->
 <!-- else move closer to enemy -->
 
-Bug: AI that doesn't use all its speed isn't shown as completed
-<!-- Bug: AI makes weird moves if path is blocked, path should consider a way being opened later while moving generally closer -->
+### 0.1.1 - Databattle finishing touches
+Don't let enemies move over credits or data files
+Turn change modals
+Pop-up when picking up credits
+Flash tail cell when in move mode
+Mini tutorial messages
+BUG: Can start battle with no programs
+<!-- BUG: AI that doesn't move on its turn doesn't show as having used its turn -->
+<!-- BUG: AI makes weird moves if path is blocked, path should consider a way being opened later while moving generally closer -->
+
+### 0.2 - World Map, Program list
+
+### 0.3 - Create all levels 
+
+### 0.4 - Track user data, Shops
+
+### 0.5 - Main Menu, Multiple saves
+
+### 0.6 - Loading screens, other juice 
+
+### 0.7 - Conversations
+
+### 0.8 - Sounds
