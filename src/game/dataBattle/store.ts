@@ -24,6 +24,7 @@ import { Command, isProgramInstance, Program, ProgramConfig } from "./program";
 import cloneDeep from "lodash.clonedeep";
 import { executeAiTurn } from "./ai";
 import { wait } from "utils";
+import { timing } from "./timings";
 
 type BattlePhase =
 	| { name: "setup"; turn: number; team: Team } // Setup might have turns in the future?
@@ -368,7 +369,7 @@ const createActions = (
 					(slug) => slug.slice(0, -1)
 				);
 			});
-			await wait(200);
+			await wait(timing.programHurtCellDeletionDelay);
 		}
 
 		// If dead
@@ -431,7 +432,7 @@ const createActions = (
 				);
 				setDataBattle("mapPrograms", randomPos.sectorIndex, program);
 			});
-			await wait(600);
+			await wait(timing.programHealCellAdditionDelay);
 			grabAround(randomPos);
 		}
 	}

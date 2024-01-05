@@ -1,4 +1,4 @@
-import { children, JSX, mergeProps, splitProps } from "solid-js";
+import { JSX, mergeProps, splitProps } from "solid-js";
 import { styled } from "solid-styled-components";
 
 export interface WindowProps extends JSX.HTMLAttributes<HTMLDivElement> {
@@ -11,6 +11,7 @@ export interface WindowProps extends JSX.HTMLAttributes<HTMLDivElement> {
 	titleBarButtonProps?: JSX.ButtonHTMLAttributes<HTMLButtonElement>;
 	sectioned?: boolean;
 	postFooter?: JSX.Element;
+	style?: JSX.CSSProperties;
 }
 const _Window = (props: WindowProps) => {
 	const [p, containerProps] = splitProps(
@@ -25,17 +26,18 @@ const _Window = (props: WindowProps) => {
 			"titleBarButtonProps",
 			"sectioned",
 			"postFooter",
+			"style",
 			"children",
 		]
 	);
 	return (
 		<WindowContainer
-			style={{
+			style={Object.assign({
 				top: p.x + "px",
 				left: p.y + "px",
 				width: p.width + "px",
 				height: p.height + "px",
-			}}
+			}, p.style)}
 			{...containerProps}
 		>
 			<div>

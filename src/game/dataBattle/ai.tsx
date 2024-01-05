@@ -8,6 +8,7 @@ import {
 import { Level } from "./level";
 import { Command, Program } from "./program";
 import { Actions, Selectors, useDataBattle } from "./store";
+import { timing } from "./timings";
 
 export async function executeAiTurn(
 	{ dataBattle }: Selectors,
@@ -20,6 +21,8 @@ export async function executeAiTurn(
 	}: Actions
 ) {
 	if (dataBattle.phase.name !== "turn") return;
+	await wait(timing.turnChangeWindowDuration);
+
 	const currentTeam = dataBattle.phase.team;
 
 	const programs = dataBattle.programs.filter(
@@ -33,6 +36,8 @@ export async function executeAiTurn(
 		)[0];
 		const command = program.commands[0];
 
+		setSelection({ program });
+
 		const navPath = findAttackerPath(program, command, dataBattle);
 		if (!navPath) throw "Error finding path for AI";
 		while (program.usedSpeed < Math.min(program.speed, navPath.length)) {
@@ -40,14 +45,12 @@ export async function executeAiTurn(
 				program,
 				program.slug[0].new(navPath[program.usedSpeed][0])
 			);
-			await wait(200);
+			await wait(timing.aiProgramMoveDelay);
 		}
-		if (program.usedSpeed < program.speed) {
-			// select command since it usually only does if all speed is used
+		// select command since it usually only does if all speed is used
+		if (program.usedSpeed < program.speed)
 			setSelection({ program, command });
-			await wait(200);
-		}
-		await wait(200);
+		await wait(timing.aiProgramPostMoveExtraPause);
 
 		const potentialTargetCells = floodFindPositions(
 			program.slug[0],
@@ -72,8 +75,8 @@ export async function executeAiTurn(
 		setSelection(null);
 		// Manually mark the program's turn as complete since it won't automatically if the program didn't move or use a command
 		endProgramTurn(program.id);
+		await wait(timing.aiProgramTurnDoneDelay);
 	}
-	await wait(200);
 
 	switchToNextTeam();
 }

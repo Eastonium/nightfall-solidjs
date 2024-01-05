@@ -37,20 +37,8 @@ export const Grid = (gridProps: GridProps) => {
 								}
 								href={getTexture(dataBattle.style[sectorIndex])}
 							/>
-							{/* <text
-								x={
-									(sectorIndex % dataBattle.width) *
-										gridUnitSize +
-									gridUnitSize * 0.5
-								}
-								y={
-									Math.floor(sectorIndex / dataBattle.width) *
-										gridUnitSize +
-									gridUnitSize * 0.5
-								}
-							>
-								{sectorIndex}
-							</text> */}
+							{/* prettier-ignore */}
+							{/* <text x={(sectorIndex % dataBattle.width) * gridUnitSize + gridUnitSize * 0.5} y={Math.floor(sectorIndex / dataBattle.width) * gridUnitSize + gridUnitSize * 0.5}>{sectorIndex}</text> */}
 						</Show>
 					)}
 				</Index>

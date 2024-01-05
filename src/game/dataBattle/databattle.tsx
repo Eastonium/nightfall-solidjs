@@ -1,5 +1,4 @@
-import { getTexture } from "game/game";
-import { Show, splitProps } from "solid-js";
+import { createEffect, Show, splitProps } from "solid-js";
 import { css, styled } from "solid-styled-components";
 
 import { Button, NormalButtonProps } from "ui/atoms/button";
@@ -11,6 +10,7 @@ import { Grid } from "./grid";
 import type { Level } from "./level";
 import { ProgramList } from "./programList";
 import { createDataBattleStore, DataBattleContext } from "./store";
+import { timing } from "./timings";
 
 interface DataBattleProps extends WindowProps {
 	level: Level;
@@ -46,6 +46,17 @@ export const DataBattle = (props: DataBattleProps) => {
 				onClick: rollbackState,
 			};
 	};
+
+	// Ref the window and show it for 1 second after every team switch on turns
+	let turnChangeWindowRef: HTMLDivElement;
+	createEffect(() => {
+		if (dataBattle.phase.name !== "turn") return;
+		dataBattle.phase.team.id;
+		turnChangeWindowRef?.animate(
+			[{ visibility: "visible" }],
+			timing.turnChangeWindowDuration
+		);
+	});
 
 	return (
 		<Window
@@ -105,6 +116,29 @@ export const DataBattle = (props: DataBattleProps) => {
 
 					<Show
 						when={
+							dataBattle.phase.name === "turn" && dataBattle.phase
+						}
+						keyed
+					>
+						{(phase) => (
+							<Window
+								ref={turnChangeWindowRef}
+								class={centeredInfoWindowClass}
+								title="phase.sequence"
+								width={190}
+								height={90}
+								style={{ visibility: "hidden" }}
+							>
+								<TurnChangeWindowSection>
+									{phase.team.id === 0 ? "Your" : "Enemy"}{" "}
+									Turn
+								</TurnChangeWindowSection>
+							</Window>
+						)}
+					</Show>
+
+					<Show
+						when={
 							dataBattle.phase.name === "end" && dataBattle.phase
 						}
 						keyed
@@ -117,7 +151,7 @@ export const DataBattle = (props: DataBattleProps) => {
 								height={150}
 							>
 								{phase.winner === 0 ? (
-									<WindowInfoSection>
+									<ResultWindowSection>
 										<header>Databattle Successful</header>
 										<p>
 											Mission credits awarded:{" "}
@@ -127,12 +161,12 @@ export const DataBattle = (props: DataBattleProps) => {
 											Extra credits acquired:{" "}
 											{dataBattle.creditsCollected}
 										</p>
-									</WindowInfoSection>
+									</ResultWindowSection>
 								) : (
-									<WindowInfoSection>
+									<ResultWindowSection>
 										<header>Databattle Unsuccessful</header>
 										<p>Connection terminated...</p>
-									</WindowInfoSection>
+									</ResultWindowSection>
 								)}
 								<Button fill bold color="cyan">
 									Log out
@@ -173,7 +207,14 @@ const centeredInfoWindowClass = css`
 	justify-self: center;
 	align-self: center;
 `;
-const WindowInfoSection = styled(Window.Section)`
+const TurnChangeWindowSection = styled(Window.Section)`
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	${Fonts.O4b_25};
+	text-transform: uppercase;
+`;
+const ResultWindowSection = styled(Window.Section)`
 	padding: 16px 12px;
 	text-transform: uppercase;
 
