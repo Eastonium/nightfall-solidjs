@@ -95,7 +95,7 @@ const ContentWrapper = styled("div")`
 	flex: 1 1 auto;
 	display: flex;
 	flex-direction: column;
-	background: linear-gradient(#0008, transparent);
+	background: linear-gradient(#0008, #0001);
 `;
 const BarContainer = styled("div")<{ hasIcon: boolean }>`
 	flex: 0 0 auto;

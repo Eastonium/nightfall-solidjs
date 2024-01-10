@@ -113,11 +113,7 @@ const UploadZoneComponent = (p: UploadZone) => {
 				}}
 			/>
 			<Show when={program()} keyed>
-				{(program) => (
-					<g opacity={0.65}>
-						<ProgramComponent program={program} />;
-					</g>
-				)}
+				{(program) => <ProgramComponent program={program} />}
 			</Show>
 		</g>
 	);

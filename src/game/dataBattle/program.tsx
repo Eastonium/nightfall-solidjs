@@ -1,6 +1,5 @@
 import { getTexture } from "game/game";
 import { For, Show } from "solid-js";
-import { Chit } from "./chit";
 import { Position } from "./grid/position";
 import { gridUnitSize, Segment } from "./grid/segment";
 import { TeamId } from "./level";
@@ -57,7 +56,7 @@ export function isProgramInstance(
 }
 
 export const ProgramComponent = (p: { program: Program }) => {
-	const [{ dataBattle }, { setSelection }] = useDataBattle();
+	const [, { setSelection }] = useDataBattle();
 	const sortedSlug = () => [...p.program.slug].sort(Position.compare);
 	const headPos = () => p.program.slug[0];
 
@@ -85,7 +84,7 @@ export const ProgramComponent = (p: { program: Program }) => {
 					);
 				}}
 			</For>
-			<Show when={p.program.usedAction} keyed>
+			<Show when={p.program.usedAction}>
 				<image
 					x={headPos().x * gridUnitSize + 22}
 					y={headPos().y * gridUnitSize - 3}
