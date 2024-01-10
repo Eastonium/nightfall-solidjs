@@ -47,16 +47,51 @@ export const DataBattle = (props: DataBattleProps) => {
 			};
 	};
 
-	// Ref the window and show it for 1 second after every team switch on turns
+	// Ref the window and show it briefly after every team turn switch
 	let turnChangeWindowRef: HTMLDivElement;
 	createEffect(() => {
 		if (dataBattle.phase.name !== "turn") return;
 		dataBattle.phase.team.id;
-		turnChangeWindowRef?.animate(
+		turnChangeWindowRef.animate(
 			[{ visibility: "visible" }],
 			timing.turnChangeWindowDuration
 		);
 	});
+
+	let creditsCollectedWindowRef: HTMLDivElement | undefined;
+	let creditsCollectedWindowSectionRef: HTMLDivElement | undefined;
+	let cellSelectionIndicatorRef: SVGGraphicsElement | undefined;
+	createEffect<number>((prevCredits) => {
+		if (!dataBattle.creditsCollected) return 0;
+
+		const creditWindowBB =
+			creditsCollectedWindowRef!.getBoundingClientRect();
+		const creditCellBB = cellSelectionIndicatorRef!.getBoundingClientRect();
+		// debugger;
+		creditsCollectedWindowRef!.style.top =
+			creditCellBB.top +
+			(creditCellBB.height - creditWindowBB.height) / 2 +
+			"px";
+		creditsCollectedWindowRef!.style.left =
+			creditCellBB.left +
+			(creditCellBB.width - creditWindowBB.width) / 2 +
+			"px";
+
+		creditsCollectedWindowRef!.animate(
+			[{ visibility: "visible" }],
+			timing.creditsCollectedWindowDuration
+		);
+		creditsCollectedWindowRef!.animate(
+			[
+				{ opacity: 0, transform: "scale(0.5)" },
+				{ opacity: 1, transform: "scale(1)" },
+			],
+			timing.creditsCollectedEntranceEffectDuration
+		);
+		creditsCollectedWindowSectionRef!.innerText =
+			dataBattle.creditsCollected - prevCredits + " Credits";
+		return dataBattle.creditsCollected;
+	}, 0);
 
 	return (
 		<Window
@@ -77,6 +112,8 @@ export const DataBattle = (props: DataBattleProps) => {
 								{dataBattle.phase.name === "end"
 									? dataBattle.phase.winner
 									: dataBattle.phase.team.id}
+								<br />
+								Credits: {dataBattle.creditsCollected}
 								{/* <img
 									src={getTexture("nightfall:snaptraxS45")}
 									alt="spybot"
@@ -102,9 +139,14 @@ export const DataBattle = (props: DataBattleProps) => {
 						</Show>
 					</Window>
 
-					<Grid class={gridStyleClass} />
+					<Grid
+						cellSelectionIndicatorRef={(el) => {
+							cellSelectionIndicatorRef = el;
+						}}
+						class={gridStyleClass}
+					/>
 
-					<Show when={dataBattle.phase.name === "setup"} keyed>
+					<Show when={dataBattle.phase.name === "setup"}>
 						<Button
 							bold
 							wrapperProps={{ class: beginButtonStyleClass }}
@@ -114,6 +156,7 @@ export const DataBattle = (props: DataBattleProps) => {
 						</Button>
 					</Show>
 
+					{/* Turn Change Window */}
 					<Show
 						when={
 							dataBattle.phase.name === "turn" && dataBattle.phase
@@ -129,14 +172,28 @@ export const DataBattle = (props: DataBattleProps) => {
 								height={90}
 								style={{ visibility: "hidden" }}
 							>
-								<TurnChangeWindowSection>
+								<CenteredThickTextWindowSection>
 									{phase.team.id === 0 ? "Your" : "Enemy"}{" "}
 									Turn
-								</TurnChangeWindowSection>
+								</CenteredThickTextWindowSection>
 							</Window>
 						)}
 					</Show>
 
+					{/* Credit Pickup Window */}
+					<Window
+						ref={creditsCollectedWindowRef}
+						title="credits.amt"
+						width={128}
+						height={128}
+						style={{ position: "fixed", visibility: "hidden" }}
+					>
+						<CenteredThickTextWindowSection
+							ref={creditsCollectedWindowSectionRef}
+						/>
+					</Window>
+
+					{/* Databattle Result Window */}
 					<Show
 						when={
 							dataBattle.phase.name === "end" && dataBattle.phase
@@ -207,7 +264,7 @@ const centeredInfoWindowClass = css`
 	justify-self: center;
 	align-self: center;
 `;
-const TurnChangeWindowSection = styled(Window.Section)`
+const CenteredThickTextWindowSection = styled(Window.Section)`
 	display: flex;
 	align-items: center;
 	justify-content: center;

@@ -1,4 +1,4 @@
-import { For, Index, JSX, Show } from "solid-js";
+import { For, Index, JSX, Show, splitProps } from "solid-js";
 
 import {
 	gridUnitSize,
@@ -11,10 +11,13 @@ import { getChitConfig, getTexture } from "game/game";
 import { Targets } from "./targets";
 import { useDataBattle } from "../store";
 import { UploadZone } from "../level";
+import { Position } from "./position";
 
-interface GridProps extends JSX.HTMLAttributes<HTMLDivElement> {}
-export const Grid = (gridProps: GridProps) => {
-	// const [p, gridProps] = splitProps(props, []);
+interface GridProps extends JSX.HTMLAttributes<HTMLDivElement> {
+	cellSelectionIndicatorRef?: (el: SVGGraphicsElement) => void;
+}
+export const Grid = (props: GridProps) => {
+	const [p, gridProps] = splitProps(props, ["cellSelectionIndicatorRef"]);
 	const [{ dataBattle, selectionPosition }] = useDataBattle();
 
 	return (
@@ -61,10 +64,13 @@ export const Grid = (gridProps: GridProps) => {
 					{(uploadZone) => <UploadZoneComponent {...uploadZone} />}
 				</For>
 
-				<Show when={selectionPosition()} keyed>
-					{(position) => (
-						<CellSelectionIndicator x={position.x} y={position.y} />
-					)}
+				<Show when={selectionPosition()}>
+					<CellSelectionIndicator
+						ref={p.cellSelectionIndicatorRef}
+						// I don't like the !s here, but it was un-mounting and re-mounting every position change using the function method on the Show component
+						x={selectionPosition()!.x}
+						y={selectionPosition()!.y}
+					/>
 				</Show>
 
 				<Show

@@ -99,6 +99,8 @@ const ContentWrapper = styled("div")`
 `;
 const BarContainer = styled("div")<{ hasIcon: boolean }>`
 	flex: 0 0 auto;
+	display: flex;
+	justify-content: space-between;
 	height: 17px;
 	border-width: 1px 0 0 1px;
 	border-style: solid;
@@ -123,13 +125,12 @@ const BarContainer = styled("div")<{ hasIcon: boolean }>`
 		white-space: nowrap;
 
 		&.title {
-			flex-basis: 90px;
-			padding: 3px 30px 0 4px;
+			flex-grow: 0.3;
+			padding: 3px 4px 0 4px;
 		}
 	}
 `;
 const BarButtonContainer = styled("div")`
-	float: right;
 	margin-left: 16px;
 	padding: 0 1px;
 

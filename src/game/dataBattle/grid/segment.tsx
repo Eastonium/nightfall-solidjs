@@ -1,6 +1,6 @@
 import { shade } from "polished";
 
-import { mergeProps } from "solid-js";
+import { mergeProps, onMount } from "solid-js";
 import { css, keyframes } from "solid-styled-components";
 
 export const gridUnitSize = 32;
@@ -100,17 +100,22 @@ export const SegmentClipPath = () => {
 	);
 };
 
-interface CellSelectionIndicatorProps extends PositionProps {}
-export const CellSelectionIndicator = (p: CellSelectionIndicatorProps) => (
-	<rect
-		class={selectionIndicatorStyles}
-		transform={`translate(${p.x * gridUnitSize} ${p.y * gridUnitSize})`}
-		x={1}
-		y={1}
-		width={gridUnitSize - 2}
-		height={gridUnitSize - 2}
-	/>
-);
+interface CellSelectionIndicatorProps extends PositionProps {
+	ref?: (el: SVGGraphicsElement) => void;
+}
+export const CellSelectionIndicator = (p: CellSelectionIndicatorProps) => {
+	return (
+		<rect
+			ref={p.ref}
+			class={selectionIndicatorStyles}
+			transform={`translate(${p.x * gridUnitSize} ${p.y * gridUnitSize})`}
+			x={1}
+			y={1}
+			width={gridUnitSize - 2}
+			height={gridUnitSize - 2}
+		/>
+	);
+};
 const selectionIndicatorStyles = css`
 	fill: none;
 	stroke: #fff;
