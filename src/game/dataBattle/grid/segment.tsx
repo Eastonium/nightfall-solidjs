@@ -1,10 +1,8 @@
 import { shade } from "polished";
-
-import { Show, mergeProps } from "solid-js";
-import { css, keyframes } from "solid-styled-components";
+import { JSX, mergeProps, splitProps } from "solid-js";
 
 import { Position } from "./position";
-import { useDataBattle } from "../store";
+import { keyframes, styled } from "solid-styled-components";
 
 export const gridUnitSize = 32;
 const depth = 3;
@@ -97,45 +95,36 @@ export const Segment = (props: SegmentProps) => {
 	);
 };
 
-export const SegmentClipPath = () => {
-	return (
-		<clipPath id={`segment-clipPath-${"square"}`}>
-			<rect
-				x={shapeOffset}
-				y={shapeOffset}
-				width={shapeSize}
-				height={shapeSize}
-			/>
-		</clipPath>
-	);
-};
-
-interface CellSelectionIndicatorProps {
-	ref?: SVGRectElement | ((el: SVGRectElement) => void);
+/**
+ * A component that is meant to wrap around all the segments in the grid to make 'em flash
+ */
+interface SegmentWrapperProps extends JSX.SvgSVGAttributes<SVGGElement> {
+	flashPositions: Position[] | false | undefined;
 }
-export const CellSelectionIndicator = (p: CellSelectionIndicatorProps) => {
-	const [{ selectionPosition }] = useDataBattle();
+export const SegmentWrapper = styled((props: SegmentWrapperProps) => {
+	const [p, gProps] = splitProps(props, ["children", "flashPositions"]);
 
 	return (
-		<Show when={selectionPosition()}>
-			<rect
-				ref={p.ref}
-				class={selectionIndicatorStyles}
-				transform={`translate(${
-					selectionPosition()!.x * gridUnitSize
-				} ${selectionPosition()!.y * gridUnitSize})`}
-				x={1}
-				y={1}
-				width={gridUnitSize - 2}
-				height={gridUnitSize - 2}
-			/>
-		</Show>
+		<g {...gProps}>
+			<clipPath id={`segment-clipPath-${"square"}`}>
+				<rect
+					x={shapeOffset}
+					y={shapeOffset}
+					width={shapeSize}
+					height={shapeSize}
+				/>
+			</clipPath>
+			{p.children}
+		</g>
 	);
-};
-const selectionIndicatorStyles = css`
-	fill: none;
-	stroke: #fff;
-	stroke-width: 2;
-	animation: 530ms infinite ${keyframes({ to: { stroke: "transparent" } })};
-	pointer-events: none;
-`;
+})((p) =>
+	p.flashPositions
+		? `
+	${p.flashPositions
+		.map((pos) => `& [data-pos="${pos.sectorIndex}"]`)
+		.join(", ")} {
+		animation: 100ms infinite steps(1) ${keyframes({ "50%": { opacity: 0 } })};
+	}
+`
+		: ""
+);

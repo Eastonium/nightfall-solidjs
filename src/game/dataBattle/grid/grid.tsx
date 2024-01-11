@@ -1,24 +1,17 @@
-import { For, Index, JSX, Show, splitProps } from "solid-js";
-import { css, keyframes, styled } from "solid-styled-components";
+import { For, Index, JSX, Show } from "solid-js";
 
-import {
-	gridUnitSize,
-	SegmentClipPath,
-	CellSelectionIndicator,
-} from "./segment";
+import { gridUnitSize, SegmentWrapper } from "./segment";
 import { ChitComponent } from "../chit";
-import { isProgramInstance, Program, ProgramComponent } from "../program";
-import { getChitConfig, getTexture } from "game/game";
+import { isProgramInstance, ProgramComponent } from "../program";
+import { getTexture } from "game/game";
 import { Targets } from "./targets";
 import { useDataBattle } from "../store";
-import { UploadZone } from "../level";
-import { Position } from "./position";
+import { GridCursor } from "./cursor";
+import { UploadZoneComponent } from "../uploadZone";
 
-interface GridProps extends JSX.HTMLAttributes<HTMLDivElement> {
-	cellSelectionIndicatorRef?: (el: SVGGraphicsElement) => void;
-}
-export const Grid = (props: GridProps) => {
-	const [p, gridProps] = splitProps(props, ["cellSelectionIndicatorRef"]);
+interface GridProps extends JSX.HTMLAttributes<HTMLDivElement> {}
+export const Grid = (gridProps: GridProps) => {
+	// const [p, gridProps] = splitProps(props, [""]);
 	const [{ dataBattle }] = useDataBattle();
 
 	return (
@@ -51,14 +44,13 @@ export const Grid = (props: GridProps) => {
 					{(chit) => <ChitComponent chit={chit} />}
 				</For>
 
-				<SegmentClipPath />
-
-				<SegmentFlasher
-					positions={
+				<SegmentWrapper
+					flashPositions={
 						!!dataBattle.selection &&
 						dataBattle.selection.program &&
 						isProgramInstance(dataBattle.selection.program) &&
 						!dataBattle.selection.command &&
+						dataBattle.selection.program.maxSize > 1 &&
 						// Doing some fancy checking just in case a program has "over health" or something
 						dataBattle.selection.program.slug.length >=
 							dataBattle.selection.program.maxSize &&
@@ -67,20 +59,20 @@ export const Grid = (props: GridProps) => {
 						)
 					}
 				>
-				<For
-					each={dataBattle.programs.filter(
-						(prog) => prog.slug.length > 0
-					)}
-				>
-					{(program) => <ProgramComponent program={program} />}
-				</For>
-				</SegmentFlasher>
+					<For
+						each={dataBattle.programs.filter(
+							(prog) => prog.slug.length > 0
+						)}
+					>
+						{(program) => <ProgramComponent program={program} />}
+					</For>
+				</SegmentWrapper>
 
 				<For each={dataBattle.uploadZones}>
 					{(uploadZone) => <UploadZoneComponent {...uploadZone} />}
 				</For>
 
-				<CellSelectionIndicator ref={p.cellSelectionIndicatorRef} />
+				<GridCursor />
 
 				<Show
 					when={
@@ -98,42 +90,5 @@ export const Grid = (props: GridProps) => {
 				</Show>
 			</svg>
 		</div>
-	);
-};
-
-const SegmentFlasher = styled.g<{ positions?: Position[] | false }>((p) =>
-	p.positions
-		? `
-	${p.positions.map((pos) => `& [data-pos="${pos.sectorIndex}"]`).join(", ")} {
-		animation: 100ms infinite steps(1) ${keyframes({ "50%": { opacity: 0 } })};
-	}
-`
-		: ""
-);
-
-const UploadZoneComponent = (p: UploadZone) => {
-	const program = (): Program | null =>
-		p.program
-			? {
-					team: p.team,
-					slug: [p.pos],
-					usedSpeed: 0,
-					usedAction: false,
-					...p.program!,
-			  }
-			: null;
-
-	return (
-		<g>
-			<ChitComponent
-				chit={{
-					pos: p.pos,
-					...getChitConfig("nightfall:upload_zone")!,
-				}}
-			/>
-			<Show when={program()} keyed>
-				{(program) => <ProgramComponent program={program} />}
-			</Show>
-		</g>
 	);
 };

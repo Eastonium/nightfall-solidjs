@@ -37,6 +37,7 @@ export type Selection =
 	| { chit?: never; program: Program | ProgramConfig; command?: Command };
 
 type DataBattle = Level & {
+	id: string;
 	phase: BattlePhase;
 	selection: Selection;
 	creditsCollected: number;
@@ -59,6 +60,7 @@ export const useDataBattle = () => {
 export const createDataBattleStore = (level: Level) => {
 	const [dataBattle, setDataBattle] = createStore<DataBattle>({
 		...level,
+		id: createUniqueId(),
 		phase: { name: "setup", turn: 1, team: level.teams[0] },
 		selection: null,
 		creditsCollected: 0,

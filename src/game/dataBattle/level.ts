@@ -2,21 +2,13 @@ import { getChitConfig, getProgramConfig } from "game/game";
 import { createUniqueId } from "solid-js";
 import { Chit, ChitInstanceDefinition } from "./chit";
 import { Position } from "./grid/position";
-import { Program, ProgramConfig, ProgramInstanceDefinition } from "./program";
+import { Program, ProgramInstanceDefinition } from "./program";
 import { Actions } from "./store";
+import { UploadZone, UploadZoneInstanceDefinition } from "./uploadZone";
 
 export type TeamId = number;
 export type Team = { id: TeamId, ai?: boolean }
 
-type UploadZoneInstanceDefinition = {
-	team: TeamId;
-	pos: [number, number];
-};
-export type UploadZone = {
-	team: TeamId;
-	pos: Position;
-	program: ProgramConfig | null;
-};
 export type LevelDefinition = {
 	orientation: "orthogonal"; // | "hexagonal";
 	width: number;

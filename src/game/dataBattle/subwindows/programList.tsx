@@ -1,10 +1,11 @@
-import { getProgramConfig } from "game/game";
 import { For } from "solid-js";
 import { css } from "solid-styled-components";
-import { Window } from "ui/atoms/window";
-import { useDataBattle } from "./store";
 
-export const ProgramList = () => {
+import { getProgramConfig } from "game/game";
+import { Window } from "ui/atoms/window";
+import { useDataBattle } from "../store";
+
+export const ProgramListWindow = () => {
 	const [, { selectListedProgram }] = useDataBattle();
 
 	return (

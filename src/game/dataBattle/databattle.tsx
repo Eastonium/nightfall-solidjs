@@ -1,16 +1,17 @@
-import { createEffect, Show, splitProps } from "solid-js";
+import { Show, splitProps } from "solid-js";
 import { css, styled } from "solid-styled-components";
 
 import { Button, NormalButtonProps } from "ui/atoms/button";
 import { Window, WindowProps } from "ui/atoms/window";
-import { Fonts } from "ui/fonts";
 
 import { ChitInfo } from "./chitInfo";
 import { Grid } from "./grid";
 import type { Level } from "./level";
-import { ProgramList } from "./programList";
 import { createDataBattleStore, DataBattleContext } from "./store";
-import { timing } from "./timings";
+import { ProgramListWindow } from "./subwindows/programList";
+import { DatabattleResultWindow } from "./subwindows/result";
+import { CreditPickupWindow } from "./subwindows/creditPickup";
+import { TurnChangeWindow } from "./subwindows/turnChange";
 
 interface DataBattleProps extends WindowProps {
 	level: Level;
@@ -47,57 +48,12 @@ export const DataBattle = (props: DataBattleProps) => {
 			};
 	};
 
-	// Ref the window and show it briefly after every team turn switch
-	let turnChangeWindowRef: HTMLDivElement;
-	createEffect(() => {
-		if (dataBattle.phase.name !== "turn") return;
-		dataBattle.phase.team.id;
-		turnChangeWindowRef.animate(
-			[{ visibility: "visible" }],
-			timing.turnChangeWindowDuration
-		);
-	});
-
-	let creditsCollectedWindowRef: HTMLDivElement | undefined;
-	let creditsCollectedWindowSectionRef: HTMLDivElement | undefined;
-	let cellSelectionIndicatorRef: SVGGraphicsElement | undefined;
-	createEffect<number>((prevCredits) => {
-		if (!dataBattle.creditsCollected) return 0;
-
-		const creditWindowBB =
-			creditsCollectedWindowRef!.getBoundingClientRect();
-		const creditCellBB = cellSelectionIndicatorRef!.getBoundingClientRect();
-		// debugger;
-		creditsCollectedWindowRef!.style.top =
-			creditCellBB.top +
-			(creditCellBB.height - creditWindowBB.height) / 2 +
-			"px";
-		creditsCollectedWindowRef!.style.left =
-			creditCellBB.left +
-			(creditCellBB.width - creditWindowBB.width) / 2 +
-			"px";
-
-		creditsCollectedWindowRef!.animate(
-			[{ visibility: "visible" }],
-			timing.creditsCollectedWindowDuration
-		);
-		creditsCollectedWindowRef!.animate(
-			[
-				{ opacity: 0, transform: "scale(0.5)" },
-				{ opacity: 1, transform: "scale(1)" },
-			],
-			timing.creditsCollectedEntranceEffectDuration
-		);
-		creditsCollectedWindowSectionRef!.innerText =
-			dataBattle.creditsCollected - prevCredits + " Credits";
-		return dataBattle.creditsCollected;
-	}, 0);
-
 	return (
 		<Window
 			title="databattle in progress"
 			titleBarButtonProps={{ children: "log out" }}
 			sectioned
+			data-battle-id={dataBattle.id}
 			{...windowProps}
 		>
 			<LayoutContainer>
@@ -123,7 +79,7 @@ export const DataBattle = (props: DataBattleProps) => {
 						}
 						keyed
 					>
-						<ProgramList />
+						<ProgramListWindow />
 					</Show>
 
 					<Window
@@ -139,12 +95,7 @@ export const DataBattle = (props: DataBattleProps) => {
 						</Show>
 					</Window>
 
-					<Grid
-						cellSelectionIndicatorRef={(el) => {
-							cellSelectionIndicatorRef = el;
-						}}
-						class={gridStyleClass}
-					/>
+					<Grid class={gridStyleClass} />
 
 					<Show when={dataBattle.phase.name === "setup"}>
 						<Button
@@ -164,81 +115,13 @@ export const DataBattle = (props: DataBattleProps) => {
 						</Button>
 					</Show>
 
-					{/* Turn Change Window */}
-					<Show
-						when={
-							dataBattle.phase.name === "turn" && dataBattle.phase
-						}
-						keyed
-					>
-						{(phase) => (
-							<Window
-								ref={turnChangeWindowRef}
-								class={centeredInfoWindowClass}
-								title="phase.sequence"
-								width={190}
-								height={90}
-								style={{ visibility: "hidden" }}
-							>
-								<CenteredThickTextWindowSection>
-									{phase.team.id === 0 ? "Your" : "Enemy"}{" "}
-									Turn
-								</CenteredThickTextWindowSection>
-							</Window>
-						)}
-					</Show>
-
-					{/* Credit Pickup Window */}
-					<Window
-						ref={creditsCollectedWindowRef}
-						title="credits.amt"
-						width={128}
-						height={128}
-						style={{ position: "fixed", visibility: "hidden" }}
-					>
-						<CenteredThickTextWindowSection
-							ref={creditsCollectedWindowSectionRef}
-						/>
-					</Window>
-
-					{/* Databattle Result Window */}
-					<Show
-						when={
-							dataBattle.phase.name === "end" && dataBattle.phase
-						}
-						keyed
-					>
-						{(phase) => (
-							<Window
-								class={centeredInfoWindowClass}
-								title="databattle.result"
-								width={250}
-								height={150}
-							>
-								{phase.winner === 0 ? (
-									<ResultWindowSection>
-										<header>Databattle Successful</header>
-										<p>
-											Mission credits awarded:{" "}
-											{dataBattle.creditReward}
-										</p>
-										<p>
-											Extra credits acquired:{" "}
-											{dataBattle.creditsCollected}
-										</p>
-									</ResultWindowSection>
-								) : (
-									<ResultWindowSection>
-										<header>Databattle Unsuccessful</header>
-										<p>Connection terminated...</p>
-									</ResultWindowSection>
-								)}
-								<Button fill bold color="cyan">
-									Log out
-								</Button>
-							</Window>
-						)}
-					</Show>
+					<TurnChangeWindow
+						centeredWindowClass={centeredWindowClass}
+					/>
+					<CreditPickupWindow />
+					<DatabattleResultWindow
+						centeredWindowClass={centeredWindowClass}
+					/>
 				</DataBattleContext.Provider>
 			</LayoutContainer>
 		</Window>
@@ -266,24 +149,9 @@ const gridStyleClass = css`
 	align-items: center;
 `;
 
-const centeredInfoWindowClass = css`
+const centeredWindowClass = css`
 	grid-row: 1 / 3;
 	grid-column: 2;
 	justify-self: center;
 	align-self: center;
-`;
-const CenteredThickTextWindowSection = styled(Window.Section)`
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	${Fonts.O4b_25};
-	text-transform: uppercase;
-`;
-const ResultWindowSection = styled(Window.Section)`
-	padding: 16px 12px;
-	text-transform: uppercase;
-
-	header {
-		${Fonts.O4b_25};
-	}
 `;
