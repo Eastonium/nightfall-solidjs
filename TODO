@@ -45,7 +45,7 @@
 <!-- Flash tail cell when in move mode -->
 Mini tutorial messages
 <!-- Make programs opaque for upload zones (will put locks on preset programs in personal version) -->
-BUG: Can start battle with no programs
+<!-- BUG: Can start battle with no programs -->
 <!-- BUG: AI that doesn't move on its turn doesn't show as having used its turn -->
 <!-- BUG: AI makes weird moves if path is blocked, path should consider a way being opened later while moving generally closer -->
 

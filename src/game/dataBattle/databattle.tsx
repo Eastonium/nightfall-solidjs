@@ -150,6 +150,14 @@ export const DataBattle = (props: DataBattleProps) => {
 						<Button
 							bold
 							wrapperProps={{ class: beginButtonStyleClass }}
+							disabled={
+								// Check for at least one pre-set program
+								!dataBattle.programs.find(
+									(program) => program.team === 0 // TODO: Use this player's team number
+								) &&
+								// Check for at least one picked program
+								!dataBattle.uploadZones.find((uz) => uz.program)
+							}
 							onClick={endSetup}
 						>
 							Begin DataBattle
