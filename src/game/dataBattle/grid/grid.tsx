@@ -1,4 +1,5 @@
 import { For, Index, JSX, Show, splitProps } from "solid-js";
+import { css, keyframes, styled } from "solid-styled-components";
 
 import {
 	gridUnitSize,
@@ -18,7 +19,7 @@ interface GridProps extends JSX.HTMLAttributes<HTMLDivElement> {
 }
 export const Grid = (props: GridProps) => {
 	const [p, gridProps] = splitProps(props, ["cellSelectionIndicatorRef"]);
-	const [{ dataBattle, selectionPosition }] = useDataBattle();
+	const [{ dataBattle }] = useDataBattle();
 
 	return (
 		<div {...gridProps}>
@@ -52,6 +53,20 @@ export const Grid = (props: GridProps) => {
 
 				<SegmentClipPath />
 
+				<SegmentFlasher
+					positions={
+						!!dataBattle.selection &&
+						dataBattle.selection.program &&
+						isProgramInstance(dataBattle.selection.program) &&
+						!dataBattle.selection.command &&
+						// Doing some fancy checking just in case a program has "over health" or something
+						dataBattle.selection.program.slug.length >=
+							dataBattle.selection.program.maxSize &&
+						dataBattle.selection.program.slug.slice(
+							dataBattle.selection.program.maxSize - 1
+						)
+					}
+				>
 				<For
 					each={dataBattle.programs.filter(
 						(prog) => prog.slug.length > 0
@@ -59,19 +74,13 @@ export const Grid = (props: GridProps) => {
 				>
 					{(program) => <ProgramComponent program={program} />}
 				</For>
+				</SegmentFlasher>
 
 				<For each={dataBattle.uploadZones}>
 					{(uploadZone) => <UploadZoneComponent {...uploadZone} />}
 				</For>
 
-				<Show when={selectionPosition()}>
-					<CellSelectionIndicator
-						ref={p.cellSelectionIndicatorRef}
-						// I don't like the !s here, but it was un-mounting and re-mounting every position change using the function method on the Show component
-						x={selectionPosition()!.x}
-						y={selectionPosition()!.y}
-					/>
-				</Show>
+				<CellSelectionIndicator ref={p.cellSelectionIndicatorRef} />
 
 				<Show
 					when={
@@ -91,6 +100,16 @@ export const Grid = (props: GridProps) => {
 		</div>
 	);
 };
+
+const SegmentFlasher = styled.g<{ positions?: Position[] | false }>((p) =>
+	p.positions
+		? `
+	${p.positions.map((pos) => `& [data-pos="${pos.sectorIndex}"]`).join(", ")} {
+		animation: 100ms infinite steps(1) ${keyframes({ "50%": { opacity: 0 } })};
+	}
+`
+		: ""
+);
 
 const UploadZoneComponent = (p: UploadZone) => {
 	const program = (): Program | null =>

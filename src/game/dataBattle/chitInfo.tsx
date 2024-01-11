@@ -1,11 +1,14 @@
 import { For, Match, Show, Switch } from "solid-js";
+import { css, styled } from "solid-styled-components";
 
 import { Fonts } from "ui/fonts";
 import { Segment, gridUnitSize } from "./grid/segment";
 import { isProgramInstance, Program, ProgramConfig } from "./program";
-import { css, styled } from "solid-styled-components";
 import { Selection, useDataBattle } from "./store";
 import { Button } from "ui/atoms/button";
+import { Position } from "./grid/position";
+
+const dummyPosition = new Position(0, 1, 1);
 
 interface ChitInfoProps {
 	selection: NonNullable<Selection>;
@@ -19,8 +22,7 @@ export const ChitInfo = (p: ChitInfoProps) => (
 						<>
 							<svg class={iconStyleClass}>
 								<Segment
-									x={0}
-									y={0}
+									position={dummyPosition}
 									icon={program.icon}
 									color={program.color}
 								/>

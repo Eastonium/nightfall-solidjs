@@ -1,5 +1,6 @@
-import { getTexture } from "game/game";
 import { For, Show } from "solid-js";
+
+import { getTexture } from "game/game";
 import { Position } from "./grid/position";
 import { gridUnitSize, Segment } from "./grid/segment";
 import { TeamId } from "./level";
@@ -57,28 +58,31 @@ export function isProgramInstance(
 
 export const ProgramComponent = (p: { program: Program }) => {
 	const [, { setSelection }] = useDataBattle();
-	const sortedSlug = () => [...p.program.slug].sort(Position.compare);
+	const xySortedSlug = () => [...p.program.slug].sort(Position.compare);
 	const headPos = () => p.program.slug[0];
 
 	return (
 		<g onClick={() => setSelection({ program: p.program })}>
-			<For each={sortedSlug()}>
-				{(pos) => {
-					const { x, y } = pos;
-					const posRight = pos.clone(1, 0);
-					const posDown = pos.clone(0, 1);
+			<For each={xySortedSlug()}>
+				{(position) => {
+					const posRight = position.clone(1, 0);
+					const posDown = position.clone(0, 1);
 					return (
 						<Segment
-							{...{ x, y }}
+							position={position}
 							color={p.program.color}
-							icon={pos === headPos() ? p.program.icon : null}
+							icon={
+								position.equals(headPos())
+									? p.program.icon
+									: null
+							}
 							connectRight={
 								posRight &&
-								sortedSlug().find(posRight.equals) != null
+								xySortedSlug().find(posRight.equals) != null
 							}
 							connectDown={
 								posDown &&
-								sortedSlug().find(posDown.equals) != null
+								xySortedSlug().find(posDown.equals) != null
 							}
 						/>
 					);
