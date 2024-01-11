@@ -29,7 +29,14 @@ export const Targets = (p: TargetProps) => {
 						dataBattle.solid[pos.sectorIndex] &&
 						(!dataBattle.mapPrograms[pos.sectorIndex] ||
 							dataBattle.mapPrograms[pos.sectorIndex]?.id ==
-								p.program.id))
+								p.program.id) &&
+						// Check for chits if the team is an AI
+						(!dataBattle.teams.find(
+							(team) => team.id === p.program.team
+						)!.ai ||
+							!dataBattle.chits.find((chit) =>
+								chit.pos.equals(pos)
+							)))
 			).slice(1); // remove starting cell
 		}
 	};

@@ -42,7 +42,7 @@
 <!-- Don't let enemies move over credits or data files -->
 <!-- Turn change modals -->
 <!-- Pop-up when picking up credits -->
-Flash tail cell when in move mode
+<!-- Flash tail cell when in move mode -->
 Mini tutorial messages
 <!-- Make programs opaque for upload zones (will put locks on preset programs in personal version) -->
 BUG: Can start battle with no programs
