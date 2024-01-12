@@ -1,4 +1,4 @@
-import { Show, splitProps } from "solid-js";
+import { createSignal, Show, splitProps } from "solid-js";
 import { css, styled } from "solid-styled-components";
 
 import { Button } from "ui/atoms/button";
@@ -12,6 +12,7 @@ import { DatabattleResultWindow } from "./subwindows/result";
 import { CreditPickupWindow } from "./subwindows/creditPickup";
 import { TurnChangeWindow } from "./subwindows/turnChange";
 import { ProgramInfoWindow } from "./subwindows/programInfo";
+import { SetupTutorial } from "./subwindows/setupTutorial";
 
 interface DataBattleProps extends WindowProps {
 	level: Level;
@@ -22,8 +23,14 @@ export const DataBattle = (props: DataBattleProps) => {
 	const dataBattleStore = createDataBattleStore(p.level);
 	const [{ dataBattle }, { endSetup }] = dataBattleStore;
 
+	const [dataBattleWindowRef, setDataBattleWindowRef] =
+		createSignal<HTMLDivElement>();
+	const [programListWindowRef, setProgramListWindowRef] =
+		createSignal<HTMLDivElement>();
+
 	return (
 		<Window
+			ref={setDataBattleWindowRef}
 			title="databattle in progress"
 			titleBarButtonProps={{ children: "log out" }}
 			sectioned
@@ -32,6 +39,11 @@ export const DataBattle = (props: DataBattleProps) => {
 		>
 			<LayoutContainer>
 				<DataBattleContext.Provider value={dataBattleStore}>
+					<SetupTutorial
+						dataBattleWindowRef={dataBattleWindowRef()}
+						programListWindowRef={programListWindowRef()}
+					/>
+
 					<Show
 						when={dataBattle.phase.name === "setup"}
 						fallback={
@@ -52,7 +64,7 @@ export const DataBattle = (props: DataBattleProps) => {
 							</Window>
 						}
 					>
-						<ProgramListWindow />
+						<ProgramListWindow ref={setProgramListWindowRef} />
 					</Show>
 
 					<ProgramInfoWindow />

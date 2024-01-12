@@ -71,7 +71,7 @@ export const createDataBattleStore = (level: Level) => {
 
 	// Run AI turn or select first upload zone or program for new player turn
 	createEffect(() => {
-		if (dataBattle.phase.name === "end") return;
+		if (dataBattle.phase.name !== "turn") return;
 
 		const team = dataBattle.phase.team;
 
@@ -81,27 +81,14 @@ export const createDataBattleStore = (level: Level) => {
 		}
 
 		untrack(() => {
-			if (dataBattle.phase.name === "setup") {
-				const uploadZone = dataBattle.uploadZones.find(
-					(uz) => uz.team === team.id
-				);
-				if (!uploadZone) return;
-				actions.setSelection({
-					chit: {
-						pos: uploadZone.pos,
-						...getChitConfig("nightfall:upload_zone")!,
-					},
-				});
-			} else {
-				const program = dataBattle.programs.find(
-					(prog) =>
-						prog.team === team.id &&
-						!prog.usedAction &&
-						prog.slug.length > 0
-				);
-				if (!program) return;
-				actions.setSelection({ program });
-			}
+			const program = dataBattle.programs.find(
+				(prog) =>
+					prog.team === team.id &&
+					!prog.usedAction &&
+					prog.slug.length > 0
+			);
+			if (!program) return;
+			actions.setSelection({ program });
 		});
 	});
 

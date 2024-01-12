@@ -7,7 +7,6 @@ export interface WindowProps extends JSX.HTMLAttributes<HTMLDivElement> {
 	width?: number;
 	height?: number;
 	title?: string;
-	titleBarIcon?: JSX.Element;
 	titleBarButtonProps?: JSX.ButtonHTMLAttributes<HTMLButtonElement>;
 	sectioned?: boolean;
 	postFooter?: JSX.Element;
@@ -22,7 +21,6 @@ const _Window = (props: WindowProps) => {
 			"width",
 			"height",
 			"title",
-			"titleBarIcon",
 			"titleBarButtonProps",
 			"sectioned",
 			"postFooter",
@@ -41,8 +39,7 @@ const _Window = (props: WindowProps) => {
 			{...containerProps}
 		>
 			<div>
-				<BarContainer hasIcon={!!p.titleBarIcon}>
-					{p.titleBarIcon}
+				<BarContainer data-ref="title-bar">
 					{p.title && <div class="title">{p.title}</div>}
 					{p.titleBarButtonProps && (
 						<BarButtonContainer>
@@ -97,7 +94,7 @@ const ContentWrapper = styled("div")`
 	flex-direction: column;
 	background: linear-gradient(#0008, #0001);
 `;
-const BarContainer = styled("div")<{ hasIcon: boolean }>`
+const BarContainer = styled("div")`
 	flex: 0 0 auto;
 	display: flex;
 	justify-content: space-between;
@@ -105,11 +102,9 @@ const BarContainer = styled("div")<{ hasIcon: boolean }>`
 	border-width: 1px 0 0 1px;
 	border-style: solid;
 	border-image: linear-gradient(#eee, #999) 1;
-	padding: 0 6px 0 8px;
+	padding: 0 6px;
 	background: linear-gradient(#ddd, #777);
 	color: #000;
-
-	${(p) => (p.hasIcon ? "padding-left: 0;" : "")}
 
 	> div {
 		flex: 0 0 auto;

@@ -28,7 +28,7 @@ export const UploadZoneComponent = (p: UploadZone) => {
 			: null;
 
 	return (
-		<g>
+		<g data-ref="upload-zone">
 			<ChitComponent
 				chit={{
 					pos: p.pos,
