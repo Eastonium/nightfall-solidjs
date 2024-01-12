@@ -1,10 +1,9 @@
 import { Show, splitProps } from "solid-js";
 import { css, styled } from "solid-styled-components";
 
-import { Button, NormalButtonProps } from "ui/atoms/button";
+import { Button } from "ui/atoms/button";
 import { Window, WindowProps } from "ui/atoms/window";
 
-import { ChitInfo } from "./chitInfo";
 import { Grid } from "./grid";
 import type { Level } from "./level";
 import { createDataBattleStore, DataBattleContext } from "./store";
@@ -12,6 +11,7 @@ import { ProgramListWindow } from "./subwindows/programList";
 import { DatabattleResultWindow } from "./subwindows/result";
 import { CreditPickupWindow } from "./subwindows/creditPickup";
 import { TurnChangeWindow } from "./subwindows/turnChange";
+import { ProgramInfoWindow } from "./subwindows/programInfo";
 
 interface DataBattleProps extends WindowProps {
 	level: Level;
@@ -20,33 +20,7 @@ export const DataBattle = (props: DataBattleProps) => {
 	const [p, windowProps] = splitProps(props, ["level"]);
 
 	const dataBattleStore = createDataBattleStore(p.level);
-	const [
-		{ dataBattle, selectionPosition, rollbackStates },
-		{ clearUploadZone, endSetup, rollbackState },
-	] = dataBattleStore;
-
-	const programInfoButtonProps = (): NormalButtonProps => {
-		if (dataBattle.phase.name === "setup") {
-			const selectionPos = selectionPosition();
-			return {
-				color: "red",
-				children: "Remove",
-				innerSpanProps: { class: "fixPx" },
-				disabled:
-					!selectionPos ||
-					!dataBattle.uploadZones.find((uz) =>
-						uz.pos.equals(selectionPos)
-					)?.program,
-				onClick: clearUploadZone,
-			};
-		} else
-			return {
-				color: "red",
-				children: "Undo",
-				disabled: rollbackStates().length < 1,
-				onClick: rollbackState,
-			};
-	};
+	const [{ dataBattle }, { endSetup }] = dataBattleStore;
 
 	return (
 		<Window
@@ -77,23 +51,11 @@ export const DataBattle = (props: DataBattleProps) => {
 								/> */}
 							</Window>
 						}
-						keyed
 					>
 						<ProgramListWindow />
 					</Show>
 
-					<Window
-						class={css({ gridRow: 2 })}
-						title="program.info"
-						sectioned
-						postFooter={
-							<Button fill bold {...programInfoButtonProps} />
-						}
-					>
-						<Show when={dataBattle.selection} keyed>
-							{(selection) => <ChitInfo selection={selection} />}
-						</Show>
-					</Window>
+					<ProgramInfoWindow />
 
 					<Grid class={gridStyleClass} />
 
