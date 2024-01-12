@@ -10,6 +10,7 @@
 		"jsx": "preserve",
 		"jsxImportSource": "solid-js",
 		"types": ["vite/client"],
-		"skipLibCheck": true
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true
 	}
 }
