@@ -73,6 +73,7 @@ export const createDataBattleStore = (level: Level) => {
 	createEffect(() => {
 		if (dataBattle.phase.name !== "turn") return;
 
+		dataBattle.phase.turn;
 		const team = dataBattle.phase.team;
 
 		if (team.ai) {
@@ -492,7 +493,16 @@ const createActions = (
 		const currentTeamIndex = dataBattle.teams.findIndex(
 			(team) => team.id === currentTeamId
 		);
-		const nextTeamIndex = (currentTeamIndex + 1) % dataBattle.teams.length;
+		let nextTeamIndex = (currentTeamIndex + 1) % dataBattle.teams.length;
+		while (
+			!dataBattle.programs.find(
+				(program) =>
+					program.team === dataBattle.teams[nextTeamIndex].id &&
+					program.slug.length > 0
+			)
+		) {
+			nextTeamIndex = (nextTeamIndex + 1) % dataBattle.teams.length;
+		}
 
 		setDataBattle("phase", {
 			// Increment the turn number if the next team is not later in the team queue

@@ -16,6 +16,7 @@ export const TurnChangeWindow = (props: {
 	createEffect(() => {
 		if (dataBattle.phase.name !== "turn") return;
 		dataBattle.phase.team.id;
+		dataBattle.phase.turn;
 		turnChangeWindowRef.animate(
 			[{ visibility: "visible" }],
 			timing.turnChangeWindowDuration
