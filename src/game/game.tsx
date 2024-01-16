@@ -1,5 +1,5 @@
 import { WindowsContainer } from "ui/atoms/window";
-import { Map } from "./map";
+// import { Map } from "./map";
 import { DataBattle } from "./dataBattle";
 import { ChitConfig } from "./dataBattle/chit";
 import { ProgramConfig } from "./dataBattle/program";
@@ -41,7 +41,7 @@ export const Game = () => {
 	return (
 		<>
 			<GlobalStyles />
-			<Map />
+			{/* <Map /> */}
 			<WindowsContainer coverScreen>
 				<DataBattle
 					level={processLevel(
