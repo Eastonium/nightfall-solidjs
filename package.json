@@ -1,12 +1,12 @@
 {
 	"name": "nightfall-solidjs",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"private": true,
 	"type": "module",
 	"scripts": {
 		"start": "vite",
 		"dev": "vite",
-		"build": "vite build  --base=/nightfall-beta/",
+		"build": "vite build --base=/nightfall-beta/",
 		"serve": "vite preview"
 	},
 	"license": "MIT",

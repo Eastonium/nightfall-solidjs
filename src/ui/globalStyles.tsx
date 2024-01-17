@@ -29,11 +29,11 @@ export const GlobalStyles = createGlobalStyles`
 		font-smooth: never;
 		-webkit-font-smoothing: none;
 		image-rendering: pixelated;
-		transform: translate3d(0,0,0); // Fixes font blur
+		transform: translate(0,0); // Fixes font blur
 		background: #000;
 		color: #fff;
 
-		// TODO: Remove when world map is made;
+		/* TODO: Remove when world map is made */
 		background: url(${MapImage}) no-repeat;
 	}
 

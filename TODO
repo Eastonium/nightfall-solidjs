@@ -43,13 +43,24 @@
 <!-- Turn change modals -->
 <!-- Pop-up when picking up credits -->
 <!-- Flash tail cell when in move mode -->
-Mini tutorial messages
+<!-- Mini tutorial messages -->
 <!-- Make programs opaque for upload zones (will put locks on preset programs in personal version) -->
 <!-- BUG: Can start battle with no programs -->
 <!-- BUG: AI that doesn't move on its turn doesn't show as having used its turn -->
 <!-- BUG: AI makes weird moves if path is blocked, path should consider a way being opened later while moving generally closer -->
 
 ### 0.2 - World Map, Program list
+Create pan-able area with classic arrows
+Data-driven node placements
+Node styles
+Node modal info
+Node dependencies
+Convert map to SVG
+Accessible node connection line offsets
+
+Make program list scroll
+Make program info independent of databattle
+Add program list and program info to map screen
 
 ### 0.3 - Create all levels 
 
