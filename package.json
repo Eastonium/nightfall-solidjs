@@ -19,6 +19,7 @@
 		"vite-plugin-solid": "^2.8.0"
 	},
 	"dependencies": {
+		"hammerjs": "^2.0.8",
 		"lodash.clonedeep": "^4.5.0",
 		"polished": "^4.2.2",
 		"solid-js": "^1.8.10",

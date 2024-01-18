@@ -1,8 +1,6 @@
 import { createGlobalStyles } from "solid-styled-components";
 import { Fonts } from "./fonts";
 
-import MapImage from "assets/packs/nightfall/textures/maps/map.png";
-
 export const GlobalStyles = createGlobalStyles`
 	* {
 		box-sizing: border-box;
@@ -32,9 +30,6 @@ export const GlobalStyles = createGlobalStyles`
 		transform: translate(0,0); // Fixes font blur
 		background: #000;
 		color: #fff;
-
-		/* TODO: Remove when world map is made */
-		background: url(${MapImage}) no-repeat;
 	}
 
 	button {
