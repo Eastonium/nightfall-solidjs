@@ -1,4 +1,4 @@
-import { getChitConfig, getProgramConfig } from "game/game";
+import { getChitConfig, getProgramConfig } from "../../game/game";
 import { createUniqueId } from "solid-js";
 import { Chit, ChitInstanceDefinition } from "./chit";
 import { Position } from "./grid/position";

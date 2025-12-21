@@ -1,5 +1,5 @@
-import { Chit } from "game/dataBattle/chit";
-import { LevelDefinition } from "game/dataBattle/level";
+import { Chit } from "../../../../game/dataBattle/chit";
+import { LevelDefinition } from "../../../../game/dataBattle/level";
 
 const awardCredits =
 	(amount: number): Chit["onLandOn"] =>
@@ -18,7 +18,7 @@ const Test_Level_1: LevelDefinition = {
 		⬛⬜⬜⬜⬛⬛⬛⬛⬛⬛⬜⬜⬜⬛
 		⬜⬜⬜⬜⬜⬛⬛⬛⬛⬜⬜⬜⬜⬜
 		⬜⬜⬜⬜⬜⬛⬛⬛⬛⬜⬜⬜⬜⬜
-		⬜⬜⬜⬜⬜⬛⬛⬛⬛⬛⬜⬜⬜⬜
+		⬜⬜⬜⬜⬜⬛⬛⬛⬛⬜⬜⬜⬜⬜
 		⬜⬜⬜⬜⬜⬛⬛⬜⬜⬜⬜⬜⬜⬜
 		⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜
 		⬜⬜⬜⬜⬜⬜⬜⬛⬛⬜⬜⬜⬜⬜

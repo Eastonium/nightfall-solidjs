@@ -2,7 +2,7 @@ import { JSX, Component, mergeProps, splitProps } from "solid-js";
 import { css, styled } from "solid-styled-components";
 import { desaturate, darken } from "polished";
 
-import { Fonts } from "ui/fonts";
+import { Fonts } from "../../ui/fonts";
 
 const buttonColors = {
 	blue: "#1348E7",

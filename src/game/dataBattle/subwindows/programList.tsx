@@ -1,8 +1,8 @@
 import { For } from "solid-js";
 import { css } from "solid-styled-components";
 
-import { getProgramConfig } from "game/game";
-import { Window, WindowProps } from "ui/atoms/window";
+import { getProgramConfig } from "../../../game/game";
+import { Window, WindowProps } from "../../../ui/atoms/window";
 import { useDataBattle } from "../store";
 
 export const ProgramListWindow = (props: Pick<WindowProps, "ref">) => {

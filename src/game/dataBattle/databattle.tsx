@@ -1,8 +1,8 @@
 import { createSignal, Show, splitProps } from "solid-js";
 import { css, styled } from "solid-styled-components";
 
-import { Button } from "ui/atoms/button";
-import { Window, WindowProps } from "ui/atoms/window";
+import { Button } from "../../ui/atoms/button";
+import { Window, WindowProps } from "../../ui/atoms/window";
 
 import { Grid } from "./grid";
 import type { Level } from "./level";

@@ -1,6 +1,6 @@
 import { For, Show } from "solid-js";
 
-import { getTexture } from "game/game";
+import { getTexture } from "../../game/game";
 import { Position } from "./grid/position";
 import { gridUnitSize, Segment } from "./grid/segment";
 import { TeamId } from "./level";

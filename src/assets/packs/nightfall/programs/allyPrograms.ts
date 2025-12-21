@@ -1,4 +1,4 @@
-import { ProgramConfig } from "game/dataBattle/program";
+import { ProgramConfig } from "../../../../game/dataBattle/program";
 
 import hack1Icon from "../textures/grid/programs/hack_1.png";
 import hack2Icon from "../textures/grid/programs/hack_2.png";

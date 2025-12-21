@@ -1,11 +1,11 @@
 import { For, Match, Show, Switch } from "solid-js";
 import { css, styled } from "solid-styled-components";
 
-import { Fonts } from "ui/fonts";
+import { Fonts } from "../../ui/fonts";
 import { Segment, gridUnitSize } from "./grid/segment";
 import { isProgramInstance, Program, ProgramConfig } from "./program";
 import { Selection, useDataBattle } from "./store";
-import { Button } from "ui/atoms/button";
+import { Button } from "../../ui/atoms/button";
 import { Position } from "./grid/position";
 
 const dummyPosition = new Position(0, 1, 1);

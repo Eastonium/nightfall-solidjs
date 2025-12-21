@@ -3,7 +3,7 @@ import { For, Index, JSX, Show } from "solid-js";
 import { gridUnitSize, SegmentWrapper } from "./segment";
 import { ChitComponent } from "../chit";
 import { isProgramInstance, ProgramComponent } from "../program";
-import { getTexture } from "game/game";
+import { getTexture } from "../../../game/game";
 import { Targets } from "./targets";
 import { useDataBattle } from "../store";
 import { GridCursor } from "./cursor";

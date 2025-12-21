@@ -11,20 +11,19 @@
 	},
 	"license": "MIT",
 	"devDependencies": {
-		"@styled/typescript-styled-plugin": "^1.0.1",
-		"@types/lodash.clonedeep": "^4.5.9",
-		"solid-devtools": "^0.29.2",
-		"typescript": "^5.3.3",
-		"vite": "^4.5.1",
-		"vite-plugin-solid": "^2.8.0"
+		"@styled/typescript-styled-plugin": "1.0.1",
+		"@types/lodash.clonedeep": "4.5.7",
+		"solid-devtools": "0.34.4",
+		"typescript": "5.9.3",
+		"vite": "7.3.0",
+		"vite-plugin-solid": "2.11.10"
 	},
 	"dependencies": {
-		"hammerjs": "^2.0.8",
-		"lodash.clonedeep": "^4.5.0",
-		"polished": "^4.2.2",
-		"solid-js": "^1.8.10",
-		"solid-popper": "^0.3.0",
-		"solid-styled-components": "^0.28.5",
-		"vite-tsconfig-paths": "^4.2.3"
+		"hammerjs": "2.0.8",
+		"lodash.clonedeep": "4.5.0",
+		"polished": "4.3.1",
+		"solid-js": "1.9.10",
+		"solid-popper": "0.3.0",
+		"solid-styled-components": "0.28.5"
 	}
 }

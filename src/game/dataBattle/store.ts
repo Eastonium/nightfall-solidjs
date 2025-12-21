@@ -1,4 +1,4 @@
-import { getChitConfig } from "game/game";
+import { getChitConfig } from "../../game/game";
 import {
 	Accessor,
 	batch,
