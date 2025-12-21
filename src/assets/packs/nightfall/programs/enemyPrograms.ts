@@ -1,4 +1,4 @@
-import { ProgramConfig } from "game/dataBattle/program";
+import { ProgramConfig } from "../../../../game/dataBattle/program";
 
 import sentinel1Icon from "../textures/grid/programs/sentinel_1.png";
 import sentinel2Icon from "../textures/grid/programs/sentinel_2.png";

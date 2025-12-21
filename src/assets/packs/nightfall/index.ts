@@ -1,4 +1,4 @@
-import { PackConfig } from "game";
+import { PackConfig } from "../../../game";
 
 import uploadZoneIcon from "./textures/grid/chits/upload_zone.png";
 import creditsIcon from "./textures/grid/chits/credits.png";
