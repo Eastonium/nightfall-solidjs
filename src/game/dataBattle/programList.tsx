@@ -1,7 +1,7 @@
-import { getProgramConfig } from "game/game";
+import { getProgramConfig } from "../../game/game";
 import { For } from "solid-js";
 import { css } from "solid-styled-components";
-import { Window } from "ui/atoms/window";
+import { Window } from "../../ui/atoms/window";
 import { useDataBattle } from "./store";
 
 export const ProgramList = () => {

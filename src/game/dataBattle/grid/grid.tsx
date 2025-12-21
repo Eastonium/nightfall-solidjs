@@ -7,7 +7,7 @@ import {
 } from "./segment";
 import { ChitComponent } from "../chit";
 import { isProgramInstance, Program, ProgramComponent } from "../program";
-import { getChitConfig, getTexture } from "game/game";
+import { getChitConfig, getTexture } from "../../../game/game";
 import { Targets } from "./targets";
 import { useDataBattle } from "../store";
 import { UploadZone } from "../level";

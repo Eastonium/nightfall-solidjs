@@ -1,4 +1,4 @@
-import { getTexture } from "game/game";
+import { getTexture } from "../../game/game";
 import { For, Show } from "solid-js";
 import { Chit } from "./chit";
 import { Position } from "./grid/position";

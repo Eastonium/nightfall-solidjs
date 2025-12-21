@@ -1,4 +1,4 @@
-import { getTexture } from "game/game";
+import { getTexture } from "../../../game/game";
 import { For, JSX } from "solid-js";
 import { Command, Program } from "../program";
 import { useDataBattle } from "../store";

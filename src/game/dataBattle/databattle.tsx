@@ -1,10 +1,10 @@
-import { getTexture } from "game/game";
+import { getTexture } from "../../game/game";
 import { Show, splitProps } from "solid-js";
 import { css, styled } from "solid-styled-components";
 
-import { Button, NormalButtonProps } from "ui/atoms/button";
-import { Window, WindowProps } from "ui/atoms/window";
-import { Fonts } from "ui/fonts";
+import { Button, NormalButtonProps } from "../../ui/atoms/button";
+import { Window, WindowProps } from "../../ui/atoms/window";
+import { Fonts } from "../../ui/fonts";
 
 import { ChitInfo } from "./chitInfo";
 import { Grid } from "./grid";

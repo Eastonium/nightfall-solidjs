@@ -1,12 +1,12 @@
-import { WindowsContainer } from "ui/atoms/window";
+import { WindowsContainer } from "../ui/atoms/window";
 import { Map } from "./map";
 import { DataBattle } from "./dataBattle";
 import { ChitConfig } from "./dataBattle/chit";
 import { ProgramConfig } from "./dataBattle/program";
 import { LevelDefinition, processLevel } from "./dataBattle/level";
 
-import nightfallPackConfig from "assets/packs/nightfall";
-import { GlobalStyles } from "ui/globalStyles";
+import nightfallPackConfig from "../assets/packs/nightfall";
+import { GlobalStyles } from "../ui/globalStyles";
 
 export type PackConfig = {
 	id: string;

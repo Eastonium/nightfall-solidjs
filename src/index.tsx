@@ -1,6 +1,6 @@
 import { createEffect, createSignal } from "solid-js";
 import { render } from "solid-js/web";
-import { Button, NormalButtonProps } from "ui/atoms/button";
+import { Button, NormalButtonProps } from "./ui/atoms/button";
 
 import { Game } from "./game";
 

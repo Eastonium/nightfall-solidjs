@@ -2,6 +2,7 @@
 	"name": "nightfall-solidjs",
 	"version": "0.0.0",
 	"private": true,
+	"type": "module",
 	"scripts": {
 		"start": "vite",
 		"dev": "vite",
@@ -10,18 +11,17 @@
 	},
 	"license": "MIT",
 	"devDependencies": {
-		"@types/lodash.clonedeep": "^4.5.7",
-		"solid-devtools": "^0.26.0",
-		"typescript": "^4.9.5",
-		"typescript-styled-plugin": "^0.18.2",
-		"vite": "^4.2.0",
-		"vite-plugin-solid": "^2.6.1"
+		"@styled/typescript-styled-plugin": "1.0.1",
+		"@types/lodash.clonedeep": "4.5.7",
+		"solid-devtools": "0.34.4",
+		"typescript": "5.9.3",
+		"vite": "7.3.0",
+		"vite-plugin-solid": "2.11.10"
 	},
 	"dependencies": {
-		"lodash.clonedeep": "^4.5.0",
-		"polished": "^4.2.2",
-		"solid-js": "^1.6.15",
-		"solid-styled-components": "^0.28.5",
-		"vite-tsconfig-paths": "^4.0.7"
+		"lodash.clonedeep": "4.5.0",
+		"polished": "4.3.1",
+		"solid-js": "1.9.10",
+		"solid-styled-components": "0.28.5"
 	}
 }
