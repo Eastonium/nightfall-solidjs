@@ -2,7 +2,7 @@ import { createEffect, createSignal } from "solid-js";
 import { styled } from "solid-styled-components";
 import usePopper from "solid-popper";
 
-import { Window } from "ui/atoms/window";
+import { Window } from "../../../ui/atoms/window";
 import { useDataBattle } from "../store";
 
 export const SetupTutorial = (props: {

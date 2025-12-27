@@ -1,9 +1,9 @@
 import { Show } from "solid-js";
 import { css, styled } from "solid-styled-components";
 
-import { Button } from "ui/atoms/button";
-import { Window } from "ui/atoms/window";
-import { Fonts } from "ui/fonts";
+import { Button } from "../../../ui/atoms/button";
+import { Window } from "../../../ui/atoms/window";
+import { Fonts } from "../../../ui/fonts";
 import { useDataBattle } from "../store";
 
 export const DatabattleResultWindow = (props: {

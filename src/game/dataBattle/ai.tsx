@@ -1,4 +1,4 @@
-import { wait } from "utils";
+import { wait } from "../../utils";
 import { Position } from "./grid/position";
 import {
 	floodFindPositions,

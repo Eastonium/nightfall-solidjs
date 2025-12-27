@@ -6,6 +6,7 @@ import dataItemIcon from "./textures/grid/chits/data_item.png";
 
 import { allyPrograms } from "./programs/allyPrograms";
 import { enemyPrograms } from "./programs/enemyPrograms";
+import { mapNodes } from "./map_nodes";
 
 import testLevel1 from "./levels/test_1";
 
@@ -36,6 +37,7 @@ const packConfig: PackConfig = {
 	],
 	programs: [...allyPrograms, ...enemyPrograms],
 	levels: [testLevel1],
+	mapNodes,
 	textures,
 };
 const nightfallPackConfig = { [packId]: packConfig };

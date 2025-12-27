@@ -1,8 +1,8 @@
 import { createEffect } from "solid-js";
 import { styled } from "solid-styled-components";
 
-import { Window } from "ui/atoms/window";
-import { Fonts } from "ui/fonts";
+import { Window } from "../../../ui/atoms/window";
+import { Fonts } from "../../../ui/fonts";
 import { useDataBattle } from "../store";
 import { timing } from "../timings";
 

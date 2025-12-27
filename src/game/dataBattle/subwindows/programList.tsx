@@ -4,25 +4,17 @@ import { css } from "solid-styled-components";
 import { getProgramConfig } from "../../../game/game";
 import { Window, WindowProps } from "../../../ui/atoms/window";
 import { useDataBattle } from "../store";
+import { useSaveData } from "../../saveData";
 
 export const ProgramListWindow = (props: Pick<WindowProps, "ref">) => {
 	const [, { selectListedProgram }] = useDataBattle();
+	const [{ saveData }] = useSaveData();
 
 	return (
 		<Window title="program.list" /* height={128}*/ {...props}>
 			<Window.Section class={programListClass}>
-				<For
-					each={[
-						"nightfall:hack_2",
-						"nightfall:golem_1",
-						"nightfall:seeker_1",
-						"nightfall:turbo_1",
-						"nightfall:bug_1",
-						"nightfall:data_doctor_1",
-						"nightfall:bit_man",
-					]}
-				>
-					{(name) => {
+				<For each={Object.entries(saveData.programs)}>
+					{([name, count]) => {
 						const program = getProgramConfig(name);
 						if (!program)
 							throw `Could not find program with name ${name}`;
@@ -31,7 +23,7 @@ export const ProgramListWindow = (props: Pick<WindowProps, "ref">) => {
 								class={programListItemClass}
 								onClick={() => selectListedProgram(program)}
 							>
-								{program.name}
+								{program.name} x{count}
 							</button>
 						);
 					}}

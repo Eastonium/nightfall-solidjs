@@ -3,7 +3,7 @@ import { ChitComponent } from "./chit";
 import { Position } from "./grid/position";
 import { TeamId } from "./level";
 import { Program, ProgramComponent, ProgramConfig } from "./program";
-import { getChitConfig } from "game/game";
+import { getChitConfig } from "../../game/game";
 
 export type UploadZoneInstanceDefinition = {
 	team: TeamId;

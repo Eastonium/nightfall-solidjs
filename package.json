@@ -12,6 +12,7 @@
 	"license": "MIT",
 	"devDependencies": {
 		"@styled/typescript-styled-plugin": "1.0.1",
+		"@types/hammerjs": "^2.0.46",
 		"@types/lodash.clonedeep": "4.5.7",
 		"solid-devtools": "0.34.4",
 		"typescript": "5.9.3",

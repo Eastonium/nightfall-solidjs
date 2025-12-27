@@ -1,8 +1,8 @@
 import { Show } from "solid-js";
 import { css } from "solid-styled-components";
 
-import { Button, NormalButtonProps } from "ui/atoms/button";
-import { Window } from "ui/atoms/window";
+import { Button, NormalButtonProps } from "../../../ui/atoms/button";
+import { Window } from "../../../ui/atoms/window";
 import { ChitInfo } from "../chitInfo";
 import { useDataBattle } from "../store";
 

@@ -1,8 +1,8 @@
 import { Show, createEffect } from "solid-js";
 import { css, styled } from "solid-styled-components";
 
-import { Window } from "ui/atoms/window";
-import { Fonts } from "ui/fonts";
+import { Window } from "../../../ui/atoms/window";
+import { Fonts } from "../../../ui/fonts";
 import { timing } from "../timings";
 import { useDataBattle } from "../store";
 
@@ -12,12 +12,12 @@ export const TurnChangeWindow = (props: {
 	const [{ dataBattle }] = useDataBattle();
 
 	// Ref the window and show it briefly after every team turn switch
-	let turnChangeWindowRef: HTMLDivElement;
+	let turnChangeWindowRef: HTMLDivElement | undefined;
 	createEffect(() => {
 		if (dataBattle.phase.name !== "turn") return;
 		dataBattle.phase.team.id;
 		dataBattle.phase.turn;
-		turnChangeWindowRef.animate(
+		turnChangeWindowRef?.animate(
 			[{ visibility: "visible" }],
 			timing.turnChangeWindowDuration
 		);

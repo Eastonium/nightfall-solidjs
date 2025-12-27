@@ -23,7 +23,7 @@ import { Level, Team, TeamId } from "./level";
 import { Command, isProgramInstance, Program, ProgramConfig } from "./program";
 import cloneDeep from "lodash.clonedeep";
 import { executeAiTurn } from "./ai";
-import { wait } from "utils";
+import { wait } from "../../utils";
 import { timing } from "./timings";
 
 type BattlePhase =
