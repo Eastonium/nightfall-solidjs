@@ -22,7 +22,7 @@ const STORAGE_KEY = "nightfall_save_data";
 // Default/empty save data
 const defaultSaveData: SaveData = {
 	completedNodes: [0],
-	revealedNodes: [3],
+	revealedNodes: [4],
 	programs: {
 		"nightfall:hack_2": 1,
 		"nightfall:golem_1": 1,

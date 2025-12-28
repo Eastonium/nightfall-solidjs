@@ -1,13 +1,14 @@
+import { For, Show, useContext } from "solid-js";
 import { styled } from "solid-styled-components";
 import { useSaveData } from "../saveData";
-import { Show } from "solid-js";
+import { GameActions, GameActionsContext } from "../game";
 
 export interface MapNode {
 	id: number;
 	label: string;
 	theme: MapNodeTheme;
 	unlockDeps: MapNode[];
-	onActivate(): void;
+	onActivate(actions: GameActions): void;
 	x: number;
 	y: number;
 }
@@ -33,6 +34,7 @@ export const MapNodeComponent = (props: MapNodeProps) => {
 		{ isNodeAccessible, isNodeCompleted, isNodeRevealed },
 		{ completeNode, clearSaveData },
 	] = useSaveData();
+	const gameActions = useContext(GameActionsContext)!;
 
 	return (
 		<Show when={isNodeRevealed(node)}>
@@ -42,7 +44,8 @@ export const MapNodeComponent = (props: MapNodeProps) => {
 					top: `${node.y}px`,
 				}}
 				disabled={!isNodeAccessible(node)}
-				onClick={() => completeNode(node.id)}
+				onClick={() => node.onActivate(gameActions)}
+				onContextMenu={() => completeNode(node.id)}
 				onDblClick={clearSaveData}
 			>
 				<NodeCircle
@@ -52,12 +55,21 @@ export const MapNodeComponent = (props: MapNodeProps) => {
 				/>
 				{node.label && <NodeLabel>{node.label}</NodeLabel>}
 			</Node>
+			{/* Add a line from the dependency nodes to this one */}
+			<For each={node.unlockDeps}>
+				{(depNode) => (
+					<Show when={isNodeRevealed(depNode)}>
+						<NodeDepLine node={node} depNode={depNode} />
+					</Show>
+				)}
+			</For>
 		</Show>
 	);
 };
 
 const Node = styled("button")`
 	position: absolute;
+	z-index: 1;
 	transform: translate(-50%, -50%);
 	pointer-events: auto;
 `;
@@ -71,7 +83,8 @@ const NodeCircle = styled("div")<{ color: string }>`
 	box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
 	transition: all 0.2s ease;
 
-	${() => Node.class(null!)}:enabled:hover &, ${() => Node.class(null!)}:enabled:focus & {
+	${() => Node.class(null!)}:enabled:hover &, ${() =>
+		Node.class(null!)}:enabled:focus & {
 		width: 32px;
 		height: 32px;
 	}
@@ -95,4 +108,31 @@ const NodeLabel = styled("div")`
 	${Node.class}:hover &, ${Node.class}:focus & {
 		opacity: 1;
 	}
+`;
+
+const NodeDepLine = (props: { node: MapNode; depNode: MapNode }) => {
+	const { node, depNode } = props;
+	const x1 = depNode.x;
+	const y1 = depNode.y;
+	const x2 = node.x;
+	const y2 = node.y;
+	const length = Math.hypot(x2 - x1, y2 - y1);
+	const angle = Math.atan2(y2 - y1, x2 - x1) * (180 / Math.PI);
+
+	return (
+		<DepLine
+			style={{
+				width: `${length}px`,
+				transform: `translate(${x1}px, ${y1}px) rotate(${angle}deg)`,
+			}}
+		/>
+	);
+};
+const DepLine = styled("div")`
+	position: absolute;
+	height: 2px;
+	background: white;
+	pointer-events: none;
+	transform-origin: 0 0;
+	opacity: 0.5;
 `;

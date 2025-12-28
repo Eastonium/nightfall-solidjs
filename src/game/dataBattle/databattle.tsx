@@ -1,4 +1,4 @@
-import { createSignal, Show, splitProps } from "solid-js";
+import { createSignal, Show, splitProps, useContext } from "solid-js";
 import { css, styled } from "solid-styled-components";
 
 import { Button } from "../../ui/atoms/button";
@@ -13,6 +13,7 @@ import { CreditPickupWindow } from "./subwindows/creditPickup";
 import { TurnChangeWindow } from "./subwindows/turnChange";
 import { ProgramInfoWindow } from "./subwindows/programInfo";
 import { SetupTutorial } from "./subwindows/setupTutorial";
+import { GameActionsContext } from "../game";
 
 interface DataBattleProps extends WindowProps {
 	level: Level;
@@ -20,6 +21,7 @@ interface DataBattleProps extends WindowProps {
 export const DataBattle = (props: DataBattleProps) => {
 	const [p, windowProps] = splitProps(props, ["level"]);
 
+	const { abortDataBattle } = useContext(GameActionsContext)!;
 	const dataBattleStore = createDataBattleStore(p.level);
 	const [{ dataBattle }, { endSetup }] = dataBattleStore;
 
@@ -32,7 +34,10 @@ export const DataBattle = (props: DataBattleProps) => {
 		<Window
 			ref={setDataBattleWindowRef}
 			title="databattle in progress"
-			titleBarButtonProps={{ children: "log out" }}
+			titleBarButtonProps={{
+				children: "log out",
+				onClick: () => abortDataBattle(p.level),
+			}}
 			sectioned
 			data-battle-id={dataBattle.id}
 			{...windowProps}

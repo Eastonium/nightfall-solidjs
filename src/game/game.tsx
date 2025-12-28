@@ -1,10 +1,10 @@
+import { createContext, createSignal, For } from "solid-js";
 import { WindowsContainer } from "../ui/atoms/window";
 import { Map } from "./map";
 import { DataBattle } from "./dataBattle";
 import { ChitConfig } from "./dataBattle/chit";
 import { ProgramConfig } from "./dataBattle/program";
-import { LevelDefinition, processLevel } from "./dataBattle/level";
-
+import { Level, LevelDefinition, processLevel } from "./dataBattle/level";
 import nightfallPackConfig from "../assets/packs/nightfall";
 import { GlobalStyles } from "../ui/globalStyles";
 import { createSaveDataStore, SaveDataContext } from "./saveData";
@@ -17,6 +17,11 @@ export type PackConfig = {
 	levels: LevelDefinition[];
 	mapNodes: MapNode[];
 	textures: { [textureId: string]: string };
+};
+
+export type GameActions = {
+	loadLevel: (level: LevelDefinition) => void;
+	abortDataBattle: (level: Level) => void;
 };
 
 const gameConfig: { [key: string]: PackConfig } = { ...nightfallPackConfig };
@@ -38,25 +43,41 @@ export const getTexture = (id: string) => {
 	return gameConfig[packId]?.textures?.[textureId];
 };
 
+export const GameActionsContext = createContext<GameActions>();
+
 export const Game = () => {
 	// Some sort of thing here to track which levels are open
 	const saveDataStore = createSaveDataStore();
 
+	const [dataBattles, setDataBattles] = createSignal<Level[]>([]);
+
+	var gameActions: GameActions = {
+		loadLevel: (levelDef: LevelDefinition) => {
+			const level = processLevel(levelDef);
+			setDataBattles((levels) => [...levels, level]);
+		},
+		abortDataBattle: (level: Level) => {
+			setDataBattles((levels) => levels.filter((l) => l !== level));
+		},
+	};
+
 	return (
-		<>
-			<GlobalStyles />
+		<GameActionsContext.Provider value={gameActions}>
 			<SaveDataContext.Provider value={saveDataStore}>
+				<GlobalStyles />
 				<Map nodes={nightfallPackConfig.nightfall.mapNodes} />
 				<WindowsContainer coverScreen>
-					{/* <DataBattle
-					level={processLevel(
-						nightfallPackConfig.nightfall.levels[0]
-					)}
-					x={2}
-					y={2}
-				/> */}
+					<For each={dataBattles()}>
+						{(level, i) => (
+							<DataBattle
+								level={level}
+								x={i() * 20}
+								y={i() * 20}
+							/>
+						)}
+					</For>
 				</WindowsContainer>
 			</SaveDataContext.Provider>
-		</>
+		</GameActionsContext.Provider>
 	);
 };

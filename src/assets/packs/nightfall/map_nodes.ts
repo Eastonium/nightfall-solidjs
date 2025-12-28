@@ -1,11 +1,12 @@
 import { MapNode, MapNodeTheme } from "../../../game/map/mapNode";
+import Test_Level_1 from "./levels/test_1";
 
 var nodeAlpha: MapNode = {
 	id: 0,
 	label: "Node Alpha",
 	theme: MapNodeTheme.SmartHQ,
 	unlockDeps: [],
-	onActivate: () => {},
+	onActivate: () => console.log("Welcome to SMART"),
 	x: 200,
 	y: 150,
 };
@@ -14,7 +15,7 @@ var nodeBeta: MapNode = {
 	label: "Node Beta",
 	theme: MapNodeTheme.WarezZone,
 	unlockDeps: [nodeAlpha],
-	onActivate: () => {},
+	onActivate: ({ loadLevel }) => loadLevel(Test_Level_1),
 	x: 500,
 	y: 300,
 };
